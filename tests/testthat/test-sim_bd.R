@@ -2,6 +2,8 @@ context("test_likelihood_formula2")
 
 test_that("multiplication works", {
 
+  # RJCB: never source in a package, the package itself
+  # does that
   source("R/datasets.R")
 
   sls_data_sets_name <- ls(pattern = "dataset")

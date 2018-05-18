@@ -1,3 +1,4 @@
+# RJCB: suggest to put this in a function, e.g. create_dataset
 #DATASETS TO TEST
 
 #pure branching

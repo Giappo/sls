@@ -1,3 +1,5 @@
+#' RJCB: I think this should move to the tests folder
+
 #' @export
 test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims = 100000,
                            lik_function = lik_custom, sim_function = sim_custom, input_check = 1){
