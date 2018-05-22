@@ -1,5 +1,3 @@
-# RJCB: Well written!
-
 #basic sim function
 #' @export
 sim_bd                   <- function(pars, time, N0 = 1){ #<- function(lambda, mu, ti, tf, N0 = 1){

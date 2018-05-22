@@ -8,7 +8,7 @@ check_input_data_coherence <- function(lambdas, mus, ti, tf, tb, ts, N0){
   if ( !all.equal(length(lambdas), length(mus), (1+number_of_shifts)) )
   {
     # RJCB: I think you want to use 'stop' or 'warning' here
-    cat("Parameters and/or shift times are not coherent.")
+    stop("Parameters and/or shift times are not coherent.")
   }
 
   if (is.matrix(tb)){TB <- tb[1,]}else{TB <- tb[1]}

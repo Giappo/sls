@@ -1,6 +1,3 @@
-# RJCB: Well written!
-# No need to write return at the end of a function :-)
-
 #basic functions
 #' @export
 lik_pt  <- function (lambda, mu, time){
