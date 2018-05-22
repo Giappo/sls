@@ -2,9 +2,9 @@ rm(list = ls())
 library(sls)
 source(paste0(getwd(),"//R//datasets.R"))
 
-Nsims <- 10000000 # Nsims <- 10000000
+Nsims <- 99000 # Nsims <- 10000000
 
-d.s <- dataset_Rampal
+d.s <- dataset_pure_shifting2
 #the aim is to get "lik_result" equal to "sim_result" for an high enough number of simulations
 test_result <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims); print(test_result$results.table)
 if (Nsims >= 100000)
@@ -14,7 +14,7 @@ if (Nsims >= 100000)
   xlsx:::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
 }
 
-d.s <- dataset_Bart
+d.s <- dataset_pure_branching2
 #the aim is to get "lik_result" equal to "sim_result" for an high enough number of simulations
 test_result <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims); print(test_result$results.table)
 if (Nsims >= 100000)

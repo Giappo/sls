@@ -30,7 +30,7 @@ test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims
     time_elapsed <- as.double(difftime(Sys.time(), time1, units = "secs"))
 
     #saveable output
-    datas <- ttt <- arrange_ttt_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+    datas <- ttt <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
     results <- matrix(NA, nrow = nrow(datas) + 3, ncol = ncol(datas))
     results[,1] <- c(lik_result, sim_result, sim_std, Nsims, time_elapsed);
 
@@ -46,7 +46,7 @@ test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims
 }
 
 #' @export
-test_likelihood_formula2 <- function(Nsims, dataset){
+test_likelihood_formula2 <- function(Nsims, dataset, lik_function = lik_custom, sim_function = sim_custom){
   lambdas <- unlist(dataset$lambdas)
   mus     <- unlist(dataset$mus)
   ti      <- unlist(dataset$ti)
@@ -56,7 +56,7 @@ test_likelihood_formula2 <- function(Nsims, dataset){
   result  <- test_likelihood_formula(lambdas = lambdas, mus = mus,
                                      ti = ti, tb = tb, ts = ts, tf = tf,
                                      Nsims = Nsims, N0 = 1,
-                                     lik_function = lik_custom, sim_function = sim_custom, input_check = 1)
+                                     lik_function = lik_function, sim_function = sim_function, input_check = 1)
   return(result)
 }
 

@@ -276,3 +276,122 @@ sim_custom               <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input
   ok <- sim_check_ok_condition(lineages = lineages, Ntips = Ntips); ok
   return(list(ok = ok, lineages = lineages))
 }
+
+#specific case sims
+#full sims
+#' @export
+sim_series      <- function(lambdas, mus, times){
+  Nregimes <- length(lambdas)
+  r = 1:Nregimes
+  la = lambdas; mu = mus; ti = cumsum(times)
+
+  N <- rep(0,Nregimes) #Number of lineages for each regime
+  N[1] <- 1 #number of lineages visible in the phylogeny at the starting time
+  i <- 1 #current regime
+  t <- 0 #continous time
+  while(t<ti[Nregimes]){
+    if (N[i] <= 0){break}
+    total_rate = sum( N*(la + mu) )
+    deltaT = rexp(n = 1, rate = total_rate)
+
+    if ((t + deltaT) < ti[i]){
+      regime = DDD:::sample2(r,size = 1,replace = F,
+                             prob = ( N[r]*(la[r] + mu[r]) )
+      )
+      deltaN = DDD:::sample2(c(-1,1),size = 1,replace = F,
+                             prob = c(mu[regime],la[regime])
+      )
+      N[regime] = N[regime] + deltaN
+      t = t + deltaT
+    }else{
+      # if (N>0){decoupling_ok[i] = 1}
+      if (N[i]>0 && i<Nregimes){
+        N[i+1] = 1 #New regime for one species
+        N[i] = N[i] - 1 #I remove the decoupled species
+        t = ti[i] #I update to the start of the new time interval
+        i = i + 1 #I switch to the next time interval
+      }else{break}
+    }
+  }
+  ok = (
+    ( N[Nregimes]==1            ) *
+      ( all(N[1:(Nregimes-1)]==0) )
+  )
+  return(ok)
+}
+#' @export
+sim_R_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
+  if (input_check == TRUE)
+  {
+    coherent_input <- check_input_data_coherence(ti = ti, tf = tf, tb = tb, ts = ts)
+    if (coherent_input == 0){stop("Input data are incoherent")}
+  }
+  tbranching <- tb[1,1]; tshift <- ts[1,1]
+  A <- tbranching - ti; B <- tshift - tbranching; C <- tf - tshift;
+  pars <- list(); pars[[1]] <- c(lambdas[1], mus[1]); pars[[2]] <- c(lambdas[2], mus[2])
+  arrived_at_shift <- arrived_at_branching <- shifted <- 0
+
+  Na <- sim_bd(pars = pars[[1]], time = A, N0 = N0)
+  arrived_at_branching = Na > 0
+  if (arrived_at_branching == 1){
+    Nb1 <- Na
+    Nb2 <- 1
+
+    Nb1 <- sim_bd(pars = pars[[1]], time = B  , N0 = Nb1)
+    Nb2 <- sim_bd(pars = pars[[1]], time = B  , N0 = Nb2)
+    arrived_at_shift = (Nb1 > 0) * (Nb2 > 0)
+    if (arrived_at_shift == 1){
+      shifted <- DDD:::sample2(x = c(1,2), size = 1, replace = T, prob = c(Nb1, Nb2))
+      Nb1 <- Nb1 - (shifted==1)
+      Nb2 <- Nb2 - (shifted==2)
+      Nc  <- 1
+
+      Nf1 <- sim_bd(pars = pars[[1]], time = C, N0 = Nb1)
+      Nf2 <- sim_bd(pars = pars[[1]], time = C, N0 = Nb2)
+      Nc  <- sim_bd(pars = pars[[2]], time = C, N0 = Nc )
+      ok  <- (Nc==1)*(Nf1==(1-(shifted==1)))*(Nf2==(1-(shifted==2)))
+    }else{ok <- 0}
+  }else{ok <- 0}
+
+  total1 <- arrived_at_branching
+  total2 <- arrived_at_branching * arrived_at_shift
+
+  return(list(ok = ok, total1 = total1, total2 = total2))
+}
+#' @export
+sim_B_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
+  if (input_check == TRUE)
+  {
+    coherent_input <- check_input_data_coherence(ti = ti, tf = tf, tb = tb, ts = ts)
+    if (coherent_input == 0){stop("Input data are incoherent")}
+  }
+  tbranching = tb[1,1]; tshift1 = ts[1,1]; tshift2 = ts[1,2]
+  A <- tshift1 - ti; B <- tbranching - tshift1; C <- tshift2 - tbranching; D <- tf - tshift2
+  pars <- list(); pars[[1]] <- c(lambdas[1], mus[1]); pars[[2]] <- c(lambdas[2], mus[2]); pars[[3]] <- c(lambdas[3], mus[3])
+  arrived_at_shift1 <- arrived_at_shift2 <- arrived_at_branching2 <- arrived_at_branching <- shifted1 <- shifted2 <- 0
+
+  lineages <- c(id = 1, N = N0, pars = pars[[1]])
+
+  lineages <- sim_evolve_lineages(lineages = lineages, time_before_next_event = A)
+
+  if (lineages[2] <= 0){return(list(ok = 0))}
+  lineages <- sim_event_shift(lineages = lineages, new_pars = pars[[2]], shifting_id = 1)
+
+  lineages <- sim_evolve_lineages(lineages = lineages, time_before_next_event = B)
+
+  lineages <- sim_event_branching(lineages = lineages, branching_id = 1)
+
+  lineages <- sim_evolve_lineages(lineages = lineages, time_before_next_event = C)
+
+  ids <- lineages[lineages[,1] > 0, 1]
+  Ns  <- lineages[lineages[,1] > 0, 2]
+  if (sum(Ns) <= 0){return(list(ok = 0))}
+  shifted_sampled <- DDD::sample2(x = ids, size = 1, prob = Ns)
+  lineages <- sim_event_shift(lineages = lineages, new_pars = pars[[3]], shifting_id = shifted_sampled)
+
+  lineages <- sim_evolve_lineages(lineages = lineages, time_before_next_event = D)
+
+  ok <- sim_check_ok_condition(lineages = lineages, Ntips = 2)
+
+  return(list(ok = ok))
+} #uses event functions. works with lists

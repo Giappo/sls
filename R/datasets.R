@@ -1,21 +1,37 @@
 # RJCB: suggest to put this in a function, e.g. create_dataset
 #DATASETS TO TEST
 
-#pure branching
+#pure branching: basic case
 ti <- 0; tf <- 100; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
 lambdas <- c(0.6); mus <- c(0.3)
 tb_when <- c(50); tb_who <- c(1); ts_when <- c(); ts_who <- c()
 tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
 ti <- ti/10; tf <- tf/10; ts[1,] <- ts[1,]/10; tb[1,] <- tb[1,]/10;
-dataset_pure_branching <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
+dataset_pure_branching1 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
 
-#pure shifting
+#pure branching: advanced case
+ti <- 0; tf <- 120; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
+lambdas <- c(0.6); mus <- c(0.3)
+tb_when <- c(20, 40, 70, 90); tb_who <- c(1,2,3,4); ts_when <- c(); ts_who <- c()
+tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
+ti <- ti/10; tf <- tf/10; ts[1,] <- ts[1,]/10; tb[1,] <- tb[1,]/10;
+dataset_pure_branching2 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
+
+#pure shifting: basic case
 ti <- 0; tf <- 100; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
 lambdas <- c(0.6, 0.4); mus <- c(0.3, 0.1)
 tb_when <- c(); tb_who <- c(); ts_when <- c(50); ts_who <- c(1)
 tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
 ti <- ti/10; tf <- tf/10; ts[1,] <- ts[1,]/10; tb[1,] <- tb[1,]/10;
-dataset_pure_shifting <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
+dataset_pure_shifting1 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
+
+#pure shifting: advanced case
+ti <- 0; tf <- 120; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
+lambdas <- c(0.6, 0.4, 0.3, 0.2, 0.1); mus <- c(0.3, 0.2, 0.1, 0.05, 0.02)
+tb_when <- c(); tb_who <- c(); ts_when <- c(20, 40, 70, 90); ts_who <- c(1,1,1,1)
+tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
+ti <- ti/10; tf <- tf/10; ts[1,] <- ts[1,]/10; tb[1,] <- tb[1,]/10;
+dataset_pure_shifting2 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
 
 #R's example
 ti <- 0; tf <- 100; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
