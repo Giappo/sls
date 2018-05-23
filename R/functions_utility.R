@@ -127,5 +127,79 @@ get_std2                   <- function(oks, lik_result, sim_result){
 
   print(figure)
 
-  return(std_max = sim_std)
+  return(list(std_max = sim_std, figure.error_bars = figure))
+}
+#' @export
+check_number_of_species    <- function(lineages){
+  ok <- 0
+  if (!is.matrix(lineages))
+  {
+    id <- lineages[1]
+    N  <- lineages[2]
+    if (id > 0 && N > 0){ok <- 1}
+  }else
+  {
+    ids <- lineages[,1]
+    Ns  <- lineages[,2]
+    ok  <- prod(N[ids > 0] > 0)
+  }
+  return(ok)
+}
+#' @export
+export_results_to_xls      <- function(Nsims, sim_function, lik_function, result, sample_threshold = 100000){
+  if (Nsims >= sample_threshold && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
+  {
+    results_file      <- paste0(getwd(),"//results//table2.xls")
+    figure_name       <- paste0(getwd(),"//results//figura_errori.png")
+    figure.error_bars <- result$figure.error_bars
+    sheet             <- xlsx::createSheet(results_file, sheetName = result$sheet_name)
+    xlsx:::write.xlsx(x = result$results.table, file = results_file, sheetName = sheet, append = TRUE)
+    # xlsx:::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
+
+    # create a png plot
+    png(figure_name, height=800, width=800, res=250, pointsize=8)
+    figure.error_bars
+    dev.off()
+    # Create a new sheet to contain the plot
+    # sheet <-createSheet(wb, sheetName = "boxplot")
+    # Add title
+    # xlsx.addTitle(sheet, rowIndex=1, title="Error as function of sample size",
+    #               titleStyle = TITLE_STYLE)
+    # Add the plot created previously
+    xlsx:::addPicture(file = figure_name, sheet = sheet, scale = 1, startRow = 13, startColumn = 1)
+    # remove the plot from the disk
+    res <- file.remove(figure_name)
+    # Save the workbook to a file...
+    #++++++++++++++++++++++++++++++++++++
+    # saveWorkbook(wb, "r-xlsx-report-example.xlsx")
+  }
+}
+install.packages(r2excel)
+export_results_to_xls      <- function(Nsims, sim_function, lik_function, result, sample_threshold = 100000){
+  if (Nsims >= sample_threshold && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
+  {
+    results_file      <- paste0(getwd(),"//results//table2.xlsx")
+    figure_name       <- paste0(getwd(),"//results//figura_errori.png")
+    figure.error_bars <- result$figure.error_bars
+
+    xlsx::write.xlsx(x = result$results.table, file = results_file, sheetName = result$sheet_name, append = TRUE)
+
+    wb    <- xlsx::createWorkbook()
+    sheet <- xlsx::createSheet(wb, result$sheet_name)
+    d.f   <- as.data.frame(result$results.table)
+
+    png(figure_name, height=1000, width=1000, res=300, pointsize=8)
+    figure.error_bars
+    dev.off()
+
+    startRow = nrow(result$results.table) + 2
+    xlsx::addPicture(file = figure_name, sheet = sheet, scale = 1, startRow = startRow,
+               startColumn = 1)
+
+
+    # xlsx::addDataFrame(d.f, sheet = sheet, row.names=FALSE, col.names=FALSE, startRow = 1, showNA = F)
+    xlsx::saveWorkbook(wb, results_file)
+
+
+  }
 }

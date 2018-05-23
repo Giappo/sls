@@ -23,26 +23,28 @@ test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims
     lik_result   <- lik_function(lambdas = lambdas, mus = mus, ti = ti, tb = tb, ts = ts, tf = tf, input_check = 0)
     sim_result   <- sum(ok)/total
     sim_std <- spread <- 0; if (Nsims >= 10000 && sum(ok) >= 10){
-      sim_std      <- get_std2(oks = ok, lik_result = lik_result, sim_result = sim_result)
-      spread <- abs(lik_result - sim_result)/sim_std
+      std_results       <- get_std2(oks = ok, lik_result = lik_result, sim_result = sim_result)
+      sim_std           <- std_results$std_max
+      figure.error_bars <- std_results$figure.error_bars
+      spread  <- abs(lik_result - sim_result)/sim_std
       cat(paste0("sim result and lik result agree within ", signif(x = spread, digits = 2) ," standard deviations.\n"))
     }
     time_elapsed <- as.double(difftime(Sys.time(), time1, units = "secs"))
 
     #saveable output
-    datas <- ttt <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
-    results <- matrix(NA, nrow = nrow(datas) + 3, ncol = ncol(datas))
-    results[,1] <- c(lik_result, sim_result, sim_std, Nsims, time_elapsed);
+    datas <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+    results <- matrix(NA, nrow = nrow(datas) + 4, ncol = ncol(datas))
+    results[,1] <- c(lik_result, sim_result, sim_std, spread, Nsims, time_elapsed);
 
     rates <- matrix(NA, nrow = 2, ncol = ncol(datas))
     rates[1, datas[2,] < 0 | datas[1,] == datas[1, 1]] <- lambdas
     rates[2, datas[2,] < 0 | datas[1,] == datas[1, 1]] <- mus
 
-    results.table <- rbind(ttt, rates, results)
-    rownames(results.table) <- c("when", "who", "lambdas", "mus", "lik_results", "sim_results", "sim_std", "Nsims", "time(seconds)")
+    results.table <- rbind(datas, rates, results)
+    rownames(results.table) <- c("when", "who", "lambdas", "mus", "lik_results", "sim_results", "sim_std", "spread", "Nsims", "time(seconds)")
     sheet_name <- toString(format(Sys.time(), "%Y-%m-%d %H.%M.%S") )
 
-    return(list(lik_res = lik_result, sim_res = sim_result, sim_std = sim_std, spread = spread, results.table = results.table, sheet_name = sheet_name, ok_vec = ok))
+    return(list(lik_res = lik_result, sim_res = sim_result, sim_std = sim_std, spread = spread, results.table = results.table, sheet_name = sheet_name, figure.error_bars = figure.error_bars, ok_vec = ok))
 }
 
 #' @export

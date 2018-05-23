@@ -12,7 +12,7 @@ sim_bd                   <- function(pars, time, N0 = 1){ #<- function(lambda, m
     deltaT <- rexp(n = 1, rate = total_rate)
     if ((t + deltaT) < tf)
     {
-      deltaN <- DDD:::sample2(c(-1,1), size = 1, replace = F, prob = c(mu,lambda))
+      deltaN <- DDD:::sample2(c(-1,1), size = 1, replace = F, prob = c(mu, lambda))
       N <- N + deltaN
       t <- t + deltaT
     }else
@@ -363,6 +363,7 @@ sim_B_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = 
   if (input_check == TRUE)
   {
     coherent_input <- check_input_data_coherence(ti = ti, tf = tf, tb = tb, ts = ts)
+    coherent_input <- coherent_input * (length(ts[1,])==2)
     if (coherent_input == 0){stop("Input data are incoherent")}
   }
   tbranching = tb[1,1]; tshift1 = ts[1,1]; tshift2 = ts[1,2]
