@@ -2,18 +2,19 @@ context("test_likelihood_formula2")
 
 test_that("multiplication works", {
 
-  # RJCB: never source in a package, the package itself
-  # does that
-  source("R/datasets.R")
+  if (!is_on_travis()) return()
+
+  Nsims <- 1000000
 
   sls_data_sets_name <- ls(pattern = "dataset")
   sls_data_sets <- vector("list",length(sls_data_sets_name))
   for (i in 1:length(sls_data_sets_name)){
     sls_data_sets[[i]] <- get(sls_data_sets_name)
+    testthat::expect_true(
+      test_likelihood_formula2(Nsims = Nsims, dataset = sls_data_sets[[i]])$spread <= 2
+    )
   }
 
-  testthat::expect_true(
-    test_likelihood_formula2(Nsims = 10000, dataset = sls_data_sets[[i]])$spread <= 2
-  )
+
 
 })

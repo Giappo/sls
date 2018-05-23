@@ -241,3 +241,11 @@ export_results_to_xls_2   <- function(Nsims, sim_function, lik_function, result,
 
   }
 }
+
+#' Determines if the environment is Travis CI
+#' @return TRUE if run on Travis CI, FALSE otherwise
+#' @author Richel J.C. Bilderbeek
+#' @export
+is_on_travis <- function() {
+  Sys.getenv("TRAVIS") != ""
+}
