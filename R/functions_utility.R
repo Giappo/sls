@@ -89,7 +89,7 @@ get_std                    <- function(oks){
     N    <- expos,
     stds <- log10( sds[-which(is.na(sds))] )
   ); colnames(d.f) <- c("N","std")
-  std_fit = lm(stds ~ N, data = d.f)
+  std_fit = stats::lm(stds ~ N, data = d.f)
   x_values <- toString(10^d.f$N)
 
   ggplot2::ggplot(data = d.f, ggplot2::aes(x = N, y = stds)) + ggplot2::geom_point() + ggplot2::geom_smooth(method='lm') +

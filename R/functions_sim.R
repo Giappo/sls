@@ -9,7 +9,7 @@ sim_bd                   <- function(pars, time, N0 = 1){ #<- function(lambda, m
   while(t < tf && N > 0)
   {
     total_rate <- N * (lambda + mu)
-    deltaT <- rexp(n = 1, rate = total_rate)
+    deltaT <- stats::rexp(n = 1, rate = total_rate)
     if ((t + deltaT) < tf)
     {
       deltaN <- DDD:::sample2(c(-1,1), size = 1, replace = F, prob = c(mu,lambda))
@@ -292,7 +292,7 @@ sim_series      <- function(lambdas, mus, times){
   while(t<ti[Nregimes]){
     if (N[i] <= 0){break}
     total_rate = sum( N*(la + mu) )
-    deltaT = rexp(n = 1, rate = total_rate)
+    deltaT <- stats::rexp(n = 1, rate = total_rate)
 
     if ((t + deltaT) < ti[i]){
       regime = DDD:::sample2(r,size = 1,replace = F,
