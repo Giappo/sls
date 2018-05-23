@@ -1,6 +1,21 @@
 #' RJCB: I think this should move to the tests folder
-
+#' @param lambda speciation initiation rates
+#' @param mus extinction rates
+#' @param ti no idea
+#' @param tb no idea
+#' @param ts no idea
+#' @param tf no idea
+#' @param N0 number of lineages at some unknown time
+#' @param Nsims number of simulation
+#' @param lik_function likelihood function, can be
+#'   \code{\link{lik_custom}} or some unknown others
+#' @param sim_function simulation function (no idea what that means), can be
+#'   \code{\link{sim_custom}} or some unknown others
+#' @param input_check if one (why not TRUE?) the input is
+#'   checked (why not always?)
+#' @return no idea
 #' @export
+#' @author Giovanni Laudanno
 test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims = 100000,
                            lik_function = lik_custom, sim_function = sim_custom, input_check = 1){
 

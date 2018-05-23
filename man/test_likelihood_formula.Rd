@@ -7,6 +7,38 @@
 test_likelihood_formula(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims = 1e+05,
   lik_function = lik_custom, sim_function = sim_custom, input_check = 1)
 }
+\arguments{
+\item{mus}{extinction rates}
+
+\item{ti}{no idea}
+
+\item{tb}{no idea}
+
+\item{ts}{no idea}
+
+\item{tf}{no idea}
+
+\item{N0}{number of lineages at some unknown time}
+
+\item{Nsims}{number of simulation}
+
+\item{lik_function}{likelihood function, can be
+\code{\link{lik_custom}} or some unknown others}
+
+\item{sim_function}{simulation function (no idea what that means), can be
+\code{\link{sim_custom}} or some unknown others}
+
+\item{input_check}{if one (why not TRUE?) the input is
+checked (why not always?)}
+
+\item{lambda}{speciation initiation rates}
+}
+\value{
+no idea
+}
 \description{
 RJCB: I think this should move to the tests folder
+}
+\author{
+Giovanni Laudanno
 }
