@@ -51,6 +51,10 @@ test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims
     return(list(lik_res = lik_result, sim_res = sim_result, sim_std = sim_std, spread = spread, results.table = results.table, sheet_name = sheet_name, figure.error_bars = figure.error_bars, ok_vec = ok))
 }
 
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 test_likelihood_formula2 <- function(Nsims, dataset, lik_function = lik_custom, sim_function = sim_custom){
   lambdas <- unlist(dataset$lambdas)

@@ -1,4 +1,8 @@
 #basic sim function
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_bd                   <- function(pars, time, N0 = 1){ #<- function(lambda, mu, ti, tf, N0 = 1){
 
@@ -24,6 +28,10 @@ sim_bd                   <- function(pars, time, N0 = 1){ #<- function(lambda, m
 }
 
 #sim modules lvl 1
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_produce_bad_lineages <- function(lineages){
   #define bad_lineages aka the output to return if something goes wrong
@@ -37,6 +45,10 @@ sim_produce_bad_lineages <- function(lineages){
   }
   return(bad_lineages)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_get_ids              <- function(lineages){
   #get lineages ids
@@ -49,6 +61,10 @@ sim_get_ids              <- function(lineages){
   }
   return(ids)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_get_changing_lineage <- function(lineages, ids, changing_id){
   #determine which lineage is going to branch
@@ -73,6 +89,10 @@ sim_get_changing_lineage <- function(lineages, ids, changing_id){
   }
   return(branching_lineage)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_make_branching       <- function(lineages, branching_lineage, ids){
 
@@ -85,6 +105,10 @@ sim_make_branching       <- function(lineages, branching_lineage, ids){
   lineages <- sim_tidy_up_lineages(lineages)
   return(lineages)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_make_shifting        <- function(lineages, shifting_lineage, ids, new_pars){
 
@@ -112,6 +136,10 @@ sim_make_shifting        <- function(lineages, shifting_lineage, ids, new_pars){
 }
 
 #sim modules lvl 2
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_event_branching      <- function(lineages, branching_id){
 
@@ -135,6 +163,10 @@ sim_event_branching      <- function(lineages, branching_id){
 
   return(lineages)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_event_shift          <- function(lineages, shifting_id, new_pars){
 
@@ -158,6 +190,10 @@ sim_event_shift          <- function(lineages, shifting_id, new_pars){
 
   return(lineages)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_evolve_lineages      <- function(lineages, time_before_next_event){
 
@@ -182,6 +218,10 @@ sim_evolve_lineages      <- function(lineages, time_before_next_event){
   lineages <- sim_tidy_up_lineages(lineages)
   return(lineages)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_check_ok_condition   <- function(lineages, Ntips){
   ok_dead <- 0; ok_survivors <- 0; ok_correct_number_of_tips <- 0
@@ -208,6 +248,10 @@ sim_check_ok_condition   <- function(lineages, Ntips){
   ok <- ok_survivors * ok_dead * ok_correct_number_of_tips
   return(ok)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_tidy_up_lineages     <- function(lineages){
 
@@ -280,6 +324,10 @@ sim_custom               <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input
 
 #specific case sims
 #full sims
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_series      <- function(lambdas, mus, times){
   Nregimes <- length(lambdas)
@@ -320,6 +368,10 @@ sim_series      <- function(lambdas, mus, times){
   )
   return(ok)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_R_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
   if (input_check == TRUE)
@@ -359,6 +411,10 @@ sim_R_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = 
 
   return(list(ok = ok, total1 = total1, total2 = total2))
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_B_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
   if (input_check == TRUE)

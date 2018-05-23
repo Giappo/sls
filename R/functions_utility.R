@@ -1,5 +1,9 @@
 # library("testit"); library("DDD"); library("xlsx"); library(MASS)
 # general utility functions
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 check_input_data_coherence <- function(lambdas, mus, ti, tf, tb, ts, N0){
 
@@ -35,6 +39,10 @@ check_input_data_coherence <- function(lambdas, mus, ti, tf, tb, ts, N0){
   }
   return(coherent)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 sim_check_id_presence      <- function(lineages, id){
   ok <- 0
@@ -48,6 +56,10 @@ sim_check_id_presence      <- function(lineages, id){
   if (id == 0){ok <- 1} #this happens only at the end
   return(ok)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 arrange_times_matrix       <- function(ti, tb, ts, tf){
   ts2  <- ts; if (!is.null(ncol(ts))){ts2 <- -ts}
@@ -57,6 +69,10 @@ arrange_times_matrix       <- function(ti, tb, ts, tf){
 
   return(times_matrix)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 shuffle                    <- function(oks, N){
   Nmax <- floor(log10(length(oks)))
@@ -69,6 +85,10 @@ shuffle                    <- function(oks, N){
   medie <- unlist(lapply(X = subsets, FUN = mean))
   return(medie)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 get_std                    <- function(oks){
   oks1 <- oks
@@ -100,6 +120,10 @@ get_std                    <- function(oks){
 
   return(list(std_max = std_max, stds = sds, means = means))
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 get_std2                   <- function(oks, lik_result, sim_result){
   repetitions <- 5
@@ -130,6 +154,10 @@ get_std2                   <- function(oks, lik_result, sim_result){
 
   return(list(std_max = sim_std, figure.error_bars = figure))
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 check_number_of_species    <- function(lineages){
   ok <- 0
@@ -146,6 +174,10 @@ check_number_of_species    <- function(lineages){
   }
   return(ok)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 export_results_to_xls      <- function(Nsims, sim_function, lik_function, result, sample_threshold = 100000){
   if (Nsims >= sample_threshold && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
@@ -175,8 +207,13 @@ export_results_to_xls      <- function(Nsims, sim_function, lik_function, result
     # saveWorkbook(wb, "r-xlsx-report-example.xlsx")
   }
 }
-install.packages(r2excel)
-export_results_to_xls      <- function(Nsims, sim_function, lik_function, result, sample_threshold = 100000){
+#install.packages(r2excel)
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+export_results_to_xls_2   <- function(Nsims, sim_function, lik_function, result, sample_threshold = 100000){
   if (Nsims >= sample_threshold && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
   {
     results_file      <- paste0(getwd(),"//results//table2.xlsx")

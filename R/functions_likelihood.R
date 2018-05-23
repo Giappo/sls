@@ -1,4 +1,8 @@
 #basic functions
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 lik_pt  <- function (lambda, mu, time){
   Lambda <- exp((mu-lambda)*(time))
@@ -6,6 +10,10 @@ lik_pt  <- function (lambda, mu, time){
     (lambda!=mu)*( (lambda-mu)/(lambda-mu*Lambda*(lambda!=mu)) )
   return(out)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 lik_ut  <- function (lambda, mu, time){
   Lambda <- exp((mu-lambda)*(time))
@@ -13,11 +21,19 @@ lik_ut  <- function (lambda, mu, time){
     (lambda!=mu)*( (lambda - lambda*Lambda) / (lambda - mu*Lambda*(lambda!=mu)) )
   return(out)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 lik_Pi  <- function (lambda, mu, time){
   out <- lik_pt(lambda = lambda, mu = mu, time = time)*(1-lik_ut(lambda = lambda, mu = mu, time = time))
   return(out)
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 lik_Pix <- function (lambdas, mus, times){
   N  <- length(lambdas)
@@ -34,6 +50,10 @@ lik_Pix <- function (lambdas, mus, times){
 }
 
 #likelihoods
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
 #' @export
 lik_single_event <- function(lambda, mu, time1, time2){ #if squared describes the linkage between two consecutives full lines, if its exponent is one it describes instead a single-lineage shift.
 
@@ -46,7 +66,9 @@ lik_single_event <- function(lambda, mu, time1, time2){ #if squared describes th
 } #basic denominator likelihood module. if squared yields branching contribution
 
 #' Custom likelihood equation (for lack of better words)
+#' Does something
 #' @inheritParams default_params_doc
+#' @return result
 #' @export
 lik_custom       <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
 

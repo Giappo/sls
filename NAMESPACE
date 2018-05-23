@@ -2,6 +2,9 @@
 
 export(arrange_times_matrix)
 export(check_input_data_coherence)
+export(check_number_of_species)
+export(export_results_to_xls)
+export(export_results_to_xls_2)
 export(get_std)
 export(get_std2)
 export(lik_Pi)
