@@ -228,6 +228,7 @@ sim_tidy_up_lineages     <- function(lineages){
 }
 
 #' Main simulation
+#' @inheritParams default_params_doc
 #' @export
 sim_custom               <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
 

@@ -6,6 +6,24 @@
 \usage{
 lik_custom(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1)
 }
+\arguments{
+\item{lambdas}{speciation initiation rates}
+
+\item{mus}{extinction rates}
+
+\item{ti}{no idea}
+
+\item{tf}{no idea}
+
+\item{tb}{no idea}
+
+\item{ts}{no idea}
+
+\item{N0}{number of lineages at some unknown time}
+
+\item{input_check}{if one (why not TRUE?) the input is
+checked (why not always?)}
+}
 \description{
 Custom likelihood equation (for lack of better words)
 }

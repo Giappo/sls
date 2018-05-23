@@ -6,6 +6,24 @@
 \usage{
 sim_custom(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE)
 }
+\arguments{
+\item{lambdas}{speciation initiation rates}
+
+\item{mus}{extinction rates}
+
+\item{ti}{no idea}
+
+\item{tb}{no idea}
+
+\item{ts}{no idea}
+
+\item{tf}{no idea}
+
+\item{N0}{number of lineages at some unknown time}
+
+\item{input_check}{if one (why not TRUE?) the input is
+checked (why not always?)}
+}
 \description{
 Main simulation
 }
