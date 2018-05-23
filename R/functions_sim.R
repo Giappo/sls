@@ -16,7 +16,7 @@ sim_bd                   <- function(pars, time, N0 = 1){ #<- function(lambda, m
     deltaT <- stats::rexp(n = 1, rate = total_rate)
     if ((t + deltaT) < tf)
     {
-      deltaN <- DDD:::sample2(c(-1,1), size = 1, replace = F, prob = c(mu, lambda))
+      deltaN <- DDD::sample2(c(-1,1), size = 1, replace = F, prob = c(mu, lambda))
       N <- N + deltaN
       t <- t + deltaT
     }else
@@ -344,10 +344,10 @@ sim_series      <- function(lambdas, mus, times){
     deltaT <- stats::rexp(n = 1, rate = total_rate)
 
     if ((t + deltaT) < ti[i]){
-      regime = DDD:::sample2(r,size = 1,replace = F,
+      regime <- DDD::sample2(r,size = 1,replace = F,
                              prob = ( N[r]*(la[r] + mu[r]) )
       )
-      deltaN = DDD:::sample2(c(-1,1),size = 1,replace = F,
+      deltaN <- DDD::sample2(c(-1,1),size = 1,replace = F,
                              prob = c(mu[regime],la[regime])
       )
       N[regime] = N[regime] + deltaN
@@ -394,7 +394,7 @@ sim_R_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = 
     Nb2 <- sim_bd(pars = pars[[1]], time = B  , N0 = Nb2)
     arrived_at_shift = (Nb1 > 0) * (Nb2 > 0)
     if (arrived_at_shift == 1){
-      shifted <- DDD:::sample2(x = c(1,2), size = 1, replace = T, prob = c(Nb1, Nb2))
+      shifted <- DDD::sample2(x = c(1,2), size = 1, replace = T, prob = c(Nb1, Nb2))
       Nb1 <- Nb1 - (shifted==1)
       Nb2 <- Nb2 - (shifted==2)
       Nc  <- 1

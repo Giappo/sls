@@ -130,7 +130,7 @@ get_std2                   <- function(oks, lik_result, sim_result){
   sim_errors <- rep(NA, repetitions)
   stds_vs_n <- means_vs_n <- vector("list", repetitions)
   for (jj in 1:repetitions){
-    temp <- sls:::get_std(oks)
+    temp <- sls::get_std(oks)
     sim_errors[jj]   <- temp$std_max
     means_vs_n[[jj]] <- temp$means
     stds_vs_n[[jj]]  <- temp$stds
@@ -186,20 +186,20 @@ export_results_to_xls      <- function(Nsims, sim_function, lik_function, result
     figure_name       <- paste0(getwd(),"//results//figura_errori.png")
     figure.error_bars <- result$figure.error_bars
     sheet             <- xlsx::createSheet(results_file, sheetName = result$sheet_name)
-    xlsx:::write.xlsx(x = result$results.table, file = results_file, sheetName = sheet, append = TRUE)
-    # xlsx:::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
+    xlsx::write.xlsx(x = result$results.table, file = results_file, sheetName = sheet, append = TRUE)
+    # xlsx::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
 
     # create a png plot
-    png(figure_name, height=800, width=800, res=250, pointsize=8)
+    grDevices::png(figure_name, height=800, width=800, res=250, pointsize=8)
     figure.error_bars
-    dev.off()
+    grDevices::dev.off()
     # Create a new sheet to contain the plot
     # sheet <-createSheet(wb, sheetName = "boxplot")
     # Add title
     # xlsx.addTitle(sheet, rowIndex=1, title="Error as function of sample size",
     #               titleStyle = TITLE_STYLE)
     # Add the plot created previously
-    xlsx:::addPicture(file = figure_name, sheet = sheet, scale = 1, startRow = 13, startColumn = 1)
+    xlsx::addPicture(file = figure_name, sheet = sheet, scale = 1, startRow = 13, startColumn = 1)
     # remove the plot from the disk
     res <- file.remove(figure_name)
     # Save the workbook to a file...
@@ -226,9 +226,9 @@ export_results_to_xls_2   <- function(Nsims, sim_function, lik_function, result,
     sheet <- xlsx::createSheet(wb, result$sheet_name)
     d.f   <- as.data.frame(result$results.table)
 
-    png(figure_name, height=1000, width=1000, res=300, pointsize=8)
+    grDevices::png(figure_name, height=1000, width=1000, res=300, pointsize=8)
     figure.error_bars
-    dev.off()
+    grDevices::dev.off()
 
     startRow = nrow(result$results.table) + 2
     xlsx::addPicture(file = figure_name, sheet = sheet, scale = 1, startRow = startRow,

@@ -10,9 +10,9 @@ test_result1 <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims, lik_funct
 if (Nsims >= 100000 && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
 {
   results_file <- paste0(getwd(),"//results//table.xls")
-  xlsx:::write.xlsx(x = test_result1$results.table, file = results_file, sheetName = test_result1$sheet_name, append = TRUE)
+  xlsx::write.xlsx(x = test_result1$results.table, file = results_file, sheetName = test_result1$sheet_name, append = TRUE)
 
-  # xlsx:::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
+  # xlsx::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
 }
 
 # d.s <- dataset_pure_branching2
@@ -21,14 +21,14 @@ if (Nsims >= 100000 && all.equal(sim_function, sim_custom) && all.equal(lik_func
 # if (Nsims >= 100000 && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
 # {
 #   results_file <- paste0(getwd(),"//results//table.xls")
-#   xlsx:::write.xlsx(x = test_result2$results.table, file = results_file, sheetName = test_result2$sheet_name, append = TRUE)
-#   # xlsx:::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
+#   xlsx::write.xlsx(x = test_result2$results.table, file = results_file, sheetName = test_result2$sheet_name, append = TRUE)
+#   # xlsx::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
 # }
 
 # file <- system.file("tests", "log_plot.jpeg", package = "xlsx")
 # file <- "accuracy_vs_samplesize.png"
-# # wb <- xlsx:::createWorkbook()
+# # wb <- xlsx::createWorkbook()
 # wb <- results_file
-# xlsx:::getSheets(wb)
+# xlsx::getSheets(wb)
 # sheet <- createSheet(wb, test_result$sheet_name)
 # addPicture(file, sheet)

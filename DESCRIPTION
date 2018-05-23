@@ -12,6 +12,6 @@ LazyData: true
 Suggests: testthat,
     knitr,
     rmarkdown
-Imports: DDD, testit, MASS, ggplot2
+Imports: DDD, testit, MASS, ggplot2, xlsx
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
