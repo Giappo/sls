@@ -118,6 +118,7 @@ get_std2                   <- function(oks, lik_result, sim_result){
   mean_vs_n <- c(mean_vs_n, sim_result)
   std_vs_n  <- c(std_vs_n , sim_std   )
 
+  sd <- NULL; rm(sd) # nolint, fixes warning: no visible binding for global variable
   para2 <- data.frame( mean = mean_vs_n[-1], sd = std_vs_n[-1] )
 
   figure <- ggplot2::ggplot(para2, ggplot2::aes(y = mean, x = xx )) +

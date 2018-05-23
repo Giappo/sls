@@ -8,6 +8,8 @@ test_likelihood_formula(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims = 1e+05,
   lik_function = lik_custom, sim_function = sim_custom, input_check = 1)
 }
 \arguments{
+\item{lambdas}{speciation initiation rates}
+
 \item{mus}{extinction rates}
 
 \item{ti}{no idea}
@@ -30,8 +32,6 @@ test_likelihood_formula(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims = 1e+05,
 
 \item{input_check}{if one (why not TRUE?) the input is
 checked (why not always?)}
-
-\item{lambda}{speciation initiation rates}
 }
 \value{
 no idea

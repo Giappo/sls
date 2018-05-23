@@ -44,6 +44,8 @@ lik_single_event <- function(lambda, mu, time1, time2){ #if squared describes th
 
   return(lik)
 } #basic denominator likelihood module. if squared yields branching contribution
+
+#' Custom likelihood equation (for lack of better words)
 #' @export
 lik_custom       <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
 

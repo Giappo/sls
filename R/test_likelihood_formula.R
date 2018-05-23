@@ -1,5 +1,5 @@
 #' RJCB: I think this should move to the tests folder
-#' @param lambda speciation initiation rates
+#' @param lambdas speciation initiation rates
 #' @param mus extinction rates
 #' @param ti no idea
 #' @param tb no idea
