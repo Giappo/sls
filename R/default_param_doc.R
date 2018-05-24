@@ -28,7 +28,27 @@ default_params_doc <- function(
   Nsims,
   lik_function,
   sim_function,
-  input_check
+  input_check,
+  dataset,
+  sample_threshold,
+  oks,
+  lik_result,
+  sim_result,
+  lambda,
+  mu,
+  times,
+  time,
+  result,
+  lineages,
+  N,
+  id,
+  time1,
+  time2,
+  shifting_id,
+  branching_id,
+  new_pars,
+  changing_id,
+  time_before_next_event
 ) {
   # Nothing
 }

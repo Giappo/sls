@@ -41,6 +41,22 @@ tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
 ti <- ti/10; tf <- tf/10; ts[1,] <- ts[1,]/10; tb[1,] <- tb[1,]/10;
 dataset_pure_shifting2 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
 
+#pure shifting: advanced case 2
+ti <- 0; tf <- 300; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
+lambdas <- c(0.6, 0.4, 0.3, 0.2, 0.1, 0.5, 0.3, 0.1, 0.05, 0.6); mus <- c(0.3, 0.2, 0.1, 0.05, 0.02, 0.3, 0.2, 0.1, 0.05, 0.02)
+tb_when <- c(); tb_who <- c(); ts_when <- c(20, 40, 70, 90, 120, 150, 190, 210, 250); ts_who <- rep(1,length(ts_when))
+tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
+den <- 50; ti <- ti/den; tf <- tf/den; ts[1,] <- ts[1,]/den; tb[1,] <- tb[1,]/den;
+dataset_pure_shifting3 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
+
+#Fork's example
+ti <- 0; tf <- 100; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
+lambdas <- c(0.6, 0.4); mus <- c(0.3, 0.1)
+tb_when <- c(60); tb_who <- c(1); ts_when <- c(30); ts_who <- c(1)
+tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
+ti <- ti/10; tf <- tf/10; ts[1,] <- ts[1,]/10; tb[1,] <- tb[1,]/10;
+dataset_Fork <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
+
 #R's example
 ti <- 0; tf <- 100; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
 lambdas <- c(0.6, 0.4); mus <- c(0.3, 0.1)
@@ -97,4 +113,4 @@ tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
 dataset_PB <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
 
 #clean
-rm(ti,ts,tb,tf,lambdas,mus, tb_when, tb_who, ts_when, ts_who, N0)
+rm(ti,ts,tb,tf,lambdas,mus, tb_when, tb_who, ts_when, ts_who, N0, den)

@@ -6,7 +6,9 @@
 documentation.}
 \usage{
 default_params_doc(lambdas, mus, ti, tb, ts, tf, N0, Nsims, lik_function,
-  sim_function, input_check)
+  sim_function, input_check, dataset, sample_threshold, oks, lik_result,
+  sim_result, lambda, mu, times, time, result, lineages, N, id, time1, time2,
+  shifting_id, branching_id, new_pars, changing_id, time_before_next_event)
 }
 \arguments{
 \item{lambdas}{speciation initiation rates}
