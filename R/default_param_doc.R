@@ -14,6 +14,24 @@
 #'   \code{\link{sim_custom}} or some unknown others
 #' @param input_check if one (why not TRUE?) the input is
 #'   checked (why not always?)
+#' @param dataset dataset to provide to test likelihoods
+#' @param oks internal variable. do not use
+#' @param lik_result internal variable. do not use
+#' @param sim_result internal variable. do not use
+#' @param lambda internal variable. do not use
+#' @param mu internal variable. do not use
+#' @param times internal variable. do not use
+#' @param time internal variable. do not use
+#' @param result internal variable. do not use
+#' @param lineages internal variable. do not use
+#' @param N internal variable. do not use
+#' @param id internal variable. do not use
+#' @param time1 internal variable. do not use
+#' @param time2 internal variable. do not use
+#' @param shifting_id internal variable. do not use
+#' @param branching_id internal variable. do not use
+#' @param changing_id internal variable. do not use
+#' @param time_before_next_event internal variable. do not use
 #' @note This is an internal function, so it should be marked with
 #'   \code{@noRd}. This is not done, as this will disallow all
 #'   functions to find the documentation parameters
@@ -28,7 +46,27 @@ default_params_doc <- function(
   Nsims,
   lik_function,
   sim_function,
-  input_check
+  input_check,
+  dataset,
+  sample_threshold,
+  oks,
+  lik_result,
+  sim_result,
+  lambda,
+  mu,
+  times,
+  time,
+  result,
+  lineages,
+  N,
+  id,
+  time1,
+  time2,
+  shifting_id,
+  branching_id,
+  new_pars,
+  changing_id,
+  time_before_next_event
 ) {
   # Nothing
 }
