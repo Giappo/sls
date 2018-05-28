@@ -6,15 +6,4 @@ master|[![Build Status](https://travis-ci.org/Giappo/sls.svg?branch=master)](htt
 
 Macro Evolutionary Likelihood models: Single-Lineage-Shift model.
 
-```
-Dear Gio,
-
-I added some stuff.
-
-Do:
-
-cd sls
-git pull
-
-to update
-```
+Note for @richelbilderbeek: abs(spread) should be less than 1.
