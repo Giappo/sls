@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_B_example}
 \alias{sim_B_example}
-\title{Does something}
+\title{Simulates Bart example.}
 \usage{
 sim_B_example(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE)
 }
@@ -28,5 +28,5 @@ checked (why not always?)}
 result
 }
 \description{
-Does something
+Simulates Bart example.
 }

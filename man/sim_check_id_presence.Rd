@@ -6,6 +6,11 @@
 \usage{
 sim_check_id_presence(lineages, id)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{id}{internal variable. do not use}
+}
 \value{
 result
 }

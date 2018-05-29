@@ -2,13 +2,18 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_event_shift}
 \alias{sim_event_shift}
-\title{Does something}
+\title{Sim Module. Changes lineages matrix according to the rate shift event.}
 \usage{
 sim_event_shift(lineages, shifting_id, new_pars)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{shifting_id}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. Changes lineages matrix according to the rate shift event.
 }

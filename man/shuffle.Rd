@@ -6,6 +6,11 @@
 \usage{
 shuffle(oks, N)
 }
+\arguments{
+\item{oks}{internal variable. do not use}
+
+\item{N}{internal variable. do not use}
+}
 \value{
 result
 }

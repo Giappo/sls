@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_custom}
 \alias{sim_custom}
-\title{Main simulation}
+\title{Main simulation, fully customizable.}
 \usage{
 sim_custom(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE)
 }
@@ -25,5 +25,5 @@ sim_custom(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE)
 checked (why not always?)}
 }
 \description{
-Main simulation
+Main simulation, fully customizable.
 }

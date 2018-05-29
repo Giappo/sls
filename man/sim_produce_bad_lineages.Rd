@@ -2,13 +2,16 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_produce_bad_lineages}
 \alias{sim_produce_bad_lineages}
-\title{Does something}
+\title{Sim Module. It produces the outcome in case something is not coherent with visible phylogeny.}
 \usage{
 sim_produce_bad_lineages(lineages)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. It produces the outcome in case something is not coherent with visible phylogeny.
 }

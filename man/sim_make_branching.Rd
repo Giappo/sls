@@ -2,13 +2,16 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_make_branching}
 \alias{sim_make_branching}
-\title{Does something}
+\title{Sim Module. Applies the branching to the specified lineage.}
 \usage{
 sim_make_branching(lineages, branching_lineage, ids)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. Applies the branching to the specified lineage.
 }

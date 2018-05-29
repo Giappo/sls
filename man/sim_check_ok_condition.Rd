@@ -2,13 +2,16 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_check_ok_condition}
 \alias{sim_check_ok_condition}
-\title{Does something}
+\title{Sim Module. Check if the lineages matrix at the present is coherent with visible phylogeny.}
 \usage{
 sim_check_ok_condition(lineages, Ntips)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. Check if the lineages matrix at the present is coherent with visible phylogeny.
 }

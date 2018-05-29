@@ -6,6 +6,15 @@
 \usage{
 lik_single_event(lambda, mu, time1, time2)
 }
+\arguments{
+\item{lambda}{internal variable. do not use}
+
+\item{mu}{internal variable. do not use}
+
+\item{time1}{internal variable. do not use}
+
+\item{time2}{internal variable. do not use}
+}
 \value{
 result
 }

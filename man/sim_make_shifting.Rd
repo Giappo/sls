@@ -2,13 +2,16 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_make_shifting}
 \alias{sim_make_shifting}
-\title{Does something}
+\title{Sim Module. Applies the rate shift to the specified lineage.}
 \usage{
 sim_make_shifting(lineages, shifting_lineage, ids, new_pars)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. Applies the rate shift to the specified lineage.
 }

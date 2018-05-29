@@ -6,6 +6,7 @@ test_that( "Agreement between likelihood and simulations for elementary trees", 
 
   Nsims <- 1000000
 
+  load_all_data()
   sls_dataset_shift  <- get("dataset_pure_branching1")
   sls_dataset_branch <- get("dataset_pure_shifting1")
 
@@ -16,9 +17,5 @@ test_that( "Agreement between likelihood and simulations for elementary trees", 
   testthat::expect_true(
     test_likelihood_formula2(Nsims = Nsims, dataset = sls_dataset_branch)$spread <= 2
   )
-
- #  sls_data_sets_name <- ls(pattern = "dataset")
-  # sls_data_sets <- vector("list",length(sls_data_sets_name))
-  # sls_data_sets[[i]] <- get(sls_data_sets_name)
 
 })

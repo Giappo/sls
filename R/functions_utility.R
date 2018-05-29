@@ -62,7 +62,7 @@ sim_check_id_presence      <- function(lineages, id){
 #' @return result
 #' @export
 arrange_times_matrix       <- function(ti, tb, ts, tf){
-  ts2  <- ts; if (!is.null(ncol(ts))){ts2 <- -ts}
+  ts2  <- ts; if (!is.null(ncol(ts))){ts2 <- -abs(ts)}
   times_matrix  <- cbind(c(ti,0), cbind(ts2, tb), c(tf,0)); times_matrix <- times_matrix[,order(abs(times_matrix[1,]))]; times_matrix[1,] <- abs(times_matrix[1,])
   nshifts <- 0; if(!is.null(ncol(ts))){nshifts <- ncol(ts)}; testit::assert(sum(times_matrix < 0) == nshifts)
   rownames(times_matrix) <- c("when", "who")
@@ -249,3 +249,117 @@ export_results_to_xls_2   <- function(Nsims, sim_function, lik_function, result,
 is_on_travis <- function() {
   Sys.getenv("TRAVIS") != ""
 }
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+split_times_matrix <- function(times_matrix, N0 = 1){
+
+  # ###
+  # ti <- d.s$ti; tb <- d.s$tb; ts <- d.s$ts; tf <- d.s$tf; N0 <- 1
+  # times_matrix <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+  # ###
+
+  #determine rates
+  # tb <- cbind(times_matrix[1:2, which(sign(times_matrix[,2])>0)])
+  tb <- times_matrix2t_coordinates(times_matrix = times_matrix)$tb
+  ti <- times_matrix2t_coordinates(times_matrix = times_matrix)$ti
+  nbranches <- 0; if(!is.null(ncol(tb))){nbranches <- ncol(tb)};
+  Ntips <- N0 + nbranches; r <- rep(regime <- 1, Ntips); n <- N0
+  rr <- vector("list", ncol(times_matrix)); rr[[1]] <- r
+  for (t in 2:ncol(times_matrix))
+  {
+    upds <- update_regimes(t = t, regime = regime, times_matrix = times_matrix, r = r, n = n)
+    rr[[t]] <- r <- upds$r
+    regime  <- upds$regime
+    n = n + (sign(times_matrix[2,t])==1)
+  }
+  rrr <- matrix(unlist(rr), nrow = Ntips)
+  times_matrix1 <- rbind(times_matrix, rrr);
+
+  #TM is the list of splitted matrices
+  TM <- vector("list",Ntips)
+  tb_positions <- c(which(c(ti, tb[1,]) %in% times_matrix1[1,]))
+  for (i in 1:Ntips)
+  {
+    TM[[i]] <- times_matrix1[c(1,2,2+i),c(tb_positions[i], which(times_matrix1[2,]==-i), ncol(times_matrix1))]
+    TM[[i]][2,1] <- 0
+    TM[[i]][3,ncol(TM[[i]])] <- 0
+    rownames(TM[[i]])[3] <- "regime"
+  };TM
+  return(TM)
+}
+
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+update_regimes <- function(t, regime, times_matrix, r, n, N0 = 1){
+
+  # nbranches <- 0; if(!is.null(ncol(tb))){nbranches <- ncol(tb)};
+
+  Ntips <- N0 + sum(sign(times_matrix[2,])>0)
+
+  if (sign(times_matrix[2,t])!=-1){return(list(r = r, regime = regime))}
+  ttb <- times_matrix[2,sign(times_matrix[2,]) == +1]
+  fathers <- unname( c(rep(0, N0), ttb) ); sons <- 1:Ntips
+  regime <- regime + 1
+  who_shifts <- abs(times_matrix[2,t])
+  r[who_shifts] <- regime
+  future <- (Ntips > (n)) * ((n+1):Ntips)
+
+  who_shifts_cascade3 <- NULL
+  who_shifts_cascade  <- who_shifts
+  who_shifts_cascade2 <- sons[which(fathers %in% who_shifts_cascade)]
+  who_shifts_cascade3 <- unique(c(who_shifts_cascade, who_shifts_cascade2))
+  who_shifts_cascade3 <- intersect(who_shifts_cascade3, future); who_shifts_cascade3
+  while ( prod(all.equal(who_shifts_cascade, who_shifts_cascade3) != 1) )
+  {
+    who_shifts_cascade  <- who_shifts_cascade3
+    who_shifts_cascade2 <- sons[which(fathers %in% who_shifts_cascade)]
+    who_shifts_cascade3 <- unique(c(who_shifts_cascade, who_shifts_cascade2));
+    who_shifts_cascade3 <- intersect(who_shifts_cascade3, future); #print(who_shifts_cascade3)
+  }
+  who_shifts_cascade    <- who_shifts_cascade3; who_shifts_cascade
+  r[who_shifts_cascade] <- r[who_shifts]
+  return(list(r = r, regime = regime))
+}
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+times_matrix2t_coordinates <- function(times_matrix){
+  ti <- unname(times_matrix[1,1])
+  tf <- unname(times_matrix[1, ncol(times_matrix)])
+  tb <- cbind(times_matrix[,which(times_matrix[2,] > 0)])     ; if(!is.null(tb)){rownames(tb) <- c("tb_when","tb_who")}
+  ts <- abs(cbind(times_matrix[,which(times_matrix[2,] < 0)])); if(!is.null(ts)){rownames(ts) <- c("ts_when","ts_who")}
+  if (sum(ts) == 0 && prod(ts) == 1){ts = NULL}
+  if (sum(tb) == 0 && prod(tb) == 1){tb = NULL}
+  # ts_i <- cbind((times_matrix[1:2, -c(1,ncol(times_matrix))]))
+  return(list(ti = ti, tf = tf, ts = ts, tb = tb))
+}
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+variable_name2string <- function(v1){
+  deparse(substitute(v1))
+}
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+load_all_data <- function(){
+  d <- data(package = "sls")
+  d$results[, "Item"]
+  nm <- d$results[, "Item"]
+  data(list = nm, package = "sls")
+}
+
+
+

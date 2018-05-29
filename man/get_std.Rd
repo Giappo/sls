@@ -6,6 +6,9 @@
 \usage{
 get_std(oks)
 }
+\arguments{
+\item{oks}{internal variable. do not use}
+}
 \value{
 result
 }

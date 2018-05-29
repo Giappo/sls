@@ -29,7 +29,7 @@ sim_bd                   <- function(pars, time, N0 = 1){ #<- function(lambda, m
 
 #sim modules lvl 1
 
-#' Does something
+#' Sim Module. It produces the outcome in case something is not coherent with visible phylogeny.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -46,7 +46,7 @@ sim_produce_bad_lineages <- function(lineages){
   return(bad_lineages)
 }
 
-#' Does something
+#' Sim Module. It gets the ids from the lineages matrix.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -62,7 +62,7 @@ sim_get_ids              <- function(lineages){
   return(ids)
 }
 
-#' Does something
+#' Sim Module. Identifies which lineage is undergoing a change (either branching or shift).
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -90,7 +90,7 @@ sim_get_changing_lineage <- function(lineages, ids, changing_id){
   return(branching_lineage)
 }
 
-#' Does something
+#' Sim Module. Applies the branching to the specified lineage.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -106,7 +106,7 @@ sim_make_branching       <- function(lineages, branching_lineage, ids){
   return(lineages)
 }
 
-#' Does something
+#' Sim Module. Applies the rate shift to the specified lineage.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -137,7 +137,7 @@ sim_make_shifting        <- function(lineages, shifting_lineage, ids, new_pars){
 
 #sim modules lvl 2
 
-#' Does something
+#' Sim Module. Changes lineages matrix according to the branching event.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -164,7 +164,7 @@ sim_event_branching      <- function(lineages, branching_id){
   return(lineages)
 }
 
-#' Does something
+#' Sim Module. Changes lineages matrix according to the rate shift event.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -191,7 +191,7 @@ sim_event_shift          <- function(lineages, shifting_id, new_pars){
   return(lineages)
 }
 
-#' Does something
+#' Sim Module. Changes lineages matrix evolving each lineage according to its rates.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -219,7 +219,7 @@ sim_evolve_lineages      <- function(lineages, time_before_next_event){
   return(lineages)
 }
 
-#' Does something
+#' Sim Module. Check if the lineages matrix at the present is coherent with visible phylogeny.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -249,7 +249,7 @@ sim_check_ok_condition   <- function(lineages, Ntips){
   return(ok)
 }
 
-#' Does something
+#' Sim Module. Tidies up the lineages matrix.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -271,7 +271,7 @@ sim_tidy_up_lineages     <- function(lineages){
   return(lineages)
 }
 
-#' Main simulation
+#' Main simulation, fully customizable.
 #' @inheritParams default_params_doc
 #' @export
 sim_custom               <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
@@ -325,7 +325,7 @@ sim_custom               <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input
 #specific case sims
 #full sims
 
-#' Does something
+#' Simulates a one lineage with multiple rate shifts process.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -369,7 +369,7 @@ sim_series      <- function(lambdas, mus, times){
   return(ok)
 }
 
-#' Does something
+#' Simulates Rampal example.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -412,7 +412,7 @@ sim_R_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = 
   return(list(ok = ok, total1 = total1, total2 = total2))
 }
 
-#' Does something
+#' Simulates Bart example.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export

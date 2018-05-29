@@ -2,13 +2,16 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_tidy_up_lineages}
 \alias{sim_tidy_up_lineages}
-\title{Does something}
+\title{Sim Module. Tidies up the lineages matrix.}
 \usage{
 sim_tidy_up_lineages(lineages)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. Tidies up the lineages matrix.
 }

@@ -2,13 +2,18 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_get_changing_lineage}
 \alias{sim_get_changing_lineage}
-\title{Does something}
+\title{Sim Module. Identifies which lineage is undergoing a change (either branching or shift).}
 \usage{
 sim_get_changing_lineage(lineages, ids, changing_id)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{changing_id}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. Identifies which lineage is undergoing a change (either branching or shift).
 }

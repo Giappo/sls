@@ -2,13 +2,16 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_get_ids}
 \alias{sim_get_ids}
-\title{Does something}
+\title{Sim Module. It gets the ids from the lineages matrix.}
 \usage{
 sim_get_ids(lineages)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. It gets the ids from the lineages matrix.
 }

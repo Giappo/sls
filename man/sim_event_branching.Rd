@@ -2,13 +2,18 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_event_branching}
 \alias{sim_event_branching}
-\title{Does something}
+\title{Sim Module. Changes lineages matrix according to the branching event.}
 \usage{
 sim_event_branching(lineages, branching_id)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{branching_id}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. Changes lineages matrix according to the branching event.
 }

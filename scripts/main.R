@@ -1,12 +1,13 @@
 rm(list = ls())
 library(sls)
-source(paste0(getwd(),"//R//datasets.R"))
-sim_function = sim_custom; lik_function = lik_custom
-Nsims <- 1000000 # Nsims <- 10000000
-
+load_all_data()
 d.s <- dataset_pure_branching3
+sim_function = sim_custom; lik_function = lik_custom
+Nsims <- 100 # Nsims <- 10000000
+
 #the aim is to get "lik_result" equal to "sim_result" for an high enough number of simulations
 test_result1 <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims, lik_function = lik_function, sim_function = sim_function); print(test_result1$results.table)
+test_result2 <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims, lik_function = lik_custom_split, sim_function = sim_function); print(test_result2$results.table)
 if (Nsims >= 100000 && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
 {
   results_file <- paste0(getwd(),"//results//table.xls")

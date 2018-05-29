@@ -2,13 +2,18 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_evolve_lineages}
 \alias{sim_evolve_lineages}
-\title{Does something}
+\title{Sim Module. Changes lineages matrix evolving each lineage according to its rates.}
 \usage{
 sim_evolve_lineages(lineages, time_before_next_event)
+}
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{time_before_next_event}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Sim Module. Changes lineages matrix evolving each lineage according to its rates.
 }

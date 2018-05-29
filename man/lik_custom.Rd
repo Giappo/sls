@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions_likelihood.R
 \name{lik_custom}
 \alias{lik_custom}
-\title{Custom likelihood equation (for lack of better words)
+\title{Custom likelihood function.
 Does something}
 \usage{
 lik_custom(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1)
@@ -29,6 +29,6 @@ checked (why not always?)}
 result
 }
 \description{
-Custom likelihood equation (for lack of better words)
+Custom likelihood function.
 Does something
 }

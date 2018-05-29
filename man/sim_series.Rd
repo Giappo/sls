@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_series}
 \alias{sim_series}
-\title{Does something}
+\title{Simulates a one lineage with multiple rate shifts process.}
 \usage{
 sim_series(lambdas, mus, times)
 }
@@ -10,10 +10,12 @@ sim_series(lambdas, mus, times)
 \item{lambdas}{speciation initiation rates}
 
 \item{mus}{extinction rates}
+
+\item{times}{internal variable. do not use}
 }
 \value{
 result
 }
 \description{
-Does something
+Simulates a one lineage with multiple rate shifts process.
 }

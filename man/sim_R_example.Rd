@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions_sim.R
 \name{sim_R_example}
 \alias{sim_R_example}
-\title{Does something}
+\title{Simulates Rampal example.}
 \usage{
 sim_R_example(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE)
 }
@@ -28,5 +28,5 @@ checked (why not always?)}
 result
 }
 \description{
-Does something
+Simulates Rampal example.
 }
