@@ -6,6 +6,11 @@
 \usage{
 sim_event_shift(lineages, shifting_id, new_pars)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{shifting_id}{internal variable. do not use}
+}
 \value{
 result
 }

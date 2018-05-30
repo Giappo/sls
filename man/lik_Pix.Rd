@@ -10,6 +10,8 @@ lik_Pix(lambdas, mus, times)
 \item{lambdas}{speciation initiation rates}
 
 \item{mus}{extinction rates}
+
+\item{times}{internal variable. do not use}
 }
 \value{
 result

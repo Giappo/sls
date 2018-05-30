@@ -7,6 +7,8 @@
 sim_bd(pars, time, N0 = 1)
 }
 \arguments{
+\item{time}{internal variable. do not use}
+
 \item{N0}{number of lineages at some unknown time}
 }
 \value{

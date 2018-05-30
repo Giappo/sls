@@ -6,6 +6,9 @@
 \usage{
 sim_produce_bad_lineages(lineages)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+}
 \value{
 result
 }

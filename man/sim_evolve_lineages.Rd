@@ -6,6 +6,11 @@
 \usage{
 sim_evolve_lineages(lineages, time_before_next_event)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{time_before_next_event}{internal variable. do not use}
+}
 \value{
 result
 }

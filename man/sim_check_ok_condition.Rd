@@ -6,6 +6,9 @@
 \usage{
 sim_check_ok_condition(lineages, Ntips)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+}
 \value{
 result
 }

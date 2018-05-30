@@ -6,6 +6,13 @@
 \usage{
 get_std2(oks, lik_result, sim_result)
 }
+\arguments{
+\item{oks}{internal variable. do not use}
+
+\item{lik_result}{internal variable. do not use}
+
+\item{sim_result}{internal variable. do not use}
+}
 \value{
 result
 }

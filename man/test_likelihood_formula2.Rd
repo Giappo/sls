@@ -10,6 +10,8 @@ test_likelihood_formula2(Nsims, dataset, lik_function = lik_custom,
 \arguments{
 \item{Nsims}{number of simulation}
 
+\item{dataset}{dataset to provide to test likelihoods}
+
 \item{lik_function}{likelihood function, can be
 \code{\link{lik_custom}} or some unknown others}
 

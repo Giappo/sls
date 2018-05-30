@@ -6,6 +6,9 @@
 \usage{
 sim_tidy_up_lineages(lineages)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+}
 \value{
 result
 }

@@ -15,6 +15,8 @@ export_results_to_xls(Nsims, sim_function, lik_function, result,
 
 \item{lik_function}{likelihood function, can be
 \code{\link{lik_custom}} or some unknown others}
+
+\item{result}{internal variable. do not use}
 }
 \value{
 result

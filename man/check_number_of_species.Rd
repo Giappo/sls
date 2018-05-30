@@ -6,6 +6,9 @@
 \usage{
 check_number_of_species(lineages)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+}
 \value{
 result
 }

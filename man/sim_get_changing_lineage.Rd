@@ -6,6 +6,11 @@
 \usage{
 sim_get_changing_lineage(lineages, ids, changing_id)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{changing_id}{internal variable. do not use}
+}
 \value{
 result
 }

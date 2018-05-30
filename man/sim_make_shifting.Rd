@@ -6,6 +6,9 @@
 \usage{
 sim_make_shifting(lineages, shifting_lineage, ids, new_pars)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+}
 \value{
 result
 }

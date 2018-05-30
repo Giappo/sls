@@ -6,6 +6,9 @@
 \usage{
 sim_make_branching(lineages, branching_lineage, ids)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+}
 \value{
 result
 }

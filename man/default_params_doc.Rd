@@ -35,6 +35,42 @@ default_params_doc(lambdas, mus, ti, tb, ts, tf, N0, Nsims, lik_function,
 
 \item{input_check}{if one (why not TRUE?) the input is
 checked (why not always?)}
+
+\item{dataset}{dataset to provide to test likelihoods}
+
+\item{oks}{internal variable. do not use}
+
+\item{lik_result}{internal variable. do not use}
+
+\item{sim_result}{internal variable. do not use}
+
+\item{lambda}{internal variable. do not use}
+
+\item{mu}{internal variable. do not use}
+
+\item{times}{internal variable. do not use}
+
+\item{time}{internal variable. do not use}
+
+\item{result}{internal variable. do not use}
+
+\item{lineages}{internal variable. do not use}
+
+\item{N}{internal variable. do not use}
+
+\item{id}{internal variable. do not use}
+
+\item{time1}{internal variable. do not use}
+
+\item{time2}{internal variable. do not use}
+
+\item{shifting_id}{internal variable. do not use}
+
+\item{branching_id}{internal variable. do not use}
+
+\item{changing_id}{internal variable. do not use}
+
+\item{time_before_next_event}{internal variable. do not use}
 }
 \description{
 This function does nothing. It is intended to inherit is parameters'

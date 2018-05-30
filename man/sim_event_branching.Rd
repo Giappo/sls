@@ -6,6 +6,11 @@
 \usage{
 sim_event_branching(lineages, branching_id)
 }
+\arguments{
+\item{lineages}{internal variable. do not use}
+
+\item{branching_id}{internal variable. do not use}
+}
 \value{
 result
 }
