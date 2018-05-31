@@ -1,4 +1,4 @@
-#basic functions
+#BASIC FUNCTIONS
 
 #' Does something
 #' @inheritParams default_params_doc
@@ -31,27 +31,9 @@ lik_Pi  <- function (lambda, mu, time){
   return(out)
 }
 
-#' Does something
-#' @inheritParams default_params_doc
-#' @return result
-#' @export
-lik_Pix <- function (lambdas, mus, times){
-  N  <- length(lambdas)
-  Ti <- cumsum((times))
-  x  <- rev(Ti[N] - sort(Ti,decreasing = T))
+#LIKELIHOODS
 
-  Pis   <- lik_Pi(lambda = lambdas[1:N], mu = mus[1:N], time = times[1:N])
-  us    <- lik_ut(lambda = lambdas[1:(N-1)], mu = mus[1:(N-1)], time = times[1:(N-1)])
-  ps    <- lik_pt(lambda = lambdas[1:(N-1)], mu = mus[1:(N-1)], time = x[1:(N-1)])
-
-  likelihood <- prod( Pis ) * ( prod( (1 - us * (1 - ps) ) ) )^-1
-
-  return(likelihood)
-}
-
-#likelihoods
-
-#' Does something
+#' Basic denominator likelihood module. If squared yields branching contribution, otherwise is shift contribution.
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
@@ -63,18 +45,27 @@ lik_single_event <- function(lambda, mu, time1, time2){ #if squared describes th
   lik <- lik^(-1)
 
   return(lik)
-} #basic denominator likelihood module. if squared yields branching contribution
+}
 
 #' Custom likelihood function.
 #' Does something
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-lik_custom      <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
-  # lik_custom      <- function(lambdas, mus, times_matrix, N0 = 1, input_check = 1){
+lik_custom      <- function(dataset, N0 = 1, input_check = 1){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  coords       <- times_matrix2t_coordinates(times_matrix = times_matrix)
+  ti           <- coords$ti
+  tb           <- coords$tb
+  ts           <- coords$ts
+  tf           <- coords$tf
+  Ntimepoints  <- ncol(times_matrix)
 
   if (input_check == 1){
-    coherent_input <- check_input_data_coherence(lambdas = lambdas, mus = mus, ti = ti, tf = tf, tb = tb, ts = ts, N0 = N0)
+    coherent_input <- check_input_data_coherence(dataset = dataset, N0 = N0)
     if (coherent_input == 0){stop("Input data are incoherent")}
   }
 
@@ -82,10 +73,9 @@ lik_custom      <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 
   if (!is.null(ncol(ts))){ rownames(ts) <- c("time", "who") }
   nbranches <- 0; if(!is.null(ncol(tb))){nbranches <- ncol(tb)};
   Ntips <-  N0 + nbranches
-  times_matrix  <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
   fathers <- unname( c(rep(0, N0), tb[2,]) ); sons <- 1:Ntips
   lik_den <- 1; r <- rep(regime <- 1, Ntips); n <- 1; t <- 2; shift <- branch <- 0
-  for (t in 2:(ncol(times_matrix) - 1))
+  for (t in 2:(Ntimepoints - 1))
   {
     shift  <- (sign(times_matrix[2,t]) < 0)
     branch <- (sign(times_matrix[2,t]) > 0)
@@ -113,7 +103,7 @@ lik_custom      <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 
   r <- rep(1, Ntips)
   shift <- branch <- 0
   regime <- 1
-  for (t in 2:ncol(times_matrix))
+  for (t in 2:Ntimepoints)
   {
     shift  <- (sign(times_matrix[2,t]) < 0)
     branch <- (sign(times_matrix[2,t]) > 0)
@@ -145,8 +135,12 @@ lik_custom      <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-lik_custom_split <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
-  times_matrix   <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+lik_custom_split <- function(dataset, N0 = 1, input_check = 1){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+
   split_matrices <- split_times_matrix(times_matrix)
   Ntips <- length(split_matrices)
   lik   <- rep(NA, Ntips)
@@ -170,9 +164,12 @@ lik_custom_split <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check =
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-lik_custom_single_lineage   <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
-  times_matrix  <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
-  Ntimepoints   <- ncol(times_matrix)
+lik_custom_single_lineage   <- function(dataset, N0 = 1, input_check = 1){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  Ntimepoints  <- ncol(times_matrix)
 
   lik_den <- 1; regime <- 1
   if (Ntimepoints > 2){
@@ -203,8 +200,12 @@ lik_custom_single_lineage   <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, in
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-lik_custom_split2 <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
-  times_matrix   <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+lik_custom_split2 <- function(dataset, N0 = 1, input_check = 1){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+
   split_matrices <- split_times_matrix(times_matrix)
   Ntips <- length(split_matrices)
   lik   <- rep(NA, Ntips)
@@ -213,7 +214,7 @@ lik_custom_split2 <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check 
     ti_i <- split_matrices[[i]][1,1]
     tf_i <- split_matrices[[i]][1, ncol(split_matrices[[i]])]
     tb_i <- NULL
-    ts_i <- cbind(split_matrices[[i]][1:2, -c(1,ncol(split_matrices[[i]]))])
+    ts_i <- cbind(split_matrices[[i]][1:2, -c(1, ncol(split_matrices[[i]]))])
     ts_i[2,] <- 1
     if (length(ts_i)==0){ts_i=NULL}
     lambdas_i <- lambdas[split_matrices[[i]][3,]]
@@ -228,9 +229,13 @@ lik_custom_split2 <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check 
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-lik_custom_split3 <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
+lik_custom_split3 <- function(dataset, N0 = 1, input_check = 1){
   #uses split_times_matrix3 and lik_custom_single_lineage3
-  times_matrix   <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+
   split_matrices <- split_times_matrix3(times_matrix)
   Ntips <- length(split_matrices)
   lik   <- rep(NA, Ntips)
@@ -239,7 +244,7 @@ lik_custom_split3 <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check 
     ti_i <- split_matrices[[i]][1,1]
     tf_i <- split_matrices[[i]][1, ncol(split_matrices[[i]])]
     tb_i <- NULL
-    ts_i <- cbind(split_matrices[[i]][1:2, -c(1,ncol(split_matrices[[i]]))])
+    ts_i <- cbind(split_matrices[[i]][1:2, -c(1, ncol(split_matrices[[i]]))])
     ts_i[2,] <- 1
     if (length(ts_i)==0){ts_i=NULL}
     lambdas_i <- lambdas[split_matrices[[i]][3,]]
@@ -254,18 +259,23 @@ lik_custom_split3 <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check 
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-lik_custom_single_lineage3   <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
-  times_matrix  <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
-  Ntimepoints   <- ncol(times_matrix)
+lik_custom_single_lineage3   <- function(dataset, N0 = 1, input_check = 1){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  Ntimepoints  <- ncol(times_matrix)
+  tf           <- times_matrix2t_coordinates(times_matrix = times_matrix)$tf
 
   lik_den <- 1; regime <- 1; shift <- branch <- 0
   if (Ntimepoints > 2){
     for (t in 2:(Ntimepoints - 1))
     {
-      time_interval1 <- times_matrix[1,t] - times_matrix[1,t-1]; time_interval2 <- tf - times_matrix[1,t]
       shift  <- (sign(times_matrix[2,t]) < 0)
       branch <- (sign(times_matrix[2,t]) > 0)
 
+      time_interval1 <- times_matrix[1,t] - times_matrix[1,t-1]
+      time_interval2 <- tf - times_matrix[1,t]
       den_term <- lik_single_event(time1 = time_interval1, time2 = time_interval2, lambda = lambdas[regime], mu = mus[regime])^(1 + branch)
       lik_den  <- lik_den * den_term
       regime   <- regime + shift
@@ -275,10 +285,10 @@ lik_custom_single_lineage3   <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, i
   lik_num <- 1; regime <- 1; shift <- branch <- 0
   for (t in 2:Ntimepoints)
   {
-    time_interval <- times_matrix[1,t] - times_matrix[1,t-1]
     shift  <- (sign(times_matrix[2,t]) < 0)
     branch <- (sign(times_matrix[2,t]) > 0)
 
+    time_interval <- times_matrix[1,t] - times_matrix[1,t-1]
     num_term <- lik_Pi(lambda = lambdas[regime], mu = mus[regime], time = time_interval)
     lik_num  <- lik_num * num_term
     regime   <- regime + shift

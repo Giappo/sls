@@ -16,12 +16,6 @@ NULL
 #' @format
 NULL
 
-#' @name dataset_4
-#' @title dataset_4
-#' @description
-#' @format
-NULL
-
 #' @name dataset_Bart
 #' @title dataset_Bart
 #' @description

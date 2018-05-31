@@ -5,11 +5,20 @@
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-check_input_data_coherence <- function(lambdas, mus, ti, tf, tb, ts, N0){
+check_input_data_coherence <- function(dataset, N0){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  coords       <- times_matrix2t_coordinates(times_matrix = times_matrix)
+  ti           <- coords$ti
+  tb           <- coords$tb
+  ts           <- coords$ts
+  tf           <- coords$tf
 
   coherent <- 1
   if (length(ts) == 0) {number_of_shifts <- 0} else {number_of_shifts <- ncol(ts)}
-  if ( !all.equal(length(lambdas), length(mus), (1+number_of_shifts)) )
+  if ( !all.equal(length(lambdas), length(mus), (1 + number_of_shifts)) )
   {
     # RJCB: I think you want to use 'stop' or 'warning' here
     stop("Parameters and/or shift times are not coherent.")

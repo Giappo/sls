@@ -274,7 +274,16 @@ sim_tidy_up_lineages     <- function(lineages){
 #' Main simulation, fully customizable.
 #' @inheritParams default_params_doc
 #' @export
-sim_custom               <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
+sim_custom               <- function(dataset, N0 = 1, input_check = TRUE){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  coords       <- times_matrix2t_coordinates(times_matrix = times_matrix)
+  ti           <- coords$ti
+  tb           <- coords$tb
+  ts           <- coords$ts
+  tf           <- coords$tf
 
   # Checks if the input data is coherent
   if (input_check == TRUE)
@@ -284,12 +293,11 @@ sim_custom               <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input
     testit::assert(N0 > 0)
     testit::assert(nrow(tb) == 2 || is.null(nrow(tb)))
     testit::assert(nrow(ts) == 2 || is.null(nrow(ts)))
-    coherent_input <- check_input_data_coherence(ti = ti, tf = tf, tb = tb, ts = ts)
+    coherent_input <- check_input_data_coherence(dataset = dataset)
     if (coherent_input == 0){stop("Input data are incoherent")}
   }
 
   # Combine the event matrix "times_matrix": first line are time points, second line are ids. Negative ids are shifts.
-  times_matrix  <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
   pars <- list(); for (i in 1:length(lambdas)) {pars[[i]] <- c(lambdas[i], mus[i])}
 
   nbranches <- 0; if(!is.null(ncol(tb))){nbranches <- ncol(tb)};
@@ -373,10 +381,20 @@ sim_series      <- function(lambdas, mus, times){
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-sim_R_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
+sim_R_example   <- function(dataset, N0 = 1, input_check = TRUE){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  coords       <- times_matrix2t_coordinates(times_matrix = times_matrix)
+  ti           <- coords$ti
+  tb           <- coords$tb
+  ts           <- coords$ts
+  tf           <- coords$tf
+
   if (input_check == TRUE)
   {
-    coherent_input <- check_input_data_coherence(ti = ti, tf = tf, tb = tb, ts = ts)
+    coherent_input <- check_input_data_coherence(dataset = dataset, N0 = N0)
     if (coherent_input == 0){stop("Input data are incoherent")}
   }
   tbranching <- tb[1,1]; tshift <- ts[1,1]
@@ -416,10 +434,20 @@ sim_R_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = 
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-sim_B_example   <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE){
+sim_B_example   <- function(dataset, N0 = 1, input_check = TRUE){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  coords       <- times_matrix2t_coordinates(times_matrix = times_matrix)
+  ti           <- coords$ti
+  tb           <- coords$tb
+  ts           <- coords$ts
+  tf           <- coords$tf
+
   if (input_check == TRUE)
   {
-    coherent_input <- check_input_data_coherence(ti = ti, tf = tf, tb = tb, ts = ts)
+    coherent_input <- check_input_data_coherence(dataset = dataset, N0 = N0)
     coherent_input <- coherent_input * (length(ts[1,])==2)
     if (coherent_input == 0){stop("Input data are incoherent")}
   }

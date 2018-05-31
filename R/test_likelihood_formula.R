@@ -5,15 +5,24 @@
 #' @return no idea
 #' @export
 #' @author Giovanni Laudanno
-test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims = 100000,
+test_likelihood_formula  <- function(dataset, N0 = 1, Nsims = 100000,
                            lik_function = lik_custom, sim_function = sim_custom, input_check = 1){
 
-    #the aim is to get "lik_result" equal to "sim_result"
-    if (input_check == 1)
-    {
-      coherent_input <- check_input_data_coherence(lambdas = lambdas, mus = mus, ti = ti, tf = tf, tb = tb, ts = ts, N0 = N0)
-      if (coherent_input == 0){stop("Input data are incoherent")}
-    }
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  coords       <- times_matrix2t_coordinates(times_matrix = times_matrix)
+  ti           <- coords$ti
+  tb           <- coords$tb
+  ts           <- coords$ts
+  tf           <- coords$tf
+
+  #the aim is to get "lik_result" equal to "sim_result"
+  if (input_check == 1)
+  {
+    coherent_input <- check_input_data_coherence(dataset = dataset, N0 = N0)
+    if (coherent_input == 0){stop("Input data are incoherent")}
+  }
   time1 <- Sys.time()
   res <- list();  total <- 0; ok <- rep(NA, Nsims)
   while (total < Nsims)
@@ -53,22 +62,22 @@ test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims
 }
 
 
-#' Does something
-#' @inheritParams default_params_doc
-#' @return result
-#' @export
-test_likelihood_formula2 <- function(Nsims, dataset, lik_function = lik_custom, sim_function = sim_custom){
-  lambdas <- unlist(dataset$lambdas)
-  mus     <- unlist(dataset$mus)
-  ti      <- unlist(dataset$ti)
-  tb      <- unlist(dataset$tb)
-  ts      <- unlist(dataset$ts)
-  tf      <- unlist(dataset$tf)
-  result  <- test_likelihood_formula(lambdas = lambdas, mus = mus,
-                                     ti = ti, tb = tb, ts = ts, tf = tf,
-                                     Nsims = Nsims, N0 = 1,
-                                     lik_function = lik_function, sim_function = sim_function, input_check = 1)
-  return(result)
-}
-
-# file.edit(paste0(getwd(),"/scripts/main.R"))
+#' #' Does something
+#' #' @inheritParams default_params_doc
+#' #' @return result
+#' #' @export
+#' test_likelihood_formula2 <- function(Nsims, dataset, lik_function = lik_custom, sim_function = sim_custom){
+#'   lambdas <- unlist(dataset$lambdas)
+#'   mus     <- unlist(dataset$mus)
+#'   ti      <- unlist(dataset$ti)
+#'   tb      <- unlist(dataset$tb)
+#'   ts      <- unlist(dataset$ts)
+#'   tf      <- unlist(dataset$tf)
+#'   result  <- test_likelihood_formula(lambdas = lambdas, mus = mus,
+#'                                      ti = ti, tb = tb, ts = ts, tf = tf,
+#'                                      Nsims = Nsims, N0 = 1,
+#'                                      lik_function = lik_function, sim_function = sim_function, input_check = 1)
+#'   return(result)
+#' }
+#'
+#' # file.edit(paste0(getwd(),"/scripts/main.R"))

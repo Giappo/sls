@@ -9,10 +9,10 @@ test_that( "Agreement between lik_custom_split and lik_custom_split2", {
 
   for (i in 1:length(data.sets))
   {
-    data <- get(data.sets[[i]])
+    dataset <- get(data.sets[[i]])
 
-    out1 <- lik_custom_split(lambdas = data$lambdas, mus = data$mus, ti = data$ti, tb = data$tb, ts = data$ts, tf = data$tf)
-    out2 <- lik_custom_split2(lambdas = data$lambdas, mus = data$mus, ti = data$ti, tb = data$tb, ts = data$ts, tf = data$tf)
+    out1 <- lik_custom_split(dataset = dataset)
+    out2 <- lik_custom_split2(dataset = dataset)
     # out3 <- lik_custom_split3(lambdas = data$lambdas, mus = data$mus, ti = data$ti, tb = data$tb, ts = data$ts, tf = data$tf)
     testthat::expect_equal(
       out1, out2

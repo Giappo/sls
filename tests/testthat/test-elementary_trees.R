@@ -11,11 +11,11 @@ test_that( "Agreement between likelihood and simulations for elementary trees", 
   sls_dataset_branch <- get("dataset_pure_shifting1")
 
   testthat::expect_true(
-    test_likelihood_formula2(Nsims = Nsims, dataset = sls_dataset_shift)$spread <= 2
+    test_likelihood_formula(Nsims = Nsims, dataset = sls_dataset_shift)$spread <= 2
   )
 
   testthat::expect_true(
-    test_likelihood_formula2(Nsims = Nsims, dataset = sls_dataset_branch)$spread <= 2
+    test_likelihood_formula(Nsims = Nsims, dataset = sls_dataset_branch)$spread <= 2
   )
 
 })
