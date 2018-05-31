@@ -5,20 +5,10 @@
 \title{Custom likelihood function that applies the procedure after tree splitting. It uses lik_custom for each lineages.
 Does something}
 \usage{
-lik_custom_split(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1)
+lik_custom_split(dataset, N0 = 1, input_check = 1)
 }
 \arguments{
-\item{lambdas}{speciation initiation rates}
-
-\item{mus}{extinction rates}
-
-\item{ti}{no idea}
-
-\item{tf}{no idea}
-
-\item{tb}{no idea}
-
-\item{ts}{no idea}
+\item{dataset}{dataset to provide to test likelihoods}
 
 \item{N0}{number of lineages at some unknown time}
 

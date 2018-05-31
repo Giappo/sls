@@ -4,20 +4,10 @@
 \alias{sim_B_example}
 \title{Simulates Bart example.}
 \usage{
-sim_B_example(lambdas, mus, ti, tb, ts, tf, N0 = 1, input_check = TRUE)
+sim_B_example(dataset, N0 = 1, input_check = TRUE)
 }
 \arguments{
-\item{lambdas}{speciation initiation rates}
-
-\item{mus}{extinction rates}
-
-\item{ti}{no idea}
-
-\item{tb}{no idea}
-
-\item{ts}{no idea}
-
-\item{tf}{no idea}
+\item{dataset}{dataset to provide to test likelihoods}
 
 \item{N0}{number of lineages at some unknown time}
 

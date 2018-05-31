@@ -6,21 +6,11 @@
 RJCB: I re-use the parameter documentation from
 one dummy function!}
 \usage{
-test_likelihood_formula(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims = 1e+05,
+test_likelihood_formula(dataset, N0 = 1, Nsims = 1e+05,
   lik_function = lik_custom, sim_function = sim_custom, input_check = 1)
 }
 \arguments{
-\item{lambdas}{speciation initiation rates}
-
-\item{mus}{extinction rates}
-
-\item{ti}{no idea}
-
-\item{tb}{no idea}
-
-\item{ts}{no idea}
-
-\item{tf}{no idea}
+\item{dataset}{dataset to provide to test likelihoods}
 
 \item{N0}{number of lineages at some unknown time}
 

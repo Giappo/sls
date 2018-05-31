@@ -27,13 +27,13 @@ test_likelihood_formula  <- function(dataset, N0 = 1, Nsims = 100000,
   res <- list();  total <- 0; ok <- rep(NA, Nsims)
   while (total < Nsims)
   {
-    res    <- sim_function(lambdas = lambdas, mus = mus, ti = ti, tb = tb, ts = ts, tf = tf, input_check = 0); res
+    res    <- sim_function(dataset = dataset, input_check = 0); res
     total  <- total + 1
     ok[total] <- res$ok
   }
 
   #results
-  lik_result   <- lik_function(lambdas = lambdas, mus = mus, ti = ti, tb = tb, ts = ts, tf = tf, input_check = 0)
+  lik_result   <- lik_function(dataset = dataset, input_check = 0)
   sim_result   <- sum(ok)/total
 
   figure.error_bars <- NULL; sim_std <- spread <- 0; if (Nsims >= 10000 && sum(ok) >= 10){

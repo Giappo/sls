@@ -149,12 +149,14 @@ lik_custom_split <- function(dataset, N0 = 1, input_check = 1){
     ti_i <- split_matrices[[i]][1,1]
     tf_i <- split_matrices[[i]][1, ncol(split_matrices[[i]])]
     tb_i <- NULL
-    ts_i <- cbind(split_matrices[[i]][1:2, -c(1,ncol(split_matrices[[i]]))])
+    ts_i <- cbind(split_matrices[[i]][1:2, -c(1, ncol(split_matrices[[i]]))])
     ts_i[2,] <- 1
     if (length(ts_i)==0){ts_i=NULL}
     lambdas_i <- lambdas[split_matrices[[i]][3,]]
     mus_i     <- mus[split_matrices[[i]][3,]]
-    lik[i]    <- lik_custom(lambdas = lambdas_i, mus = mus_i, ti = ti_i, tf = tf_i, tb = tb_i, ts = ts_i)
+    tm_i      <- arrange_times_matrix(ti = ti_i, tf = tf_i, tb = tb_i, ts = ts_i)
+    dataset_i <- list(times_matrix = tm_i, lambdas = lambdas_i, mus = mus_i)
+    lik[i]    <- lik_custom(dataset = dataset_i, N0 = 1)
   }
   return(prod(lik))
 }
@@ -170,6 +172,7 @@ lik_custom_single_lineage   <- function(dataset, N0 = 1, input_check = 1){
   lambdas      <- dataset$lambdas
   mus          <- dataset$mus
   Ntimepoints  <- ncol(times_matrix)
+  tf           <- times_matrix2t_coordinates(times_matrix = times_matrix)$tf
 
   lik_den <- 1; regime <- 1
   if (Ntimepoints > 2){
@@ -209,6 +212,7 @@ lik_custom_split2 <- function(dataset, N0 = 1, input_check = 1){
   split_matrices <- split_times_matrix(times_matrix)
   Ntips <- length(split_matrices)
   lik   <- rep(NA, Ntips)
+  ds <- vector("list", Ntips)
   for (i in 1:Ntips)
   {
     ti_i <- split_matrices[[i]][1,1]
@@ -219,7 +223,9 @@ lik_custom_split2 <- function(dataset, N0 = 1, input_check = 1){
     if (length(ts_i)==0){ts_i=NULL}
     lambdas_i <- lambdas[split_matrices[[i]][3,]]
     mus_i     <- mus[split_matrices[[i]][3,]]
-    lik[i]    <- lik_custom_single_lineage(lambdas = lambdas_i, mus = mus_i, ti = ti_i, tf = tf_i, tb = tb_i, ts = ts_i)
+    tm_i      <- arrange_times_matrix(ti = ti_i, tf = tf_i, tb = tb_i, ts = ts_i)
+    dataset_i <- list(times_matrix = tm_i, lambdas = lambdas_i, mus = mus_i)
+    lik[i]    <- lik_custom_single_lineage(dataset = dataset_i, N0 = 1)
   }
   return(prod(lik))
 }
@@ -249,7 +255,9 @@ lik_custom_split3 <- function(dataset, N0 = 1, input_check = 1){
     if (length(ts_i)==0){ts_i=NULL}
     lambdas_i <- lambdas[split_matrices[[i]][3,]]
     mus_i     <- mus[split_matrices[[i]][3,]]
-    lik[i]    <- lik_custom_single_lineage3(lambdas = lambdas_i, mus = mus_i, ti = ti_i, tf = tf_i, tb = tb_i, ts = ts_i)
+    tm_i      <- arrange_times_matrix(ti = ti_i, tf = tf_i, tb = tb_i, ts = ts_i)
+    dataset_i <- list(times_matrix = tm_i, lambdas = lambdas_i, mus = mus_i)
+    lik[i]    <- lik_custom_single_lineage3(dataset = dataset_i, N0 = 1)
   }
   return(prod(lik))
 }

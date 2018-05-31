@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions_likelihood.R
 \name{lik_single_event}
 \alias{lik_single_event}
-\title{Does something}
+\title{Basic denominator likelihood module. If squared yields branching contribution, otherwise is shift contribution.}
 \usage{
 lik_single_event(lambda, mu, time1, time2)
 }
@@ -19,5 +19,5 @@ lik_single_event(lambda, mu, time1, time2)
 result
 }
 \description{
-Does something
+Basic denominator likelihood module. If squared yields branching contribution, otherwise is shift contribution.
 }

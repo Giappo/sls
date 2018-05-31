@@ -4,20 +4,10 @@
 \alias{check_input_data_coherence}
 \title{Does something}
 \usage{
-check_input_data_coherence(lambdas, mus, ti, tf, tb, ts, N0)
+check_input_data_coherence(dataset, N0)
 }
 \arguments{
-\item{lambdas}{speciation initiation rates}
-
-\item{mus}{extinction rates}
-
-\item{ti}{no idea}
-
-\item{tf}{no idea}
-
-\item{tb}{no idea}
-
-\item{ts}{no idea}
+\item{dataset}{dataset to provide to test likelihoods}
 
 \item{N0}{number of lineages at some unknown time}
 }
