@@ -140,12 +140,12 @@ lik_custom      <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 
   return(lik)
 }
 
-#' Custom likelihood function.
+#' Custom likelihood function that applies the procedure after tree splitting. It uses lik_custom for each lineages.
 #' Does something
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-lik_custom_split<- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
+lik_custom_split <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
   times_matrix   <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
   split_matrices <- split_times_matrix(times_matrix)
   Ntips <- length(split_matrices)
@@ -155,7 +155,8 @@ lik_custom_split<- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 
     ti_i <- split_matrices[[i]][1,1]
     tf_i <- split_matrices[[i]][1, ncol(split_matrices[[i]])]
     tb_i <- NULL
-    ts_i <- cbind((split_matrices[[i]][1:2, -c(1,ncol(split_matrices[[i]]))]))
+    ts_i <- cbind(split_matrices[[i]][1:2, -c(1,ncol(split_matrices[[i]]))])
+    ts_i[2,] <- 1
     if (length(ts_i)==0){ts_i=NULL}
     lambdas_i <- lambdas[split_matrices[[i]][3,]]
     mus_i     <- mus[split_matrices[[i]][3,]]
@@ -164,128 +165,125 @@ lik_custom_split<- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 
   return(prod(lik))
 }
 
-
-
-
-#' Custom likelihood equation (OLD)
+#' Custom likelihood function for single lineages. You can use it after you apply split_times_matrix.
 #' Does something
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-# lik_custom_old       <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
-#
-#   if (input_check == 1){
-#     coherent_input <- check_input_data_coherence(lambdas = lambdas, mus = mus, ti = ti, tf = tf, tb = tb, ts = ts, N0 = N0)
-#     if (coherent_input == 0){stop("Input data are incoherent")}
-#   }
-#
-#   if (!is.null(ncol(tb))){ rownames(tb) <- c("time", "who") }
-#   if (!is.null(ncol(ts))){ rownames(ts) <- c("time", "who") }
-#   nbranches <- 0; if(!is.null(ncol(tb))){nbranches <- ncol(tb)};
-#   Ntips <-  N0 + nbranches
-#   times_matrix  <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
-#   fathers <- unname( c(rep(0, N0), tb[2,]) ); sons <- 1:Ntips
-#   lik_den <- 1; r <- rep(regime <- 1, Ntips); n <- 1; t <- 2; shift <- branch <- 0
-#   for (t in 2:(ncol(times_matrix) - 1))
-#   {
-#     shift  <- (sign(times_matrix[2,t]) < 0)
-#     branch <- (sign(times_matrix[2,t]) > 0)
-#
-#     lineages_affected_by_the_event <- rep(0,n); lineages_affected_by_the_event[abs(times_matrix[2,t])] <- 1
-#     expo <- unname(2 - lineages_affected_by_the_event * shift)
-#     # print(lineages_affected_by_the_event)
-#
-#     time_interval1 <- times_matrix[1,t] - times_matrix[1,t-1]; time_interval2 <- tf - times_matrix[1,t]
-#     per_lineage_outcome <- lik_single_event(time1 = time_interval1, time2 = time_interval2, lambda = lambdas[r[1:n]], mu = mus[r[1:n]])^expo
-#     lik_den <- lik_den * prod(per_lineage_outcome)
-#
-#     if(shift)
-#     {
-#       regime <- regime + 1
-#       who_shifts <- abs(times_matrix[2,t])
-#       r[who_shifts] <- regime
-#       future <- (Ntips > (n)) * ((n+1):Ntips)
-#
-#       who_shifts_cascade3 <- NULL
-#       who_shifts_cascade  <- who_shifts
-#       who_shifts_cascade2 <- sons[which(fathers %in% who_shifts_cascade)]
-#       who_shifts_cascade3 <- unique(c(who_shifts_cascade, who_shifts_cascade2))
-#       who_shifts_cascade3 <- intersect(who_shifts_cascade3, future); who_shifts_cascade3
-#       while ( prod(all.equal(who_shifts_cascade, who_shifts_cascade3) != 1) )
-#       {
-#         who_shifts_cascade  <- who_shifts_cascade3
-#         who_shifts_cascade2 <- sons[which(fathers %in% who_shifts_cascade)]
-#         who_shifts_cascade3 <- unique(c(who_shifts_cascade, who_shifts_cascade2));
-#         who_shifts_cascade3 <- intersect(who_shifts_cascade3, future); #print(who_shifts_cascade3)
-#       }
-#       who_shifts_cascade    <- who_shifts_cascade3; who_shifts_cascade
-#       r[who_shifts_cascade] <- r[who_shifts]
-#     }
-#     n <- n + branch
-#     # t <- t + 1; t #remember to comment this
-#     # print(r); #remember to comment this
-#   }#; r
-#
-#   lik_nom <- 1; n <- 1; t <- 2
-#   r <- rep(1, Ntips)
-#   shift <- branch <- 0
-#   regime <- 1
-#   for (t in 2:ncol(times_matrix))
-#   {
-#     shift  <- (sign(times_matrix[2,t]) < 0)
-#     branch <- (sign(times_matrix[2,t]) > 0)
-#
-#     # print(r[1:n])
-#     # print(lambdas[r[1:n]])
-#     time_interval <- times_matrix[1,t] - times_matrix[1,t-1]
-#     per_lineage_outcome <- lik_Pi(lambda = lambdas[r[1:n]], mu = mus[r[1:n]], time = time_interval)
-#     lik_nom <- lik_nom * prod(per_lineage_outcome)
-#
-#     if(shift)
-#     {
-#       regime <- regime + 1
-#       who_shifts <- abs(times_matrix[2,t])
-#       r[who_shifts] <- regime
-#       future <- (Ntips > (n)) * ((n+1):Ntips)
-#
-#       who_shifts_cascade3 <- NULL
-#       who_shifts_cascade  <- who_shifts
-#       who_shifts_cascade2 <- sons[which(fathers %in% who_shifts_cascade)]
-#       who_shifts_cascade3 <- unique(c(who_shifts_cascade, who_shifts_cascade2))
-#       who_shifts_cascade3 <- intersect(who_shifts_cascade3, future); who_shifts_cascade3
-#       while ( prod(all.equal(who_shifts_cascade, who_shifts_cascade3) != 1) )
-#       {
-#         who_shifts_cascade  <- who_shifts_cascade3
-#         who_shifts_cascade2 <- sons[which(fathers %in% who_shifts_cascade)]
-#         who_shifts_cascade3 <- unique(c(who_shifts_cascade, who_shifts_cascade2));
-#         who_shifts_cascade3 <- intersect(who_shifts_cascade3, future);# print(who_shifts_cascade3)
-#       }
-#       who_shifts_cascade    <- who_shifts_cascade3; who_shifts_cascade
-#       r[who_shifts_cascade] <- r[who_shifts]
-#     }
-#     n <- n + branch
-#     # t <- t + 1; #remember to comment this
-#     # print(r); #remember to comment this
-#   } #lik_nom
-#
-#   lik <- lik_nom * lik_den
-#
-#   return(lik)
-# } #custom likelihood function: requires topology information. requires lik_event_shift
+lik_custom_single_lineage   <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
+  times_matrix  <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+  Ntimepoints   <- ncol(times_matrix)
 
-# data <- ls(pattern = "dataset");data <- data[-1]
-# for (i in 1:length(data)){
-# if(1){
-# dataset <- get(data[[i]])
-# lambdas <- unlist(dataset$lambdas)
-# mus     <- unlist(dataset$mus)
-# ti      <- unlist(dataset$ti)
-# tb      <- unlist(dataset$tb)
-# ts      <- unlist(dataset$ts)
-# tf      <- unlist(dataset$tf)
-# test1 <- lik_custom(lambdas = lambdas, mus = mus, ti = ti, tf = tf, tb = tb, ts = ts)
-# test2 <- lik_custom2(lambdas = lambdas, mus = mus, ti = ti, tf = tf, tb = tb, ts = ts)
-# print(test1 == test2)
-# }
-# }
+  lik_den <- 1; regime <- 1
+  if (Ntimepoints > 2){
+    for (t in 2:(Ntimepoints - 1))
+    {
+      time_interval1 <- times_matrix[1,t] - times_matrix[1,t-1]; time_interval2 <- tf - times_matrix[1,t]
+      den_term <- lik_single_event(time1 = time_interval1, time2 = time_interval2, lambda = lambdas[regime], mu = mus[regime])
+      lik_den  <- lik_den * den_term
+      regime   <- regime + 1
+    }
+  }
 
+  lik_num <- 1; regime <- 1
+  for (t in 2:Ntimepoints)
+  {
+    time_interval <- times_matrix[1,t] - times_matrix[1,t-1]
+    num_term <- lik_Pi(lambda = lambdas[regime], mu = mus[regime], time = time_interval)
+    lik_num  <- lik_num * num_term
+    regime   <- regime + 1
+  }
+
+  lik <- unname(lik_num * lik_den)
+  return(lik)
+}
+
+#' Custom likelihood function that applies the procedure after tree splitting. It uses lik_custom_single_lineage for each lineages.
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+lik_custom_split2 <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
+  times_matrix   <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+  split_matrices <- split_times_matrix(times_matrix)
+  Ntips <- length(split_matrices)
+  lik   <- rep(NA, Ntips)
+  for (i in 1:Ntips)
+  {
+    ti_i <- split_matrices[[i]][1,1]
+    tf_i <- split_matrices[[i]][1, ncol(split_matrices[[i]])]
+    tb_i <- NULL
+    ts_i <- cbind(split_matrices[[i]][1:2, -c(1,ncol(split_matrices[[i]]))])
+    ts_i[2,] <- 1
+    if (length(ts_i)==0){ts_i=NULL}
+    lambdas_i <- lambdas[split_matrices[[i]][3,]]
+    mus_i     <- mus[split_matrices[[i]][3,]]
+    lik[i]    <- lik_custom_single_lineage(lambdas = lambdas_i, mus = mus_i, ti = ti_i, tf = tf_i, tb = tb_i, ts = ts_i)
+  }
+  return(prod(lik))
+}
+
+#' Custom likelihood function that applies the procedure after tree splitting. It uses lik_custom_single_lineage for each lineages.
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+lik_custom_split3 <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
+  #uses split_times_matrix3 and lik_custom_single_lineage3
+  times_matrix   <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+  split_matrices <- split_times_matrix3(times_matrix)
+  Ntips <- length(split_matrices)
+  lik   <- rep(NA, Ntips)
+  for (i in 1:Ntips)
+  {
+    ti_i <- split_matrices[[i]][1,1]
+    tf_i <- split_matrices[[i]][1, ncol(split_matrices[[i]])]
+    tb_i <- NULL
+    ts_i <- cbind(split_matrices[[i]][1:2, -c(1,ncol(split_matrices[[i]]))])
+    ts_i[2,] <- 1
+    if (length(ts_i)==0){ts_i=NULL}
+    lambdas_i <- lambdas[split_matrices[[i]][3,]]
+    mus_i     <- mus[split_matrices[[i]][3,]]
+    lik[i]    <- lik_custom_single_lineage3(lambdas = lambdas_i, mus = mus_i, ti = ti_i, tf = tf_i, tb = tb_i, ts = ts_i)
+  }
+  return(prod(lik))
+}
+
+#' Custom likelihood function for single lineages. You can use it after you apply split_times_matrix.
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+lik_custom_single_lineage3   <- function(lambdas, mus, ti, tf, tb, ts, N0 = 1, input_check = 1){
+  times_matrix  <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+  Ntimepoints   <- ncol(times_matrix)
+
+  lik_den <- 1; regime <- 1; shift <- branch <- 0
+  if (Ntimepoints > 2){
+    for (t in 2:(Ntimepoints - 1))
+    {
+      time_interval1 <- times_matrix[1,t] - times_matrix[1,t-1]; time_interval2 <- tf - times_matrix[1,t]
+      shift  <- (sign(times_matrix[2,t]) < 0)
+      branch <- (sign(times_matrix[2,t]) > 0)
+
+      den_term <- lik_single_event(time1 = time_interval1, time2 = time_interval2, lambda = lambdas[regime], mu = mus[regime])^(1 + branch)
+      lik_den  <- lik_den * den_term
+      regime   <- regime + shift
+    }
+  }
+
+  lik_num <- 1; regime <- 1; shift <- branch <- 0
+  for (t in 2:Ntimepoints)
+  {
+    time_interval <- times_matrix[1,t] - times_matrix[1,t-1]
+    shift  <- (sign(times_matrix[2,t]) < 0)
+    branch <- (sign(times_matrix[2,t]) > 0)
+
+    num_term <- lik_Pi(lambda = lambdas[regime], mu = mus[regime], time = time_interval)
+    lik_num  <- lik_num * num_term
+    regime   <- regime + shift
+  }
+
+  lik <- unname(lik_num * lik_den)
+  return(lik)
+}

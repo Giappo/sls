@@ -1,36 +1,77 @@
+rm(list = ls()); library(sls)
+load_all_data(the.environment = environment()); data.sets <- ls(pattern = "dataset_",envir = environment())
+sim_function = sim_custom; lik_function = lik_custom_split2
+Nsims <- 1E6
+for (i in 1:length(data.sets))
+{
+  print(i)
+  d.s <- get(data.sets[[i]])
+  #the aim is to get "lik_result" equal to "sim_result" for an high enough number of simulations
+  test_result1 <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims, lik_function = lik_function, sim_function = sim_function); print(test_result1$results.table)
+  if (Nsims >= 100000)
+  {
+    results_file <- paste0(getwd(),"//results//table2.xls")
+    xlsx::write.xlsx(x = test_result1$results.table, file = results_file, sheetName = data.sets[[i]], append = TRUE)
+    # xlsx::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
+  }
+}
+
+
+
+
+# #####-test splits-#####
+# rm(list = ls())
+# library(sls)
+# load_all_data(the.environment = environment())
+# data.sets <- ls(pattern = "dataset_", envir = environment())
+#
+# out1 <- out2 <- out3 <- rep(NA, length(data.sets)); i <- 1
+# for (i in 1:length(data.sets))
+# {
+#   data    <- get(data.sets[[i]])
+#   lambdas <- data$lambdas
+#   mus     <- data$mus
+#   ti      <- data$ti
+#   tb      <- data$tb
+#   ts      <- data$ts
+#   tf      <- data$tf
+#   out1[i] <- lik_custom_split(lambdas = lambdas, mus = mus, ti = ti, tb = tb, ts = ts, tf = tf)
+#   out2[i] <- lik_custom_split2(lambdas = lambdas, mus = mus, ti = ti, tb = tb, ts = ts, tf = tf)
+#   out3[i] <- lik_custom_split3(lambdas = lambdas, mus = mus, ti = ti, tb = tb, ts = ts, tf = tf)
+# }
+# print(out1)
+# print(out2)
+# print(out3)
+#
+
+####
 rm(list = ls())
 library(sls)
-load_all_data()
-d.s <- dataset_pure_branching3
-sim_function = sim_custom; lik_function = lik_custom
-Nsims <- 100 # Nsims <- 10000000
+load_all_data(the.environment = environment())
+# data.sets <- ls(pattern = "dataset_",envir = environment())
+data <- get("dataset_pure_shifting3")
+lambdas <- data$lambdas
+mus <- data$mus
+ti <- data$ti
+tb <- data$tb
+ts <- data$ts
+tf <- data$tf
 
-#the aim is to get "lik_result" equal to "sim_result" for an high enough number of simulations
-test_result1 <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims, lik_function = lik_function, sim_function = sim_function); print(test_result1$results.table)
-test_result2 <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims, lik_function = lik_custom_split, sim_function = sim_function); print(test_result2$results.table)
-if (Nsims >= 100000 && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
-{
-  results_file <- paste0(getwd(),"//results//table.xls")
-  xlsx::write.xlsx(x = test_result1$results.table, file = results_file, sheetName = test_result1$sheet_name, append = TRUE)
-  # xlsx::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
-}
+out1 <- lik_custom(lambdas = lambdas, mus = mus, ti = ti, tb = tb, ts = ts, tf = tf)
+out2 <- lik_custom_single_lineage(lambdas = lambdas, mus = mus, ti = ti, tb = tb, ts = ts, tf = tf)
+print(out1)
+print(out2)
 
-Nsims <- 1000000 # Nsims <- 10000000
-sim_function = sim_R_example; lik_function = lik_custom
-d.s <- dataset_Rampal
-#the aim is to get "lik_result" equal to "sim_result" for an high enough number of simulations
-test_result2 <- test_likelihood_formula2(dataset = d.s, Nsims = Nsims, lik_function = lik_function, sim_function = sim_function); print(test_result2$results.table)
-if (Nsims >= 100000 && all.equal(sim_function, sim_custom) && all.equal(lik_function, lik_custom))
-{
-  results_file <- paste0(getwd(),"//results//table.xls")
-  xlsx::write.xlsx(x = test_result2$results.table, file = results_file, sheetName = test_result2$sheet_name, append = TRUE)
-  # xlsx::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
-}
 
-# file <- system.file("tests", "log_plot.jpeg", package = "xlsx")
-# file <- "accuracy_vs_samplesize.png"
-# # wb <- xlsx::createWorkbook()
-# wb <- results_file
-# xlsx::getSheets(wb)
-# sheet <- createSheet(wb, test_result$sheet_name)
-# addPicture(file, sheet)
+
+
+
+
+
+
+
+
+
+
+
+

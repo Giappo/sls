@@ -280,7 +280,9 @@ split_times_matrix <- function(times_matrix, N0 = 1){
 
   #TM is the list of splitted matrices
   TM <- vector("list",Ntips)
-  tb_positions <- c(which(c(ti, tb[1,]) %in% times_matrix1[1,]))
+  birth_times <- c(ti, tb[1,])
+  all_times <- times_matrix1[1,]
+  tb_positions <- match(birth_times, all_times)
   for (i in 1:Ntips)
   {
     TM[[i]] <- times_matrix1[c(1,2,2+i),c(tb_positions[i], which(times_matrix1[2,]==-i), ncol(times_matrix1))]
@@ -291,6 +293,54 @@ split_times_matrix <- function(times_matrix, N0 = 1){
   return(TM)
 }
 
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+split_times_matrix3 <- function(times_matrix, N0 = 1){
+
+  # ###
+  # ti <- d.s$ti; tb <- d.s$tb; ts <- d.s$ts; tf <- d.s$tf; N0 <- 1
+  # times_matrix <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+  # ###
+
+  #determine rates
+  # tb <- cbind(times_matrix[1:2, which(sign(times_matrix[,2])>0)])
+  tb <- times_matrix2t_coordinates(times_matrix = times_matrix)$tb
+  ti <- times_matrix2t_coordinates(times_matrix = times_matrix)$ti
+  nbranches <- 0; if(!is.null(ncol(tb))){nbranches <- ncol(tb)};
+  Ntips <- N0 + nbranches; r <- rep(regime <- 1, Ntips); n <- N0
+  rr <- vector("list", ncol(times_matrix)); rr[[1]] <- r
+  for (t in 2:ncol(times_matrix))
+  {
+    upds <- update_regimes(t = t, regime = regime, times_matrix = times_matrix, r = r, n = n)
+    rr[[t]] <- r <- upds$r
+    regime  <- upds$regime
+    n = n + (sign(times_matrix[2,t])==1)
+  }
+  rrr <- matrix(unlist(rr), nrow = Ntips)
+  times_matrix1 <- rbind(times_matrix, rrr);
+
+  #TM is the list of splitted matrices
+  TM <- vector("list",Ntips)
+  birth_times <- c(ti, tb[1,])
+  all_times <- times_matrix1[1,]
+  tb_positions <- match(birth_times, all_times)
+  condx <- function(times_matrix1, i, tb_positions)
+  {
+    x <- times_matrix1[1,]
+    y <- times_matrix1[2,]
+    (x >= x[tb_positions[i]]) & ((y == -i) | (y > 0) | y == y[length(y)])
+  }
+  for (i in 1:Ntips)
+  {
+    TM[[i]] <- times_matrix1[c(1,2,2+i), condx(times_matrix1 = times_matrix1, i = i, tb_positions = tb_positions)]
+    TM[[i]][2,1] <- 0
+    TM[[i]][3,ncol(TM[[i]])] <- 0
+    rownames(TM[[i]])[3] <- "regime"
+  };TM
+  return(TM)
+}
 
 #' Does something
 #' @inheritParams default_params_doc
@@ -354,12 +404,13 @@ variable_name2string <- function(v1){
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-load_all_data <- function(){
-  d <- data(package = "sls")
+load_all_data <- function(the.environment = environment()){
+  d <- data(package = "sls",envir = the.environment)
   d$results[, "Item"]
   nm <- d$results[, "Item"]
-  data(list = nm, package = "sls")
+  data(list = nm, package = "sls",envir = the.environment)
 }
+
 
 
 

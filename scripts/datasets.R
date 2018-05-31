@@ -14,18 +14,18 @@ dataset_pure_branching1 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = la
 save(dataset_pure_branching1, file = paste0(data_folder, variable_name2string(dataset_pure_branching1),".RData"))
 
 #pure branching: second case
-ti <- 0; tf <- 120; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
+ti <- 0; tf <- 100; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
 lambdas <- c(0.6); mus <- c(0.3)
-tb_when <- c(20, 40, 70, 90); tb_who <- c(1,2,3,4); ts_when <- c(); ts_who <- c()
+tb_when <- c(20, 40, 70, 90); tb_who <- c(1, 2, 3, 4); ts_when <- c(); ts_who <- c()
 tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
-ti <- ti/10; tf <- tf/10; ts[1,] <- ts[1,]/10; tb[1,] <- tb[1,]/10;
+ti <- ti/20; tf <- tf/20; ts[1,] <- ts[1,]/20; tb[1,] <- tb[1,]/20;
 dataset_pure_branching2 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)
 save(dataset_pure_branching2, file = paste0(data_folder, variable_name2string(dataset_pure_branching2),".RData"))
 
 #pure branching: third case
 ti <- 0; tf <- 100; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
 lambdas <- c(0.6); mus <- c(0.3)
-tb_when <- c(20, 40, 70, 90); tb_who <- c(1, 2, 3, 4); ts_when <- c(); ts_who <- c()
+tb_when <- c(20, 40, 45, 70, 80, 90); tb_who <- c(1, 2, 1, 3, 2, 4); ts_when <- c(); ts_who <- c()
 tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
 ti <- ti/20; tf <- tf/20; ts[1,] <- ts[1,]/20; tb[1,] <- tb[1,]/20;
 dataset_pure_branching3 <- list(ti = ti, tb = tb, ts = ts, tf = tf, lambdas = lambdas, mus = mus)

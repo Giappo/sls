@@ -31,7 +31,7 @@ test_likelihood_formula  <- function(lambdas, mus, ti, tb, ts, tf, N0 = 1, Nsims
     std_results       <- get_std2(oks = ok, lik_result = lik_result, sim_result = sim_result)
     sim_std           <- std_results$std_max
     figure.error_bars <- std_results$figure.error_bars
-    spread  <- abs(lik_result - sim_result)/sim_std
+    spread  <- (lik_result - sim_result)/sim_std
     cat(paste0("sim result and lik result agree within ", signif(x = spread, digits = 2) ," standard deviations.\n"))
   }
   time_elapsed <- as.double(difftime(Sys.time(), time1, units = "secs"))
