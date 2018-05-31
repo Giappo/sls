@@ -2,7 +2,7 @@ rm(list = ls()); library(sls)
 load_all_data(the.environment = environment()); data.sets <- ls(pattern = "dataset_",envir = environment())
 sim_function = sim_custom; lik_function = lik_custom_split2
 Nsims <- 1E3 #1E6
-start_coord <- 11 #use it in case you already have some partial results
+start_coord <- 11; i <- 1 #use it in case you already have some partial results
 for (i in start_coord:length(data.sets))
 {
   print(i)

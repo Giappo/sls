@@ -6,7 +6,7 @@
 #' @export
 #' @author Giovanni Laudanno
 test_likelihood_formula  <- function(dataset, N0 = 1, Nsims = 100000,
-                           lik_function = lik_custom, sim_function = sim_custom, input_check = 1){
+                           lik_function = lik_custom, sim_function = sim_custom, input_check = TRUE){
 
   times_matrix <- dataset$times_matrix
   lambdas      <- dataset$lambdas
@@ -24,17 +24,19 @@ test_likelihood_formula  <- function(dataset, N0 = 1, Nsims = 100000,
     if (coherent_input == 0){stop("Input data are incoherent")}
   }
   time1 <- Sys.time()
-  res <- list();  total <- 0; ok <- rep(NA, Nsims)
-  while (total < Nsims)
-  {
-    res    <- sim_function(dataset = dataset, input_check = 0); res
-    total  <- total + 1
-    ok[total] <- res$ok
-  }
+  # res <- list();  total <- 0; ok <- rep(NA, Nsims)
+  # while (total < Nsims)
+  # {
+  #   res    <- sim_function(dataset = dataset, input_check = 0); res
+  #   total  <- total + 1
+  #   ok[total] <- res$ok
+  # }
 
   #results
   lik_result   <- lik_function(dataset = dataset, input_check = 0)
-  sim_result   <- sum(ok)/total
+  sim_out      <- sim_custom_repeat(dataset = dataset, Nsims = Nsims, sim_function = sim_function, N0 = N0, input_check = FALSE)
+  sim_result   <- sim_out$sim_result
+  ok           <- sim_out$ok
 
   figure.error_bars <- NULL; sim_std <- spread <- 0; if (Nsims >= 10000 && sum(ok) >= 10){
     std_results       <- get_std2(oks = ok, lik_result = lik_result, sim_result = sim_result)

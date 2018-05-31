@@ -7,7 +7,8 @@ RJCB: I re-use the parameter documentation from
 one dummy function!}
 \usage{
 test_likelihood_formula(dataset, N0 = 1, Nsims = 1e+05,
-  lik_function = lik_custom, sim_function = sim_custom, input_check = 1)
+  lik_function = lik_custom, sim_function = sim_custom,
+  input_check = TRUE)
 }
 \arguments{
 \item{dataset}{dataset to provide to test likelihoods}

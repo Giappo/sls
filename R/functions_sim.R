@@ -330,6 +330,21 @@ sim_custom               <- function(dataset, N0 = 1, input_check = TRUE){
   return(list(ok = ok, lineages = lineages))
 }
 
+#' Main simulation. Repeated Nsims times.
+#' @inheritParams default_params_doc
+#' @export
+sim_custom_repeat        <- function(dataset, Nsims, sim_function = sim_custom, N0 = 1, input_check = FALSE){
+  res <- list();  total <- 0; ok <- rep(NA, Nsims)
+  while (total < Nsims)
+  {
+    res    <- sim_function(dataset = dataset, input_check = 0)
+    total  <- total + 1
+    ok[total] <- res$ok
+  }
+  sim_result   <- sum(ok)/total
+  return(list(sim_result = sim_result, ok = ok))
+}
+
 #specific case sims
 #full sims
 
