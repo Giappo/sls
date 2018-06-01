@@ -1,9 +1,9 @@
 rm(list = ls()); library(sls)
 load_all_data(the.environment = environment()); data.sets <- ls(pattern = "dataset_",envir = environment())
 sim_function = sim_custom; lik_function = lik_custom_split2
-Nsims <- 1E3 #1E6
-start_coord <- 11; i <- 1 #use it in case you already have some partial results
-for (i in start_coord:length(data.sets))
+Nsims <- 1E7
+which_trees <- c(3); i <- 1 #use it in case you already have some partial results
+for (i in which_trees)
 {
   print(i)
   d.s <- get(data.sets[[i]])
@@ -12,7 +12,13 @@ for (i in start_coord:length(data.sets))
   if (Nsims >= 100000)
   {
     results_file <- paste0(getwd(),"//results//table2.xls")
-    xlsx::write.xlsx(x = test_result1$results.table, file = results_file, sheetName = data.sets[[i]], append = TRUE)
+    sheet_name <- sheet_name0 <- data.sets[[i]]
+    wb <- xlsx::loadWorkbook(file = results_file)
+    prova <- xlsx:::getSheets(wb = wb)
+    nomi <- names(prova)
+    jj <- 1; while (sheet_name %in% nomi) {jj <- jj + 1; sheet_name <- paste0(sheet_name0," - ", toString(jj))}
+
+    xlsx::write.xlsx(x = test_result1$results.table, file = results_file, sheetName = sheet_name, append = TRUE)
     # xlsx::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
   }
 }
