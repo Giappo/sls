@@ -98,10 +98,37 @@ sim_make_branching       <- function(lineages, branching_lineage, ids){
 
   lambda <- branching_lineage[3]; mu <- branching_lineage[4]
   new_id <- (max(ids) + 1)
-  ids <- c(ids,new_id)
+  ids    <- c(ids, new_id)
   new_lineage <- c(id = new_id, N = 1, lambda = lambda, mu = mu)
 
   lineages <- rbind(lineages, new_lineage)
+  lineages <- sim_tidy_up_lineages(lineages)
+  return(lineages)
+}
+
+#' Sim Module. Applies the branching to the specified lineage, but better.
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+sim_make_branching2       <- function(lineages, branching_lineage, ids){
+
+  lambda <- branching_lineage[3]; mu <- branching_lineage[4]
+  branching_id <- branching_lineage[1]; branching_N <- branching_lineage[2]
+  new_id <- (max(ids) + 1)
+
+  random_order <- sample(1:2)
+  candidates   <- c(branching_id, new_id)
+  winner       <- candidates[random_order[1]]
+  loser        <- candidates[random_order[2]]
+  ids    <- c(ids, new_id)
+  new_lineage <- c(id = new_id, N = 1, lambda = lambda, mu = mu)
+  lineages <- rbind(lineages, new_lineage)
+
+  winning_id <- which(lineages[,1]==winner)
+  losing_id  <- which(lineages[,1]==loser)
+  lineages[winning_id,2] <- branching_N
+  lineages[losing_id ,2] <- 1
+
   lineages <- sim_tidy_up_lineages(lineages)
   return(lineages)
 }
@@ -160,6 +187,32 @@ sim_event_branching      <- function(lineages, branching_id){
 
   #if the designated lineages is present and it has at least one individual then BRANCH!
   lineages <- sim_make_branching(lineages = lineages, ids = ids, branching_lineage = branching_lineage)
+
+  return(lineages)
+}
+
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+sim_event_branching2      <- function(lineages, branching_id){
+
+  #define bad_lineages aka the output to return if something goes wrong
+  bad_lineages <- sim_produce_bad_lineages(lineages = lineages)
+
+  #get lineages ids
+  ids <- sim_get_ids(lineages = lineages)
+
+  #determine which lineage is going to branch (if branching_id is not present in ids, branching lineage will have N = 0)
+  branching_lineage <- sim_get_changing_lineage(lineages = lineages, ids = ids, changing_id = branching_id)
+
+  #if that lineage is not present, return lineages without any modification (will lead to a 0 ok score)
+  if (is.na(branching_lineage[2])) {return(bad_lineages)}
+
+  #if there are no individuals, return lineages without any modification (will lead to a 0 ok score)
+  if (branching_lineage[2] == 0) {return(bad_lineages)}
+
+  #if the designated lineages is present and it has at least one individual then BRANCH!
+  lineages <- sim_make_branching2(lineages = lineages, ids = ids, branching_lineage = branching_lineage)
 
   return(lineages)
 }
@@ -323,6 +376,65 @@ sim_custom               <- function(dataset, N0 = 1, input_check = TRUE){
     if (branch)
     {
       lineages <- sim_event_branching(lineages = lineages, branching_id = abs(times_matrix[2,t]))
+    }
+  }
+
+  ok <- sim_check_ok_condition(lineages = lineages, Ntips = Ntips); ok
+  return(list(ok = ok, lineages = lineages))
+}
+
+#' Main simulation, fully customizable.
+#' @inheritParams default_params_doc
+#' @export
+sim_custom2              <- function(dataset, N0 = 1, input_check = TRUE){
+
+  times_matrix <- dataset$times_matrix
+  lambdas      <- dataset$lambdas
+  mus          <- dataset$mus
+  coords       <- times_matrix2t_coordinates(times_matrix = times_matrix)
+  ti           <- coords$ti
+  tb           <- coords$tb
+  ts           <- coords$ts
+  tf           <- coords$tf
+
+  # Checks if the input data is coherent
+  if (input_check == TRUE)
+  {
+    testit::assert(length(lambdas) == length(mus))
+    testit::assert(tf > ti)
+    testit::assert(N0 > 0)
+    testit::assert(nrow(tb) == 2 || is.null(nrow(tb)))
+    testit::assert(nrow(ts) == 2 || is.null(nrow(ts)))
+    coherent_input <- check_input_data_coherence(dataset = dataset)
+    if (coherent_input == 0){stop("Input data are incoherent")}
+  }
+
+  # Combine the event matrix "times_matrix": first line are time points, second line are ids. Negative ids are shifts.
+  pars <- list(); for (i in 1:length(lambdas)) {pars[[i]] <- c(lambdas[i], mus[i])}
+
+  nbranches <- 0; if(!is.null(ncol(tb))){nbranches <- ncol(tb)};
+  Ntips <-  N0 + nbranches; r <- rep(regime <- 1, Ntips); n <- 1; t <- 2; shift <- branch <- 0
+  lineages <- c(id = 1, N = N0, pars = pars[[1]])
+  for (t in 2:length(times_matrix[1,]))
+  {
+    time_before_next_event <- times_matrix[1,t] - times_matrix[1,t-1]
+    lineages <- sim_evolve_lineages(lineages = lineages, time_before_next_event = time_before_next_event);
+
+    #the sign of times_matrix's second line determines if it is a shift (-1), a branching (+1), or neither of the two (0)
+    shift    <- (sign(times_matrix[2,t]) < 0)
+    branch   <- (sign(times_matrix[2,t]) > 0)
+    if (sim_check_id_presence(lineages = lineages, id = abs(times_matrix[2,t])) == 0)
+    {
+      return(list(ok = 0, lineages = lineages))
+    }
+    if (shift)
+    {
+      regime   <- regime + 1
+      lineages <- sim_event_shift(lineages = lineages, new_pars = pars[[regime]], shifting_id = abs(times_matrix[2,t]))#; lineages
+    }
+    if (branch)
+    {
+      lineages <- sim_event_branching2(lineages = lineages, branching_id = abs(times_matrix[2,t]))
     }
   }
 

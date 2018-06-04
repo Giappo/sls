@@ -1,6 +1,3 @@
-#' RJCB: I think this should move to the tests folder
-#' RJCB: I re-use the parameter documentation from
-#' one dummy function!
 #' @inheritParams default_params_doc
 #' @return no idea
 #' @export
@@ -64,22 +61,27 @@ test_likelihood_formula  <- function(dataset, N0 = 1, Nsims = 100000,
 }
 
 
-#' #' Does something
-#' #' @inheritParams default_params_doc
-#' #' @return result
-#' #' @export
-#' test_likelihood_formula2 <- function(Nsims, dataset, lik_function = lik_custom, sim_function = sim_custom){
-#'   lambdas <- unlist(dataset$lambdas)
-#'   mus     <- unlist(dataset$mus)
-#'   ti      <- unlist(dataset$ti)
-#'   tb      <- unlist(dataset$tb)
-#'   ts      <- unlist(dataset$ts)
-#'   tf      <- unlist(dataset$tf)
-#'   result  <- test_likelihood_formula(lambdas = lambdas, mus = mus,
-#'                                      ti = ti, tb = tb, ts = ts, tf = tf,
-#'                                      Nsims = Nsims, N0 = 1,
-#'                                      lik_function = lik_function, sim_function = sim_function, input_check = 1)
-#'   return(result)
-#' }
-#'
-#' # file.edit(paste0(getwd(),"/scripts/main.R"))
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+test_likelihood_formula2 <- function(s,Nsims){
+  #lik_function = lik_custom, sim_function = sim_custom
+  load_all_data(the.environment = environment()); data.sets <- ls(pattern = "dataset_",envir = environment())
+  dataset <- get(data.sets[[s]])
+  test_result <- test_likelihood_formula(dataset = dataset, Nsims = Nsims,
+                          sim_function = sim_custom2, lik_function = lik_custom)
+
+  if (Nsims >= 1E5)
+  {
+    results_file <- paste0(getwd(),"//results//table3.xls")
+    sheet_name <- sheet_name0 <- data.sets[[s]]
+    wb <- xlsx::loadWorkbook(file = results_file)
+    prova <- xlsx::getSheets(wb = wb)
+    nomi <- names(prova)
+    jj <- 1; while (sheet_name %in% nomi) {jj <- jj + 1; sheet_name <- paste0(sheet_name0," - ", toString(jj))}
+
+    xlsx::write.xlsx(x = test_result$results.table, file = results_file, sheetName = sheet_name, append = TRUE)
+  }
+  return(test_result)
+}

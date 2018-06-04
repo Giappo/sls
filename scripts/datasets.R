@@ -91,8 +91,18 @@ tb_when <- c(60); tb_who <- c(1); ts_when <- c(30,100); ts_who <- c(1,1)
 tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
 ti <- ti/10; tf <- tf/10; ts[1,] <- ts[1,]/10; tb[1,] <- tb[1,]/10;
 times_matrix <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
-dataset_pure_Bart <- list(times_matrix = times_matrix, lambdas = lambdas, mus = mus)
+dataset_Bart <- list(times_matrix = times_matrix, lambdas = lambdas, mus = mus)
 save(dataset_Bart, file = paste0(data_folder, variable_name2string(dataset_Bart),".RData"))
+
+# #B's example (shorter times)
+# ti <- 0; tf <- 150; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
+# lambdas <- c(0.6, 0.4, 0.2); mus <- c(0.3, 0.1, 0.05)
+# tb_when <- c(60); tb_who <- c(1); ts_when <- c(30,100); ts_who <- c(1,1)
+# tb <- rbind(tb_when, tb_who); ts <- rbind(ts_when, ts_who);
+# common_factor <- 20; ti <- ti/common_factor; tf <- tf/common_factor; ts[1,] <- ts[1,]/common_factor; tb[1,] <- tb[1,]/common_factor;
+# times_matrix <- arrange_times_matrix(ti = ti, tb = tb, ts = ts, tf = tf)
+# dataset_Bart2 <- list(times_matrix = times_matrix, lambdas = lambdas, mus = mus)
+# save(dataset_Bart2, file = paste0(data_folder, variable_name2string(dataset_Bart2),".RData"))
 
 #one branching and three shifts, one before it and two after
 ti <- 0; tf <- 15; N0 <- 1; ts <- tb <- matrix(NA, nrow = 2);
@@ -144,4 +154,4 @@ dataset_PB <- list(times_matrix = times_matrix, lambdas = lambdas, mus = mus)
 save(dataset_PB, file = paste0(data_folder, variable_name2string(dataset_PB),".RData"))
 
 #clean
-rm(ti,ts,tb,tf,lambdas,mus, tb_when, tb_who, ts_when, ts_who, N0, den, variable_name2string, data_folder, times_matrix)
+rm(ti,ts,tb,tf,lambdas,mus, tb_when, tb_who, ts_when, ts_who, N0, den, variable_name2string, data_folder, times_matrix, common_factor)

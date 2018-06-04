@@ -307,6 +307,7 @@ split_times_matrix <- function(times_matrix, N0 = 1){
 #' @return result
 #' @export
 split_times_matrix3 <- function(times_matrix, N0 = 1){
+  #in this version i take also the branching events
 
   # ###
   # ti <- d.s$ti; tb <- d.s$tb; ts <- d.s$ts; tf <- d.s$tf; N0 <- 1

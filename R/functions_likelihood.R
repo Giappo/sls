@@ -72,7 +72,7 @@ lik_custom      <- function(dataset, N0 = 1, input_check = 1){
   if (!is.null(ncol(tb))){ rownames(tb) <- c("time", "who") }
   if (!is.null(ncol(ts))){ rownames(ts) <- c("time", "who") }
   nbranches <- 0; if(!is.null(ncol(tb))){nbranches <- ncol(tb)};
-  Ntips <-  N0 + nbranches
+  Ntips   <-  N0 + nbranches
   fathers <- unname( c(rep(0, N0), tb[2,]) ); sons <- 1:Ntips
   lik_den <- 1; r <- rep(regime <- 1, Ntips); n <- 1; t <- 2; shift <- branch <- 0
   for (t in 2:(Ntimepoints - 1))
@@ -88,7 +88,7 @@ lik_custom      <- function(dataset, N0 = 1, input_check = 1){
     per_lineage_outcome <- lik_single_event(time1 = time_interval1, time2 = time_interval2, lambda = lambdas[r[1:n]], mu = mus[r[1:n]])^expo
     lik_den <- lik_den * prod(per_lineage_outcome)
 
-    if(shift)
+    if (shift)
     {
       updated <- update_regimes(t = t, regime = regime, times_matrix = times_matrix, r = r, n = n)
       r <- updated$r
