@@ -18,7 +18,7 @@ before_script:
 script: 
   - |
     R CMD build .
-    travis_wait 40 R CMD check sls.tar.gz
+    travis_wait 40 R CMD check sls*tar.gz
 
 after_success:
   - Rscript -e 'lintr::lint_package()'
