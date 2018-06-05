@@ -1,3 +1,4 @@
+#' Check the agreement between a likelihood function and a simulation function on a given dataset.
 #' @inheritParams default_params_doc
 #' @return no idea
 #' @export
@@ -61,27 +62,30 @@ test_likelihood_formula  <- function(dataset, N0 = 1, Nsims = 100000,
 }
 
 
-#' Does something
+#' Check the agreement between a likelihood function and a simulation function. Wraps "test_likelihood_formula" in a function with simplified arguments to be used on the cluster.
 #' @inheritParams default_params_doc
 #' @return result
+#' @author Giovanni Laudanno
 #' @export
-test_likelihood_formula2 <- function(s,Nsims){
+test_likelihood_formula2 <- function(s, Nsims, lik_function = lik_custom, sim_function = sim_custom3){
   #lik_function = lik_custom, sim_function = sim_custom
   load_all_data(the.environment = environment()); data.sets <- ls(pattern = "dataset_",envir = environment())
   dataset <- get(data.sets[[s]])
   test_result <- test_likelihood_formula(dataset = dataset, Nsims = Nsims,
-                          sim_function = sim_custom2, lik_function = lik_custom)
-
-  if (Nsims >= 1E5)
+                          sim_function = sim_function, lik_function = lik_function)
+  Nsims_threshold <- 1E5
+  if (Sys.info()[['sysname']] == "Windows"){Nsims_threshold <- 1E5}
+  if (Sys.info()[['sysname']] == "Linux"){Nsims_threshold <- 1E2}
+  if (Nsims >= Nsims_threshold)
   {
-    results_file <- paste0(getwd(),"//results//table3.xls")
+    results_file <- paste0(getwd(),"//results//table4.xls")
     sheet_name <- sheet_name0 <- data.sets[[s]]
     wb <- xlsx::loadWorkbook(file = results_file)
     prova <- xlsx::getSheets(wb = wb)
     nomi <- names(prova)
     jj <- 1; while (sheet_name %in% nomi) {jj <- jj + 1; sheet_name <- paste0(sheet_name0," - ", toString(jj))}
 
-    xlsx::write.xlsx(x = test_result$results.table, file = results_file, sheetName = sheet_name, append = TRUE)
+    xlsx::write.xlsx(x = test_result$results.table, file = results_file, sheetName = sheet_name, append = TRUE, showNA = F)
   }
   return(test_result)
 }

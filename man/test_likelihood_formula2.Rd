@@ -2,16 +2,26 @@
 % Please edit documentation in R/test_likelihood_formula.R
 \name{test_likelihood_formula2}
 \alias{test_likelihood_formula2}
-\title{Does something}
+\title{Check the agreement between a likelihood function and a simulation function. Wraps "test_likelihood_formula" in a function with simplified arguments to be used on the cluster.}
 \usage{
-test_likelihood_formula2(s, Nsims)
+test_likelihood_formula2(s, Nsims, lik_function = lik_custom,
+  sim_function = sim_custom3)
 }
 \arguments{
 \item{Nsims}{number of simulation}
+
+\item{lik_function}{likelihood function, can be
+\code{\link{lik_custom}} or some unknown others}
+
+\item{sim_function}{simulation function (no idea what that means), can be
+\code{\link{sim_custom}} or some unknown others}
 }
 \value{
 result
 }
 \description{
-Does something
+Check the agreement between a likelihood function and a simulation function. Wraps "test_likelihood_formula" in a function with simplified arguments to be used on the cluster.
+}
+\author{
+Giovanni Laudanno
 }
