@@ -4,7 +4,8 @@ test_that( "Agreement between likelihood and simulations for elementary trees", 
 
   if (!is_on_travis()) return()
 
-  Nsims <- 1000000
+  # Increase for more precision
+  Nsims <- 1
 
   load_all_data()
   sls_dataset_shift  <- get("dataset_pure_branching1")

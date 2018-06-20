@@ -2,8 +2,6 @@ context("lik_custom_split & lik_custom_split2")
 
 test_that( "Agreement between lik_custom_split and lik_custom_split2", {
 
-  # if (!is_on_travis()) return()
-
   load_all_data(the.environment = environment())
   data.sets <- ls(pattern = "dataset_",envir = environment())
 
