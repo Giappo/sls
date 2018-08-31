@@ -43,6 +43,8 @@ sls_ML_cluster <- function(s,
   pars2 <- c(res, ddmodel, cond, tsplit, 0, soc, tol, maxiter)
   outnames <- c("lambda_M", "mu_M", "K_M", "lambda_S", "mu_S", "K_S", "t_d", "LL", "df", "conv")
   simpath  <- getwd()
+  datapath <- paste0(simpath, "/data")
+  save(sim, file = paste0(datapath, "/sim_", s, ".RData"))
 
   #sls
   MLE_sls <- unlist(
@@ -56,6 +58,7 @@ sls_ML_cluster <- function(s,
                  tol = tol,
                  optimmethod = optimmethod)
   )
+
   names(MLE_sls) <- outnames
   out_sls  <- c(MLE_sls, s);
   names(out_sls) <- c(names(MLE_sls), "tree id")
