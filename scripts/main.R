@@ -1,8 +1,8 @@
 rm(list = ls()); library(sls)
 load_all_data(the.environment = environment()); data.sets <- ls(pattern = "dataset_",envir = environment())
-sim_function = sim_custom2; lik_function = lik_custom
-Nsims <- 1E6
-which_trees <- 1:length(data.sets); #which_trees <- c(14); i <- 1 #use it in case you already have some partial results
+sim_function = sim_custom4; lik_function = lik_custom
+Nsims <- 1E2# 1E6
+which_trees <- 1:length(data.sets); i <- 1 #which_trees <- c(14); i <- 1 #use it in case you already have some partial results
 for (i in which_trees)
 {
   print(i)
@@ -22,6 +22,9 @@ for (i in which_trees)
     # xlsx::addPicture(file = results_file, sheet = test_result$sheet_name, startRow = 13, startColumn = 1)
   }
 }
+
+test_likelihood_formula2(s = 1, Nsims = 1E5,
+                         lik_function = lik_custom, sim_function = sim_custom4)
 
 
 # #####-test splits-#####

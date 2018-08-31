@@ -21,8 +21,9 @@ lineages <- sim_event_shift(lineages = lineages, new_pars = pars[[2]], shifting_
 lineages <- sim_evolve_lineages(lineages = lineages, time_before_next_event = B);lineages
 lineages <- sim_event_branching(lineages = lineages, branching_id = 1);lineages
 lineages <- sim_evolve_lineages(lineages = lineages, time_before_next_event = C);lineages
-
-lineages_test <- sim_make_branching3(lineages = lineages, branching_lineage = lineages[2,], sim_get_ids(lineages));lineages_test
+# lineages0 <- lineages
+branching_lineage = lineages[2,]; ids <- sim_get_ids(lineages)
+lineages_test <- sim_make_branching4(lineages = lineages, branching_lineage = lineages[2,], sim_get_ids(lineages));lineages_test
 
 sim_make_branching3       <- function(lineages, branching_lineage, ids){
 
