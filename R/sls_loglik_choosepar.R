@@ -128,7 +128,7 @@ sls_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, i
 #' @export
 dd_KI_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
                                      pars2, brtsM, brtsS, pars.transform = 0, missnumspec = c(0,0),
-                                     fun = sls::lik_shift_DDD2)
+                                     loglik_function = sls::lik_shift_DDD2)
 {
   methode <- 'analytical'
   if (missnumspec != c(0,0))
@@ -181,7 +181,7 @@ dd_KI_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix,
     loglik = -Inf
   }else
   {
-    loglik = fun(pars1 = pars1, pars2 = pars2,
+    loglik = loglik_function(pars1 = pars1, pars2 = pars2,
                  brtsM = brtsM, brtsS = brtsS,
                  missnumspec = missnumspec)
     if (is.nan(loglik) || is.na(loglik))
