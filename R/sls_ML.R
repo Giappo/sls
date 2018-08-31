@@ -270,6 +270,7 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
         }else
         {
           out = DDD::optimizer(loglik_function = loglik_function,
+                               fun = sls::sls_loglik_choosepar2,
                                optimmethod = optimmethod, optimpars = optimpars,
                                trparsopt = trparsopt,
                                trparsfix = trparsfix,
