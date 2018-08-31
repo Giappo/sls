@@ -291,7 +291,6 @@ sls_sim2 <- function(pars1, age, soc, cond) {
 
     if (cond) {L.list[[1]][1,1] <- t0[1]}
 
-    # par(c(2,1))
     for (clade in 1:Nclades)
     {
       # brts.list[[clade]] <- NULL
@@ -305,10 +304,14 @@ sls_sim2 <- function(pars1, age, soc, cond) {
         {
           time_points <- unlist(unname(sort(DDD:::L2brts(L, dropextinct = TRUE), decreasing = TRUE)) )
           brts0 <- -sort(abs(as.numeric(time_points)), decreasing = TRUE)
-          if (N0s[clade] == 1) {brts <- c(-age, brts0)} else {brts <- brts0}
-          # plot(tes <- DDD:::L2phylo(L, dropextinct = TRUE))
+          if (N0s[clade] == 1 && clade == 1)
+          {
+            brts <- c(-age, brts0)
+          }else
+          {
+            brts <- brts0
+          }
         }
-        # plot(tas <- DDD:::L2phylo(L, dropextinct = FALSE))
         brts.list[[clade]] <- brts
       }
     }

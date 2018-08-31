@@ -252,7 +252,8 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
         pars2 = c(res, ddmodel, cond, tsplit, 0, soc, tol, maxiter)
         names(pars2) <- c("res", "ddmodel", "cond", "tsplit", "", "soc", "tol", "maxiter")
         optimpars = c(tol, maxiter)
-        initloglik = sls::sls_loglik_choosepar2(trparsopt = trparsopt,
+        initloglik = sls::sls_loglik_choosepar2(loglik_function = loglik_function,
+                                                trparsopt = trparsopt,
                                                 trparsfix = trparsfix,
                                                 idparsopt = idparsopt,
                                                 idparsfix = idparsfix,
@@ -268,7 +269,8 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
           out2 <- failout
         }else
         {
-          out = DDD::optimizer(fun = sls::sls_loglik_choosepar2, optimmethod = optimmethod, optimpars = optimpars,
+          out = DDD::optimizer(loglik_function = loglik_function,
+                               optimmethod = optimmethod, optimpars = optimpars,
                                trparsopt = trparsopt,
                                trparsfix = trparsfix,
                                idparsopt = idparsopt,

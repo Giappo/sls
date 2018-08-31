@@ -693,9 +693,10 @@ lik_shift_DDD2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, b
   # tsplit <- pars2[4]
   # N0     <- pars2[6]
   cond <- pars2[3]
-  pars2[3] <- 0 # i will impose my conditioning
+  # pars2[3] <- 0 # i will impose my conditioning
+  pars2copy <- pars2; pars2copy[3] <- 0 #i will impose my conditioning
 
-  loglik <- DDD::dd_KI_loglik(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS, missnumspec = missnumspec)
+  loglik <- DDD::dd_KI_loglik(pars1 = pars1, pars2 = pars2copy, brtsM = brtsM, brtsS = brtsS, missnumspec = missnumspec)
 
   Pc <- 1
   if (!missing(cond))
