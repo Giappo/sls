@@ -56,7 +56,7 @@ sls_loglik_choosepar <- function(loglik_function = sls:::lik_shift_P,
 #' @details This is not to be called by the user.
 #' @export
 sls_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
-                                   pars2, brtsM, brtsS, pars.transform = 0, missnumspec = c(0,0),
+                                   pars2, brtsM, brtsS, missnumspec = c(0,0),
                                    loglik_function = sls::lik_shift_P2)
 {
   methode <- 'analytical'
@@ -83,23 +83,17 @@ sls_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, i
 
   t_d    <- trpars1[7]
   tsplit <- pars2[4]
-  t_d    <- abs(t_d)    * sign(brtsM[1])
-  tsplit <- abs(tsplit) * sign(brtsM[1])
+  # t_d    <- abs(t_d)    * sign(brtsM[1])
+  # tsplit <- abs(tsplit) * sign(brtsM[1])
   # pars1[7]   <- t_d
-  trpars1[7] <- t_d
-  pars2[4]   <- tsplit
+  trpars1[7] <- abs(t_d)
+  pars2[4]   <- abs(tsplit)
 
-  if (pars.transform == 1)
-  {
-    #Rampal's transformation
-    pars1 <- trpars1
-    # pars1[1:(Npars - 1)] = trpars1[1:(Npars - 1)]/(1 - trpars1[1:(Npars - 1)]) #this for the 7 parameter configuration. If you change this check also sls_ML2
-    pars1 = trpars1/(1 - trpars1)
-  }else
-  {
-    pars1 <- trpars1
-  }
+  #Rampal's transformation
+  pars1 <- trpars1
+  pars1 <- trpars1/(1 - trpars1)
 
+  names(trpars1) <- namepars
   if (max(trpars1[1:(Npars - 1)]) > 1 ||
       min(trpars1[1:(Npars - 1)]) < 0 ||
       trpars1[1] <= trpars1[2] ||
@@ -111,8 +105,8 @@ sls_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, i
   }else
   {
     loglik = loglik_function(pars1 = pars1, pars2 = pars2,
-                brtsM = brtsM, brtsS = brtsS,
-                missnumspec = missnumspec)
+                             brtsM = brtsM, brtsS = brtsS,
+                             missnumspec = missnumspec)
     if (is.nan(loglik) || is.na(loglik))
     {
       cat("There are parameter values used which cause numerical problems.\n")
@@ -127,7 +121,7 @@ sls_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, i
 #' @details This is not to be called by the user.
 #' @export
 dd_KI_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
-                                     pars2, brtsM, brtsS, pars.transform = 0, missnumspec = c(0,0),
+                                     pars2, brtsM, brtsS, missnumspec = c(0,0),
                                      loglik_function = sls::lik_shift_DDD2)
 {
   methode <- 'analytical'
@@ -160,16 +154,9 @@ dd_KI_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix,
   # trpars1[7] <- t_d
   # pars2[4]   <- tsplit
 
-  if (pars.transform == 1)
-  {
-    #Rampal's transformation
-    pars1 <- trpars1
-    # pars1[1:(Npars - 1)] = trpars1[1:(Npars - 1)]/(1 - trpars1[1:(Npars - 1)]) #this for the 7 parameter configuration. If you change this check also sls_ML2
-    pars1 = trpars1/(1 - trpars1)
-  }else
-  {
-    pars1 <- trpars1
-  }
+  #Rampal's transformation
+  pars1 <- trpars1
+  pars1 <- trpars1/(1 - trpars1)
 
   if (max(trpars1[1:(Npars - 1)]) > 1 ||
       min(trpars1[1:(Npars - 1)]) < 0 ||

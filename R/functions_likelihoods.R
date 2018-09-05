@@ -95,7 +95,10 @@ lik_shift_P2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brt
   dummy <- missnumspec #change this if you want to include missing species. it's probably not difficult, just modify pn for LM and LS
 
   brtsM1 <- sort(abs(brtsM), decreasing = TRUE)
-  brtsS1 <- sort(abs(c(brtsS, td)), decreasing = TRUE)
+  if (is.null(unlist(brtsS))) {brtsS1 <- td} else
+  {
+    brtsS1 <- sort(abs(c(brtsS, td)), decreasing = TRUE)
+  }
   td <- abs(td) * sign(brtsM1[1])
   tsplit <- abs(tsplit) * sign(brtsM1[1])
 
@@ -694,9 +697,11 @@ lik_shift_DDD2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, b
   # N0     <- pars2[6]
   cond <- pars2[3]
   # pars2[3] <- 0 # i will impose my conditioning
-  pars2copy <- pars2; pars2copy[3] <- 0 #i will impose my conditioning
-
-  loglik <- DDD::dd_KI_loglik(pars1 = pars1, pars2 = pars2copy, brtsM = brtsM, brtsS = brtsS, missnumspec = missnumspec)
+  pars1copy <- pars1; pars1copy[7] <- abs(pars1copy[7])
+  pars2copy <- pars2; pars2copy[4] <- abs(pars2copy[4]); pars2copy[3] <- 0 #i will impose my conditioning
+  testit::assert(pars2copy[4] %in% abs(brtsM)) #tsplit in brtsM
+  loglik <- DDD::dd_KI_loglik(pars1 = pars1copy, pars2 = pars2copy,
+                              brtsM = abs(brtsM), brtsS = abs(brtsS), missnumspec = missnumspec)
 
   Pc <- 1
   if (!missing(cond))
@@ -837,34 +842,27 @@ Pc_1shift2 <- function(pars1, pars2, brtsM, brtsS) {
   tsplit <- pars2[4]
   soc    <- pars2[6]
 
+  tc <- brtsM[1]
+  ts <- td
+  tp <- 0
+  A <- abs(ts - tc); B <- abs(tp - ts)
+
   if (soc != 2) {stop("Pc can be calculated only if phylogeny starts with a crown!")}
 
-  if (length(brtsS) > 0)
-  {
-    tc <- brtsM[1]
-    ts <- td
-    tp <- 0
-    A <- abs(ts - tc); B <- abs(tp - ts)
-    PS <- 1 - pn(n = 0, t = B, lambda = lambdas[2], mu = mus[2])
-    nvec <- 1:lx
-    ns1  <- row(matrix(NA, nrow = lx, ncol = lx))
-    ns2  <- col(matrix(NA, nrow = lx, ncol = lx))
-    pA   <- sls::pt(t = A, lambda = lambdas[1], mu = mus[1]); pA
-    uA   <- sls::ut(t = A, lambda = lambdas[1], mu = mus[1]); uA
-    pB1  <- sls::pt(t = B, lambda = lambdas[1], mu = mus[1]); pB1
-    pB2  <- sls::pt(t = B, lambda = lambdas[2], mu = mus[2]); pB2
-    pns1 <- sls::pn(n = ns1, t = A, lambda = lambdas[1], mu = mus[1]); rownames(pns1) <- paste0("ns1=", nvec); colnames(pns1) <- paste0("ns2=", nvec); head(pns1)
-    pns2 <- sls::pn(n = ns2, t = A, lambda = lambdas[1], mu = mus[1]); rownames(pns2) <- paste0("ns1=", nvec); colnames(pns2) <- paste0("ns2=", nvec); head(pns2)
-    aux1 <- pns1 * pns2 * (ns1/(ns1 + ns2)) * (1 - (1 - pB1)^ns2)
-    P1   <- sum(aux1) #branch 2 survives till the present
-    aux2 <- aux1 * (1 - (1 - pB1)^(ns1 - 1)); head(aux2)
-    P2   <- sum(aux2) #both branches 1 and 2 survive till the present
-  }else
-  {
-    P1 <- (1 - sls::pn(n = 0, lambda = lambdas[1], mu = mus[1]))
-    P2 <- (1/2) * (1 - sls::pn(n = 0, lambda = lambdas[1], mu = mus[1]))^2 #both branches 1 and 2 survive till the present
-    PS <- 0
-  }
+  PS <- 1 - pn(n = 0, t = B, lambda = lambdas[2], mu = mus[2])
+  nvec <- 1:lx
+  ns1  <- row(matrix(NA, nrow = lx, ncol = lx))
+  ns2  <- col(matrix(NA, nrow = lx, ncol = lx))
+  pA   <- sls::pt(t = A, lambda = lambdas[1], mu = mus[1]); pA
+  uA   <- sls::ut(t = A, lambda = lambdas[1], mu = mus[1]); uA
+  pB1  <- sls::pt(t = B, lambda = lambdas[1], mu = mus[1]); pB1
+  pB2  <- sls::pt(t = B, lambda = lambdas[2], mu = mus[2]); pB2
+  pns1 <- sls::pn(n = ns1, t = A, lambda = lambdas[1], mu = mus[1]); rownames(pns1) <- paste0("ns1=", nvec); colnames(pns1) <- paste0("ns2=", nvec); head(pns1)
+  pns2 <- sls::pn(n = ns2, t = A, lambda = lambdas[1], mu = mus[1]); rownames(pns2) <- paste0("ns1=", nvec); colnames(pns2) <- paste0("ns2=", nvec); head(pns2)
+  aux1 <- pns1 * pns2 * (ns1/(ns1 + ns2)) * (1 - (1 - pB1)^ns2)
+  P1   <- sum(aux1) #branch 2 survives till the present
+  aux2 <- aux1 * (1 - (1 - pB1)^(ns1 - 1)); head(aux2)
+  P2   <- sum(aux2) #both branches 1 and 2 survive till the present
 
   Pc1  <- 2 * PS * P1 + 2 * (1 - PS) * P2
   Pc2  <- 2 * PS * P2

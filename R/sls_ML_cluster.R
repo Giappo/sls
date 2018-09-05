@@ -6,10 +6,10 @@
 #' @export
 sls_ML_cluster <- function(s,
                            simpars = c(0.3, 0.1, 0.6, 0.05),
-                           initparsopt = c(0.5, 0.3, 0.5, 0.3),
-                           age = 10,
                            t_d  = 4.8,
                            cond = 1,
+                           initparsopt = c(0.5, 0.3, 0.5, 0.3),
+                           age = 10,
                            optimmethod = 'simplex',
                            tolerance = 1E-2)
 {
@@ -27,13 +27,12 @@ sls_ML_cluster <- function(s,
   missnumspec <- c(0,0)
   ddmodel <- 1
   maxiter <- 1000 * round((1.25)^length(idparsopt))
-  pars.transform <- 1
 
   # sim <- sls::sls_sim(pars = simpars, t0 = c(age, t_d), starting_species = c(soc, 1), cond = cond)
   pars1 <- c(simpars[1], simpars[2], Inf, simpars[3], simpars[4], Inf, t_d)
   sim   <- sls::sls_sim2(pars1 = pars1, age = age, soc = soc, cond = cond)
   brtsM <- sim$brts[[1]]; brtsS <- sim$brts[[2]]; brtsM; brtsS
-  tsplit <- max(brtsM[brtsM < min(brtsS)])
+  tsplit <- abs(max(brtsM[abs(brtsM) > t_d]))
   res <- 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec))
 
   # pars1a <- rep(NA, 7); pars1a[idparsopt] <- initparsopt; pars1a[idparsfix] <- parsfix

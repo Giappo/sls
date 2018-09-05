@@ -7,7 +7,7 @@
 pt  <- function (lambda, mu, t) {
   time <- t
   Lambda <- exp((mu - lambda) * time)
-  out    <- (lambda == mu)*(1/(1 + lambda * time)) +
+  out    <- (lambda == mu) * (1/(1 + lambda * time)) +
     (lambda != mu) * ((lambda - mu + (lambda == mu))/(lambda - mu * Lambda * (lambda != mu) + (lambda == mu)))
   return(unname(out))
 }

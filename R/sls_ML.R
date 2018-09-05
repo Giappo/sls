@@ -164,9 +164,9 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
                     cond = 1,
                     soc = 2,
                     tol = c(0.001, 1e-04, 1e-06),
-                    maxiter = 1000 * round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE,
-                    optimmethod = "subplex",
-                    pars.transform = 1)
+                    maxiter = 1000 * round((1.25)^length(idparsopt)),
+                    changeloglikifnoconv = FALSE,
+                    optimmethod = "subplex")
 {
   namepars <- c("lambda_M", "mu_M", "K_M", "lambda_S", "mu_S", "K_S", "t_d"); Npars <- length(namepars);
   failpars <- rep(-1, Npars); names(failpars) <- namepars; #those are the parameters that you get if something goes sideways
@@ -180,7 +180,7 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
   options(warn = -1)
   brtsM = sort(abs(as.numeric(brtsM)), decreasing = TRUE)
   brtsS = sort(abs(as.numeric(brtsS)), decreasing = TRUE)
-  if (cond == 1 & soc == 1)
+  if (cond != 0 & soc == 1)
   {
     cat("Conditioning on survival of a clade with stem age currently not implemented.\n")
     out2 <- failout
@@ -232,22 +232,11 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
         cat("Optimizing the likelihood - this may take a while.", "\n")
         flush.console()
 
-        # trparsopt = initparsopt/(1 + initparsopt)
-        # trparsopt[which(initparsopt == Inf)] = 1
-        # trparsfix = parsfix/(1 + parsfix)
-        # trparsfix[which(parsfix == Inf)] = 1
-        if (pars.transform == 1)
-        {
-          #Rampal's transformation
-          trparsopt = initparsopt/(1 + initparsopt)
-          trparsopt[which(initparsopt == Inf)] = 1
-          trparsfix = parsfix/(1 + parsfix)
-          trparsfix[which(parsfix == Inf)] = 1
-        }else
-        {
-          trparsopt  <- initparsopt
-          trparsfix  <- parsfix
-        }
+        #Rampal's transformation
+        trparsopt = initparsopt/(1 + initparsopt)
+        trparsopt[which(initparsopt == Inf)] = 1
+        trparsfix = parsfix/(1 + parsfix)
+        trparsfix[which(parsfix == Inf)] = 1
 
         pars2 = c(res, ddmodel, cond, tsplit, 0, soc, tol, maxiter)
         names(pars2) <- c("res", "ddmodel", "cond", "tsplit", "", "soc", "tol", "maxiter")
@@ -259,8 +248,7 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
                                                 idparsfix = idparsfix,
                                                 idparsnoshift = idparsnoshift,
                                                 pars2 = pars2, brtsM = brtsM, brtsS = brtsS,
-                                                missnumspec = missnumspec,
-                                                pars.transform = pars.transform); initloglik
+                                                missnumspec = missnumspec); initloglik
         cat("The loglikelihood for the initial parameter values is", initloglik, "\n")
         flush.console()
         if (initloglik == -Inf)
@@ -271,15 +259,15 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
         {
           out = DDD::optimizer(loglik_function = loglik_function,
                                fun = sls::sls_loglik_choosepar2,
-                               optimmethod = optimmethod, optimpars = optimpars,
+                               optimmethod = optimmethod,
+                               optimpars = optimpars,
                                trparsopt = trparsopt,
                                trparsfix = trparsfix,
                                idparsopt = idparsopt,
                                idparsfix = idparsfix,
                                idparsnoshift = idparsnoshift,
                                pars2 = pars2, brtsM = brtsM, brtsS = brtsS,
-                               missnumspec = missnumspec,
-                               pars.transform = pars.transform)
+                               missnumspec = missnumspec)
           if (out$conv > 0)
           {
             cat("Optimization has not converged. Try again with different initial values.\n")
@@ -287,13 +275,7 @@ sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
           }else
           {
             MLtrpars = as.numeric(unlist(out$par))
-            if (pars.transform == 1)
-            {
-              MLpars = MLtrpars/(1 - MLtrpars)
-            }else
-            {
-              MLpars <- MLtrpars
-            }
+            MLpars = MLtrpars/(1 - MLtrpars)
             MLpars1 = rep(0, Npars)
             MLpars1[idparsopt] = MLpars
             if (length(idparsfix) != 0)

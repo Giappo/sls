@@ -121,24 +121,6 @@ test_that( "test P and Q approach equivalence", {
     abs(lik_P - lik_Q) < 1e-3
   )
 
-  #test8 soc = 1
-  lambdas <- c(0.3, 0.6)
-  mus     <- c(0.1, 0.05)
-  brtsM   <- c(10, 8, 7, 2)
-  brtsS   <- c(5, 3)
-  tsplit  <- c(7)
-  td      <- c(5.5)
-  soc     <- 1
-  pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-  pars2   <- c(100, 1, 1, tsplit, 0, soc)
-
-  lik_P <- sls::lik_shift_P2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::lik_shift_Q2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
-
-  testthat::expect_true(
-    abs(lik_P - lik_Q) < 1e-3
-  )
-
 })
 
 # test_that("test sls_loglik_choosepar", {

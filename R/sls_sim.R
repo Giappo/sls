@@ -299,7 +299,8 @@ sls_sim2 <- function(pars1, age, soc, cond) {
       {
         if (sum(L[,4] < 0) == 1)
         {
-          brts <- -t0[clade]
+          brts <- NULL
+          brts.list[clade] <- list(NULL)
         }else
         {
           time_points <- unlist(unname(sort(DDD:::L2brts(L, dropextinct = TRUE), decreasing = TRUE)) )
@@ -311,8 +312,8 @@ sls_sim2 <- function(pars1, age, soc, cond) {
           {
             brts <- brts0
           }
+          brts.list[[clade]] <- brts
         }
-        brts.list[[clade]] <- brts
       }
     }
 
