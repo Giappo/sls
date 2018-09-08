@@ -32,7 +32,8 @@ sls_ML_cluster <- function(s,
   pars1 <- c(simpars[1], simpars[2], Inf, simpars[3], simpars[4], Inf, t_d)
   sim   <- sls::sls_sim2(pars1 = pars1, age = age, soc = soc, cond = cond)
   brtsM <- sim$brts[[1]]; brtsS <- sim$brts[[2]]; brtsM; brtsS
-  tsplit <- abs(max(brtsM[abs(brtsM) > t_d]))
+  # tsplit <- abs(max(brtsM[abs(brtsM) > t_d]))
+  tsplit <- min(abs(brtsM[abs(brtsM) > t_d]))
   res <- 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec))
 
   # pars1a <- rep(NA, 7); pars1a[idparsopt] <- initparsopt; pars1a[idparsfix] <- parsfix
