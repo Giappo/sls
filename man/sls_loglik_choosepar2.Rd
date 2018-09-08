@@ -5,8 +5,8 @@
 \title{Internal MBD function}
 \usage{
 sls_loglik_choosepar2(trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
-  pars2, brtsM, brtsS, pars.transform = 0, missnumspec = c(0, 0),
-  fun = sls::lik_shift_P2)
+  pars2, brtsM, brtsS, missnumspec = c(0, 0),
+  loglik_function = sls::lik_shift_P2)
 }
 \description{
 Internal MBD function.

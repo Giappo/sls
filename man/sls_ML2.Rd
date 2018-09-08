@@ -13,7 +13,7 @@ sls_ML2(loglik_function = sls:::lik_shift_P2, brtsM, brtsS, tsplit,
   ddmodel = 1, missnumspec = c(0, 0), cond = 1, soc = 2,
   tol = c(0.001, 1e-04, 1e-06), maxiter = 1000 *
   round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE,
-  optimmethod = "subplex", pars.transform = 1)
+  optimmethod = "subplex")
 }
 \description{
 Internal MBD function.
