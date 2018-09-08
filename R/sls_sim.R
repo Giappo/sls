@@ -188,15 +188,8 @@ sls_sim2 <- function(pars1, age, soc, cond) {
   Ks      <- c(pars1[3], pars1[6])
   td      <- pars1[7]
 
-  # lx     <- pars2[1]
-  # cond   <- pars2[3]
-  # tsplit <- pars2[4]
-  # soc    <- pars2[6]
   N0s    <- c(soc, 1)
   t0     <- c(age, td)
-
-  # lambdas <- c(pars[1], pars[3])
-  # mus     <- c(pars[2], pars[4])
 
   testit::assert(all(lambdas >= 0))
   testit::assert(all(mus >= 0))
@@ -210,7 +203,7 @@ sls_sim2 <- function(pars1, age, soc, cond) {
 
   keep_the_sim <- 0
   while (keep_the_sim == 0)
-  {
+  {#sim loop
     clade <- 0
     clades_born <- c(1, rep(0, Nclades - 1))
     while ((clade <- clade + 1) <= Nclades)
@@ -291,31 +284,39 @@ sls_sim2 <- function(pars1, age, soc, cond) {
 
     if (cond) {L.list[[1]][1,1] <- t0[1]}
 
+    brts.list <- vector("list", Nclades)
     for (clade in 1:Nclades)
     {
-      # brts.list[[clade]] <- NULL
       L <- L.list[[clade]]
-      if (sls:::check_survival(L) & all(L[,3] != 0))
+      if (clade == 1)
       {
-        if (sum(L[,4] < 0) == 1)
+        L[L[,4] == td, 4] <- -1
+        if (sls:::check_survival(L) & all(L[,3] != 0)) #if L survives
         {
-          brts <- NULL
-          brts.list[clade] <- list(NULL)
-        }else
-        {
-          time_points <- unlist(unname(sort(DDD:::L2brts(L, dropextinct = TRUE), decreasing = TRUE)) )
-          brts0 <- -sort(abs(as.numeric(time_points)), decreasing = TRUE)
-          if (N0s[clade] == 1 && clade == 1)
+          if (sum(L[,4] == -1) > 1)
           {
-            brts <- c(-age, brts0)
+            time_points <- unlist(unname(sort(DDD:::L2brts(L, dropextinct = TRUE), decreasing = TRUE)) )
+            brts <- -sort(abs(as.numeric(time_points)), decreasing = TRUE)
+            if (cond != 0) {brts[1] <- t0[clade]}
+            brts.list[[clade]] <- abs(brts)
           }else
           {
-            brts <- brts0
+            brts <- NULL
           }
-          brts.list[[clade]] <- brts
+        }
+      }else
+      {
+        if (sls:::check_survival(L) & all(L[,3] != 0)) #if L survives
+        {
+          if (sum(L[,4] == -1) > 1)
+          {
+            time_points <- unlist(unname(sort(DDD:::L2brts(L, dropextinct = TRUE), decreasing = TRUE)) )
+            brts <- -sort(abs(as.numeric(time_points)), decreasing = TRUE)
+            brts.list[[clade]] <- abs(brts)
+          }
         }
       }
-    }
+    }; brts.list
 
     LM <- L.list[[1]]
     shift_time <- shifts[[1]][1]
@@ -327,8 +328,8 @@ sls_sim2 <- function(pars1, age, soc, cond) {
     LM2 <- LM[condLM2,]; dim(LM2) <- c(sum(condLM2), 4)
     condLM1cs <- (LM1[,1] > shift_time)
     condLM2cs <- (LM2[,1] > shift_time)
-    LM1cs <- LM1[condLM1cs,]; dim(LM1cs) <- c(sum(condLM1cs), 4)
-    LM2cs <- LM2[condLM2cs,]; dim(LM2cs) <- c(sum(condLM2cs), 4)
+    LM1cs <- LM1[condLM1cs,]; dim(LM1cs) <- c(sum(condLM1cs), 4) #lineages in M1 born before tshift
+    LM2cs <- LM2[condLM2cs,]; dim(LM2cs) <- c(sum(condLM2cs), 4) #lineages in M2 born before tshift
 
     LS <- L.list[[2]]
     condM1cp <- sls:::check_survival(L = LM1, final_time = 0)
@@ -345,11 +346,9 @@ sls_sim2 <- function(pars1, age, soc, cond) {
 
     #conditioning
     keep_the_sim <- (cond == 0) + (cond == 1) * cond1 + (cond == 2) * cond2 + (cond == 3) * cond3
-    # keep_the_sim <- keep_the_sim * condM1cs #we require that M1 arrives at the shift
-  }
+    keep_the_sim
+  }#sim loop
 
-  # out <- list(brts = brts.list, tes = tes.list, tas = tas.list, L = L.list)
-  # out <- list(L = L.list)
   out <- list(brts = brts.list, L = L.list)
   return(out)
   # return(L.list)
