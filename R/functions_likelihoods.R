@@ -849,7 +849,7 @@ Pc_1shift2 <- function(pars1, pars2, brtsM, brtsS) {
 
   if (soc != 2) {stop("Pc can be calculated only if phylogeny starts with a crown!")}
 
-  PS <- 1 - pn(n = 0, t = B, lambda = lambdas[2], mu = mus[2])
+  PS   <- 1 - pn(n = 0, t = B, lambda = lambdas[2], mu = mus[2])
   nvec <- 1:lx
   ns1  <- row(matrix(NA, nrow = lx, ncol = lx))
   ns2  <- col(matrix(NA, nrow = lx, ncol = lx))

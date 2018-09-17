@@ -42,10 +42,11 @@ combine_pns <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
   nvec <- 1:nmax
   N <- length(ts)
   X <- vector("list", N)
-  for (t in 1:N) {
+  for (t in 1:N)
+  {
     X[[t]] <- fun(n = nvec, t = ts[t], lambda = lambda, mu = mu, tbar = tbar)
   }
-  pippo <- matrix(unlist(lapply(X, FUN = sls::DFT)), nrow = N, byrow = T); rownames(pippo) <- paste0("t",1:N)
+  pippo <- matrix(unlist(lapply(X, FUN = sls::DFT)), nrow = N, byrow = T); rownames(pippo) <- paste0("t", 1:N)
   # apply(pippo, MARGIN = 2, "prod")
   Re(sum((nvec^-1) * sls::IDFT(apply(pippo, MARGIN = 2, "prod")))) #awesome!
   # sum((nvec^-1)*(Re(IDFT(DFT(x0) * DFT(y0))))) #cool!

@@ -1,6 +1,6 @@
 rm(list = ls()); s = 10 #10 and 11 give brtsS == NULL and DDD fails on that
 
-for (s in 1:9){
+# for (s in 1:9){
 simpars <- c(0.3, 0.1, 0.6, 0.08) #c(0.4, 0.2, 0.6, 0.1)
 initparsopt <- c(0.5, 0.3, 0.5, 0.3)
 cond <- 1
@@ -30,7 +30,7 @@ t_MLE <- system.time(test_MLE <- sls::sls_ML_cluster(s = s,
                                                      tolerance = 1e-2)
 )
 print(test_MLE); print(simpars)
-}
+# }
 # print(test_sub); print(test_sim);
 # MLE <- list(maxs <- 10)
 # for(s in 1:maxs) {MLE[[s]] <- unlist(sls::sls_ML_cluster(s = s))}
