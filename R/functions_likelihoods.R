@@ -159,6 +159,91 @@ lik_shift_P2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brt
   return(loglik)
 }
 
+#' @title P-likelihood
+#' @author Giovanni Laudanno
+#' @description Calculates the likelihood convoluting Nee's functions
+#' @inheritParams default_params_doc
+#' @return The likelihood
+#' @export
+lik_shift_P2_noratio <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
+
+  lambdas <- c(pars1[1], pars1[4])
+  mus     <- c(pars1[2], pars1[5])
+  Ks      <- c(pars1[3], pars1[6])
+  td      <- pars1[7]
+
+  nmax   <- pars2[1]
+  cond   <- pars2[3]
+  tsplit <- pars2[4]
+  N0     <- pars2[6]
+
+  dummy <- missnumspec #change this if you want to include missing species. it's probably not difficult, just modify pn for LM and LS
+
+  brtsM1 <- sort(abs(brtsM), decreasing = TRUE)
+  if (is.null(unlist(brtsS))) {brtsS1 <- td} else
+  {
+    brtsS1 <- sort(abs(c(brtsS, td)), decreasing = TRUE)
+  }
+  td <- abs(td) * sign(brtsM1[1])
+  tsplit <- abs(tsplit) * sign(brtsM1[1])
+
+  testit::assert(all(sign(brtsM1) == sign(td)))
+  testit::assert(
+    all(sign(brtsS1 * !is.null(brtsS1)) == sign(td * !is.null(brtsS1)))
+  )
+  testit::assert(all(sign(tsplit) == sign(td)))
+  if (!(tsplit %in% brtsM1)) {stop('tsplit has to be in the main clade branching times!')}
+
+  BRTSM <- rbind(brtsM1, rep(1, length(brtsM1))); dim(BRTSM) <- c(2, length(brtsM1))
+  TD <- c(td, -1); dim(TD) <- c(2, 1)
+  EVENTSM <- (M <- cbind(BRTSM, TD))[,order(-M[1,])]
+  kvecM_after <- (N0 - 1) + cumsum(EVENTSM[2,])
+  kvecM_before <- c(N0 - 1, kvecM_after[-length(kvecM_after)])
+  kvecM_before1 <- kvecM_before[EVENTSM[2,] > 0]
+
+  if (N0 == 2)
+  {
+    brtsM2 <- c(brtsM1[1], brtsM1)
+  }else
+  {
+    brtsM2 <- brtsM1
+  }
+  tsM_pre_shift  <- brtsM2[brtsM2 > td] - td; tsM_pre_shift
+  tsM_post_shift <- brtsM2[brtsM2 < td]     ; tsM_post_shift
+  if (length(tsM_post_shift) == 0) {tsM_post_shift <- 0}
+  if (length(tsM_pre_shift ) == 0) {cat("There are no branching times before the shift"); return(-Inf)}
+
+  likM_pre_shift  <- sls::combine_pns_noratio(lambda = lambdas[1], mu = mus[1], ts = tsM_pre_shift, tbar = td, nmax = nmax); log(likM_pre_shift)
+  likM_post_shift <- prod(
+    sls::pn(n = 1, lambda = lambdas[1], mu = mus[1], t = tsM_post_shift)
+  ) * sls:::pn(n = 1, t = td, lambda = lambdas[1], mu = mus[1])^(length(tsM_pre_shift) - 1); log(likM_post_shift)
+  likS_post_shift <- prod(
+    sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brtsS1        )
+  ); log(likS_post_shift)
+  loglikM0 <- log(likM_pre_shift) + log(likM_post_shift)
+  loglikS0 <- log(likS_post_shift)
+
+  logcombinatoricsM <- ifelse(length(brtsM) > 1, sum(log(kvecM_before1[-1])), 0)
+  logcombinatoricsS <- ifelse(length(brtsS) > 0, lfactorial(length(brtsS))   , 0)
+  lM <- length(brtsM1[brtsM1 != brtsM1[1]]) # number of speciations in the Main clade
+  lS <- length(brtsS1[brtsS1 != brtsS1[1]]) # number of speciations in the Sub clade
+  loglikM <- loglikM0 + logcombinatoricsM + log(lambdas[1] + (length(brtsM) == 0)) * lM
+  loglikS <- loglikS0 + logcombinatoricsS + log(lambdas[2] + (length(brtsS) == 0)) * lS
+
+  Pc <- 1
+  if (!missing(cond))
+  {
+    if (cond %in% c(1,2,3))
+    {
+      conditioning <- sls::Pc_1shift2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      Pc <- conditioning[[cond]]; Pc
+    }
+  }
+
+  loglik <- loglikM + loglikS - log(Pc); loglik
+  return(loglik)
+}
+
 #' @title Q-likelihood
 #' @author Giovanni Laudanno
 #' @description Calculates the likelihood integrating the Q-equation
@@ -192,7 +277,6 @@ lik_shift_Q <- function(pars,
     #SETTING CLADE CONDITIONS
     shift_times2 <- shift_times[shift_times > min(brts_list[[clade]])]
     time_points <- sort(unique(c(brts_list[[clade]], shift_times2)), decreasing = FALSE)
-    # data <- MBD:::brts2time_intervals_and_births(time_points); time_intervals <- data$time_intervals; time_intervals <- c(0, time_intervals)
     time_intervals <- sls::brts2time_intervals(time_points)
 
     lambda <- lambdas[clade]

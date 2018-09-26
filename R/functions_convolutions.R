@@ -4,7 +4,7 @@
 #' @inheritParams default_params_doc
 #' @return Fourier term
 #' @export
-omega <- function(N, n, k) {exp(1i * 2 * pi * n * k * (N^-1))}
+phase.factor <- function(N, n, k) {exp(1i * 2 * pi * n * k * (N^-1))}
 
 #' @title DFT
 #' @author Giovanni Laudanno
@@ -15,7 +15,7 @@ omega <- function(N, n, k) {exp(1i * 2 * pi * n * k * (N^-1))}
 DFT <- function(vec) {
   if (is.matrix(vec)) {Nmax <- nrow(vec)}
   if (is.vector(vec)) {Nmax <- length(vec)}
-  O <- outer(X = 1:Nmax, Y = 1:Nmax, FUN = function(n,k) sls::omega(n = n, k = k, N = Nmax))
+  O <- outer(X = 1:Nmax, Y = 1:Nmax, FUN = function(n,k) sls::phase.factor(n = n, k = k, N = Nmax))
   O %*% vec
 }
 
@@ -28,7 +28,7 @@ DFT <- function(vec) {
 IDFT <- function(vec) {
   if (is.matrix(vec)) {Nmax <- nrow(vec)}
   if (is.vector(vec)) {Nmax <- length(vec)}
-  O <- outer(X = 1:Nmax, Y = 1:Nmax, FUN = function(n,k) sls::omega(n = n, k = k, N = Nmax))
+  O <- outer(X = 1:Nmax, Y = 1:Nmax, FUN = function(n,k) sls::phase.factor(n = n, k = k, N = Nmax))
   solve(O) %*% vec
 }
 
@@ -75,6 +75,26 @@ combine_pns0 <- function(lambda, mu, ts, tbar, nmax = 1e2) {
       apply(ns, MARGIN = 1, FUN = sum)^-1
   ); out
   return(out)
+}
+
+#' @title Combine pn in the old wrong way
+#' @author Giovanni Laudanno
+#' @description Convolutes all the processes before the shift and imposes the death before the present of all species that are not visible in the phylogeny. It doesn't divide by N. Used to check on old models.
+#' @inheritParams default_params_doc
+#' @return Convolution of the probabilities for all the processes
+#' @export
+combine_pns_noratio <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
+  nvec <- 1:nmax
+  N <- length(ts)
+  X <- vector("list", N)
+  for (t in 1:N)
+  {
+    X[[t]] <- fun(n = nvec, t = ts[t], lambda = lambda, mu = mu, tbar = tbar)
+  }
+  pippo <- matrix(unlist(lapply(X, FUN = sls::DFT)), nrow = N, byrow = T); rownames(pippo) <- paste0("t", 1:N)
+  # apply(pippo, MARGIN = 2, "prod")
+  Re(sum(sls::IDFT(apply(pippo, MARGIN = 2, "prod")))) #awesome!
+  # sum((nvec^-1)*(Re(IDFT(DFT(x0) * DFT(y0))))) #cool!
 }
 
 #' #' Does something
