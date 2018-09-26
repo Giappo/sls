@@ -6,7 +6,7 @@
 \usage{
 dd_KI_loglik_choosepar2(trparsopt, trparsfix, idparsopt, idparsfix,
   idparsnoshift, pars2, brtsM, brtsS, missnumspec = c(0, 0),
-  loglik_function = sls::lik_shift_DDD2)
+  loglik_function = sls::lik_shift_DDD)
 }
 \description{
 Internal MBD function.

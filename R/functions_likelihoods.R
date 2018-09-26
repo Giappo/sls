@@ -1,10 +1,10 @@
-#' @title P-likelihood
+#' @title P-likelihood (old version)
 #' @author Giovanni Laudanno
 #' @description Calculates the likelihood convoluting Nee's functions
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-lik_shift_P <- function(pars, brtsM, brtsS, nmax = 1e2, cond = 0) {
+lik_shift_P0 <- function(pars, brtsM, brtsS, nmax = 1e2, cond = 0) {
 
   lambdas <- c(pars[1], pars[3])
   mus     <- c(pars[2], pars[4])
@@ -63,7 +63,7 @@ lik_shift_P <- function(pars, brtsM, brtsS, nmax = 1e2, cond = 0) {
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift(pars = pars, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- sls::Pc_1shift0(pars = pars, brtsM = brtsM, brtsS = brtsS)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -80,7 +80,7 @@ lik_shift_P <- function(pars, brtsM, brtsS, nmax = 1e2, cond = 0) {
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-lik_shift_P2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
+lik_shift_P <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
 
   lambdas <- c(pars1[1], pars1[4])
   mus     <- c(pars1[2], pars1[5])
@@ -150,7 +150,7 @@ lik_shift_P2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brt
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -165,7 +165,7 @@ lik_shift_P2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brt
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-lik_shift_P2_noratio <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
+lik_shift_P_nodivision <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
 
   lambdas <- c(pars1[1], pars1[4])
   mus     <- c(pars1[2], pars1[5])
@@ -213,7 +213,7 @@ lik_shift_P2_noratio <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), br
   if (length(tsM_post_shift) == 0) {tsM_post_shift <- 0}
   if (length(tsM_pre_shift ) == 0) {cat("There are no branching times before the shift"); return(-Inf)}
 
-  likM_pre_shift  <- sls::combine_pns_noratio(lambda = lambdas[1], mu = mus[1], ts = tsM_pre_shift, tbar = td, nmax = nmax); log(likM_pre_shift)
+  likM_pre_shift  <- sls::combine_pns_nodivision(lambda = lambdas[1], mu = mus[1], ts = tsM_pre_shift, tbar = td, nmax = nmax); log(likM_pre_shift)
   likM_post_shift <- prod(
     sls::pn(n = 1, lambda = lambdas[1], mu = mus[1], t = tsM_post_shift)
   ) * sls:::pn(n = 1, t = td, lambda = lambdas[1], mu = mus[1])^(length(tsM_pre_shift) - 1); log(likM_post_shift)
@@ -235,7 +235,7 @@ lik_shift_P2_noratio <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), br
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -244,13 +244,13 @@ lik_shift_P2_noratio <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), br
   return(loglik)
 }
 
-#' @title Q-likelihood
+#' @title Q-likelihood (old version)
 #' @author Giovanni Laudanno
 #' @description Calculates the likelihood integrating the Q-equation
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-lik_shift_Q <- function(pars,
+lik_shift_Q0 <- function(pars,
                         brtsM,
                         brtsS,
                         lx = floor(min(20 * max(length(brtsM), length(brtsS)), 1000)),
@@ -375,7 +375,7 @@ lik_shift_Q <- function(pars,
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-lik_shift_Q2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS)
+lik_shift_Q <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS)
 {
   missnumspec <- c(0,0)
   lambdas <- c(pars1[1], pars1[4])
@@ -487,7 +487,7 @@ lik_shift_Q2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brt
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -496,13 +496,13 @@ lik_shift_Q2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brt
   return(total_loglik)
 }
 
-#' @title DDD-likelihood
+#' @title DDD-likelihood (old version)
 #' @author Giovanni Laudanno
 #' @description Calculates the likelihood calling the routine from the DDD package
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-lik_shift_DDD <- function(pars, brtsM, brtsS, cond = 0,
+lik_shift_DDD0 <- function(pars, brtsM, brtsS, cond = 0,
                           lx = floor(min(20 * max(length(brtsM), length(brtsS)), 1000)), methode = "lsoda")
 {
   missnumspec = c(0,0)
@@ -769,7 +769,7 @@ lik_shift_DDD <- function(pars, brtsM, brtsS, cond = 0,
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-lik_shift_DDD2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0))
+lik_shift_DDD <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0))
 {
   # lambdas <- c(pars1[1], pars1[4])
   # mus     <- c(pars1[2], pars1[5])
@@ -793,7 +793,7 @@ lik_shift_DDD2 <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, b
     if (cond %in% c(1,2,3))
     {
       pars2[3] <- cond
-      conditioning <- sls::Pc_1shift2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -861,13 +861,13 @@ DDD_conditioning <- function(pars, brtsM, brtsS, lx, ddep = 1) {
   return(exp(logliknorm))
 }
 
-#' @title sls-conditioning
+#' @title sls-conditioning (old version)
 #' @author Giovanni Laudanno
 #' @description Calculates three different kind of conditioning probabilities
 #' @inheritParams default_params_doc
 #' @return Three different conditioning probabilities
 #' @export
-Pc_1shift <- function(pars, brtsM, brtsS, Nmax = 100) {
+Pc_1shift0 <- function(pars, brtsM, brtsS, Nmax = 100) {
 
   lambdas <- c(pars[1], pars[3])
   mus     <- c(pars[2], pars[4])
@@ -912,7 +912,7 @@ Pc_1shift <- function(pars, brtsM, brtsS, Nmax = 100) {
 #' @inheritParams default_params_doc
 #' @return Three different conditioning probabilities
 #' @export
-Pc_1shift2 <- function(pars1, pars2, brtsM, brtsS) {
+Pc_1shift <- function(pars1, pars2, brtsM, brtsS) {
 
   missnumspec <- c(0,0)
   lambdas <- c(pars1[1], pars1[4])
@@ -962,7 +962,7 @@ Pc_1shift2 <- function(pars1, pars2, brtsM, brtsS) {
 #' #' @inheritParams default_params_doc
 #' #' @return The likelihood
 #' #' @export
-#' lik_shift_P2 <- function(pars, LM, LS, nmax = 1e2, cond = 0) {
+#' lik_shift_P <- function(pars, LM, LS, nmax = 1e2, cond = 0) {
 #'
 #'   lambdas <- c(pars[1], pars[3])
 #'   mus     <- c(pars[2], pars[4])
@@ -1029,7 +1029,7 @@ Pc_1shift2 <- function(pars1, pars2, brtsM, brtsS) {
 #' #' @inheritParams default_params_doc
 #' #' @return The likelihood
 #' #' @export
-#' lik_shift_Q2 <- function(pars,
+#' lik_shift_Q <- function(pars,
 #'                          LM,
 #'                          LS,
 #'                          lx = floor(min(20 * max(length(brtsM), length(brtsS)), 1000)),

@@ -83,7 +83,7 @@ combine_pns0 <- function(lambda, mu, ts, tbar, nmax = 1e2) {
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
 #' @export
-combine_pns_noratio <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
+combine_pns_nodivision <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
   nvec <- 1:nmax
   N <- length(ts)
   X <- vector("list", N)

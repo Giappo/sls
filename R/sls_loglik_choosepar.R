@@ -2,7 +2,7 @@
 #' @description Internal MBD function.
 #' @details This is not to be called by the user.
 #' @export
-sls_loglik_choosepar <- function(loglik_function = sls:::lik_shift_P,
+sls_loglik_choosepar0 <- function(loglik_function = sls:::lik_shift_P0,
                                  trparsopt,
                                  trparsfix,
                                  idparsopt = 1:4,
@@ -55,9 +55,9 @@ sls_loglik_choosepar <- function(loglik_function = sls:::lik_shift_P,
 #' @description Internal MBD function.
 #' @details This is not to be called by the user.
 #' @export
-sls_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
+sls_loglik_choosepar <- function (trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
                                    pars2, brtsM, brtsS, missnumspec = c(0,0),
-                                   loglik_function = sls::lik_shift_P2)
+                                   loglik_function = sls::lik_shift_P)
 {
   methode <- 'analytical'
   if (missnumspec != c(0,0))
@@ -122,7 +122,7 @@ sls_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, i
 #' @export
 dd_KI_loglik_choosepar2 <- function (trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
                                      pars2, brtsM, brtsS, missnumspec = c(0,0),
-                                     loglik_function = sls::lik_shift_DDD2)
+                                     loglik_function = sls::lik_shift_DDD)
 {
   methode <- 'analytical'
   if (missnumspec != c(0,0))

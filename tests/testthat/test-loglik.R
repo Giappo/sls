@@ -1,4 +1,4 @@
-context("likelihoods2")
+context("likelihoods")
 
 test_that( "test P and Q approach equivalence", {
 
@@ -12,8 +12,8 @@ test_that( "test P and Q approach equivalence", {
   pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
   pars2   <- c(100, 1, 1, tsplit, 0, 2)
 
-  lik_P <- sls::lik_shift_P2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::lik_shift_Q2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+  lik_P <- sls::lik_shift_P(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
+  lik_Q <- sls::lik_shift_Q(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
 
   testthat::expect_equal(
     lik_P, lik_Q
@@ -29,8 +29,8 @@ test_that( "test P and Q approach equivalence", {
   pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
   pars2   <- c(100, 1, 1, tsplit, 0, 2)
 
-  lik_P <- sls::lik_shift_P2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::lik_shift_Q2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+  lik_P <- sls::lik_shift_P(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
+  lik_Q <- sls::lik_shift_Q(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
 
   testthat::expect_equal(
     lik_P, lik_Q
@@ -46,8 +46,8 @@ test_that( "test P and Q approach equivalence", {
   pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
   pars2   <- c(100, 1, 1, tsplit, 0, 2)
 
-  lik_P <- sls::lik_shift_P2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::lik_shift_Q2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+  lik_P <- sls::lik_shift_P(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
+  lik_Q <- sls::lik_shift_Q(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
 
   testthat::expect_equal(
     lik_P, lik_Q
@@ -63,8 +63,8 @@ test_that( "test P and Q approach equivalence", {
   pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
   pars2   <- c(100, 1, 1, tsplit, 0, 2)
 
-  lik_P <- sls::lik_shift_P2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::lik_shift_Q2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+  lik_P <- sls::lik_shift_P(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
+  lik_Q <- sls::lik_shift_Q(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
 
   testthat::expect_equal(
     lik_P, lik_Q
@@ -80,8 +80,8 @@ test_that( "test P and Q approach equivalence", {
   pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
   pars2   <- c(100, 1, 1, tsplit, 0, 2)
 
-  lik_P <- sls::lik_shift_P2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::lik_shift_Q2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+  lik_P <- sls::lik_shift_P(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
+  lik_Q <- sls::lik_shift_Q(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
 
   testthat::expect_equal(
     lik_P, lik_Q
@@ -97,8 +97,8 @@ test_that( "test P and Q approach equivalence", {
   pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
   pars2   <- c(100, 1, 1, tsplit, 0, 2)
 
-  lik_P <- sls::lik_shift_P2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::lik_shift_Q2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+  lik_P <- sls::lik_shift_P(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
+  lik_Q <- sls::lik_shift_Q(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
 
   testthat::expect_true(
     abs(lik_P - lik_Q) < 1e-3
@@ -114,8 +114,8 @@ test_that( "test P and Q approach equivalence", {
   pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
   pars2   <- c(100, 1, 1, tsplit, 0, 2)
 
-  lik_P <- sls::lik_shift_P2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::lik_shift_Q2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+  lik_P <- sls::lik_shift_P(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
+  lik_Q <- sls::lik_shift_Q(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
 
   testthat::expect_true(
     abs(lik_P - lik_Q) < 1e-3

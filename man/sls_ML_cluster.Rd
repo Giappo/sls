@@ -2,14 +2,14 @@
 % Please edit documentation in R/sls_ML_cluster.R
 \name{sls_ML_cluster}
 \alias{sls_ML_cluster}
-\title{Internal MBD function}
+\title{Internal sls function}
 \usage{
 sls_ML_cluster(s, simpars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8, cond = 1,
   initparsopt = c(0.5, 0.3, 0.5, 0.3), age = 10, optimmethod = "simplex",
-  tolerance = 0.01)
+  tolerance = 0.01, fun1 = sls:::lik_shift_P, fun2 = sls:::lik_shift_DDD)
 }
 \description{
-Internal MBD function.
+Internal sls function.
 }
 \details{
 This is not to be called by the user.

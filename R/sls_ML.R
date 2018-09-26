@@ -1,8 +1,8 @@
-#' @title Internal MBD function
+#' @title Internal MBD function (old)
 #' @description Internal MBD function.
 #' @details This is not to be called by the user.
 #' @export
-sls_ML <- function(loglik_function = sls:::lik_shift_P,
+sls_ML0 <- function(loglik_function = sls:::lik_shift_P0,
                    initparsopt,
                    parsfix,
                    idparsopt = 1:4,
@@ -150,7 +150,7 @@ sls_ML <- function(loglik_function = sls:::lik_shift_P,
 #' @description Internal MBD function.
 #' @details This is not to be called by the user.
 #' @export
-sls_ML2 <- function(loglik_function = sls:::lik_shift_P2,
+sls_ML <- function(loglik_function = sls:::lik_shift_P,
                     brtsM, brtsS, tsplit,
                     initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + missnumspec[1]), 2 * (1 + length(brtsS) +
                     missnumspec[length(missnumspec)]), (tsplit + max(brtsS))/2),

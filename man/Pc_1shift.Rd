@@ -4,17 +4,9 @@
 \alias{Pc_1shift}
 \title{sls-conditioning}
 \usage{
-Pc_1shift(pars, brtsM, brtsS, Nmax = 100)
+Pc_1shift(pars1, pars2, brtsM, brtsS)
 }
 \arguments{
-\item{pars}{parameters of the likelihood functions:
-\itemize{
-  \item pars[1] is lambdaM, i.e. speciation rate of the main clade;
-  \item pars[2] is muM, i.e. extinction rate of the main clade;
-  \item pars[3] is lambdaS, i.e. speciation rate of the sub clade;
-  \item pars[4] is muS, i.e. extinction rate of the sub clade;
-}}
-
 \item{brtsM}{branching times for the Main-clade}
 
 \item{brtsS}{branching times for the Sub-clade}

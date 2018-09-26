@@ -4,9 +4,9 @@
 \alias{sls_loglik_choosepar}
 \title{Internal MBD function}
 \usage{
-sls_loglik_choosepar(loglik_function = sls:::lik_shift_P, trparsopt,
-  trparsfix, idparsopt = 1:4, idparsfix = (1:4)[-idparsopt], brtsM, brtsS,
-  cond = 1, pars.transform = 0)
+sls_loglik_choosepar(trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
+  pars2, brtsM, brtsS, missnumspec = c(0, 0),
+  loglik_function = sls::lik_shift_P)
 }
 \description{
 Internal MBD function.
