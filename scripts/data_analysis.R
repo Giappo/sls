@@ -1,5 +1,23 @@
+# rm(list = ls())
+# functions
+percentiles_function <- function(results, sim_pars, printit = 1,
+                                 quantiles_choice = c(.25, .50, .75)){
+  quantiles_names <- format(round(quantiles_choice, 2), nsmall = 2)
+  Npars <- length(sim_pars)
+  parnames <- colnames(results)[1:Npars]
+  percentiles <- vector("list", 3)
+  for (idpar in 1:Npars){percentiles[[idpar]] <- stats::quantile(results[,idpar], quantiles_choice)}
+  percentiles <- t(matrix(unlist(percentiles), nrow = 3, ncol = Npars));
+  colnames(percentiles) <- quantiles_names; rownames(percentiles) <- parnames
+  if (printit==1)
+  {
+    print(percentiles); print(sim_pars)
+  }
+  out <- percentiles
+}
+
 correlation_analysis <- function(results, path, titolo = NULL, pdfname, sim_pars = sim_pars,
-         percentage_hidden_outliers = 0, openit = 0){
+                                 percentage_hidden_outliers = 0, openit = 0){
 
   Npars <- length(sim_pars);
   par_names <- colnames(results)
@@ -41,7 +59,7 @@ correlation_analysis <- function(results, path, titolo = NULL, pdfname, sim_pars
   }
 }
 
-model_comparison <- function(sls.Results, DDD.Results, title) {
+model_comparison <- function(sls.Results, DDD.Results, dataset_pars1, path) { #title,
 
   multiplot <- function(..., plotlist = NULL, file, cols = 1, layout = NULL, title = "",
                         fontsize = 12, fontfamily = "Helvetica") {
@@ -96,31 +114,83 @@ model_comparison <- function(sls.Results, DDD.Results, title) {
 df <- data.frame(sls.Results, DDD.Results)
 names(df) <- c(paste0("sls.", colnames(sls.Results)), paste0("DDD.", colnames(DDD.Results)))
 
-p1 <- ggplot2::ggplot(df, ggplot2::aes(x = sls.lambda_M, y = DDD.lambda_M)) +
-  ggplot2::geom_point(color = "firebrick4") +
-  ggplot2::labs(x = expression(lambda[M]^sls), y = expression(lambda[M]^DDD)) +
-  ggplot2::theme_bw()
+pars_string <- gsub(", ", "_", toString(dataset_pars1))
 
-p2 <- ggplot2::ggplot(df, ggplot2::aes(x = sls.mu_M, y = DDD.mu_M)) +
-  ggplot2::geom_point(color = "turquoise4") +
-  ggplot2::labs(x = expression(mu[M]^sls), y = expression(mu[M]^DDD)) +
-  ggplot2::theme_bw()
+pdfname <- paste0("models_comparison_[lambda-mu]_", pars_string)
+grDevices::pdf(file = paste0(path, "/", pdfname, ".pdf"));
+p5 <- ggplot2::ggplot(df,
+                      ggplot2::aes(x = (sls.lambda_M - sls.mu_M),
+                                   y = (DDD.lambda_M - DDD.mu_M)
+                                   )
+      ) +
+      ggplot2::geom_point(color = "firebrick4"
+      ) +
+      ggplot2::labs(x = expression(lambda[M]^sls - mu[M]^sls),
+                    y = expression(lambda[M]^DDD - mu[M]^DDD)
+      ) +
+      ggplot2::theme_bw(
+      ); print(p5)
+grDevices::dev.off()
 
-p3 <- ggplot2::ggplot(df, ggplot2::aes(x = sls.lambda_S, y = DDD.lambda_S)) +
-  ggplot2::geom_point(color = "darkorchid4") +
-  ggplot2::labs(x = expression(lambda[M]^sls), y = expression(lambda[M]^DDD)) +
-  ggplot2::theme_bw()
+pdfname <- paste0("models_comparison_[mulambda_ratio]_", pars_string)
+grDevices::pdf(file = paste0(path, "/", pdfname, ".pdf"));
+p6 <- ggplot2::ggplot(df,
+                      ggplot2::aes(x = (sls.mu_M / sls.lambda_M),
+                                   y = (DDD.mu_M / DDD.lambda_M)
+                      )
+      ) +
+      ggplot2::geom_point(color = "turquoise4"
+      ) +
+      ggplot2::labs(x =  expression(mu[M]^sls/lambda[M]^sls) ,
+                    y =  expression(mu[M]^DDD/lambda[M]^DDD)
+      ) +
+      ggplot2::theme_bw(
+      ); print(p6)
+grDevices::dev.off()
 
-p4 <- ggplot2::ggplot(df, ggplot2::aes(x = sls.mu_S, y = DDD.mu_S)) +
-  ggplot2::geom_point(color = "darkgreen") +
-  ggplot2::labs(x = expression(mu[M]^sls), y = expression(mu[M]^DDD)) +
-  ggplot2::theme_bw()
+pdfname <- paste0("models_comparison_[lambda]_", pars_string)
+grDevices::pdf(file = paste0(path, "/", pdfname, ".pdf"));
+p7 <- ggplot2::ggplot(df,
+                      ggplot2::aes(x = (sls.lambda_M),
+                                   y = (DDD.lambda_M)
+                      )
+      ) +
+      ggplot2::geom_point(color = "firebrick4"
+      ) +
+      ggplot2::labs(x = expression(lambda[M]^sls),
+                    y = expression(lambda[M]^DDD)
+      ) +
+      ggplot2::theme_bw(
+      ); print(p7)
+grDevices::dev.off()
 
-pp <- multiplot(p1, p2, p3, p4, cols = 2, title = title)
-# pp <- multiplot(p1, p2, p3, p4, cols = 2) + ggplot2::ggtitle(label = title)
-return(pp)
+pdfname <- paste0("models_comparison_[mu]_", pars_string)
+grDevices::pdf(file = paste0(path, "/", pdfname, ".pdf"));
+p8 <- ggplot2::ggplot(df,
+                      ggplot2::aes(x = (sls.mu_M),
+                                   y = (DDD.mu_M)
+                      )
+      ) +
+      ggplot2::geom_point(color = "turquoise4"
+      ) +
+      ggplot2::labs(x =  expression(mu[M]^sls) ,
+                    y =  expression(mu[M]^DDD)
+      ) +
+      ggplot2::theme_bw(
+      ); print(p8)
+grDevices::dev.off()
+
+# pp <- multiplot(p1, p2, p3, p4, cols = 2, title = title)
+# pp <- multiplot(p5, p6, cols = 2, title = title)
+
+return()
 }
 
+showplot.box <- function(results) {}
+
+showplot.correlation <- function(results) {}
+
+showplot.cloud <- function(results) {}
 
 sls.analyze_data <- function(max_sims = 1000,
                              quantiles_choice = c(.25, .50, .75),
@@ -170,18 +240,13 @@ sls.analyze_data <- function(max_sims = 1000,
 
       sls_right_ids  <- sls_results0[rowSums(sls_results0[, idparsopt] == rep(-1, Npars)) != Npars, "tree_id"]; length(sls_right_ids)
       DDD_right_ids  <- DDD_results0[rowSums(DDD_results0[, idparsopt] == rep(-1, Npars)) != Npars, "tree_id"]; length(DDD_right_ids)
-      right_ids <- sls_right_rows & DDD_right_rows
-
-      max_ids <- max(c(sls_right_ids, DDD_right_ids))
-      ids <- (1:max_ids)
-      right_ids0 <- ids[ids %in% sls_right_ids]
-      right_ids  <- right_ids0[right_ids0 %in% DDD_right_ids]
+      right_ids <- intersect(sls_right_ids, DDD_right_ids); length(right_ids)
 
       sls_results1 <- sls_results0[sls_results0[, "tree_id"] %in% right_ids,]; dim(sls_results1)
       sls_results  <- sls_results1[,idparsopt]; Nsims[d] <- nrow(sls_results)
       if (max(sls_results[, 1:Npars] == -1)){print("You are considering results that are = -1. Be careful!")}
 
-      sls_quantiles[[d]] <- MBD:::percentiles_function(results = sls_results, sim_pars = sim_pars,
+      sls_quantiles[[d]] <- percentiles_function(results = sls_results, sim_pars = sim_pars,
                                                        printit = 0, quantiles_choice = quantiles_choice)
       titolo  <- paste0("sls - Correlation analysis with ", Nsims[d], "/", max_sims, " trees.")
       pdfname <- paste0("sls_Correlation ", datasets[d])
@@ -192,24 +257,24 @@ sls.analyze_data <- function(max_sims = 1000,
       DDD_results  <- DDD_results1[,idparsopt]; Nsims[d] <- nrow(DDD_results)
       if (max(DDD_results[, 1:Npars] == -1) ){print("You are considering results that are = -1. Be careful!")}
 
-      DDD_quantiles[[d]] <- MBD:::percentiles_function(results = DDD_results, sim_pars = sim_pars,
+      DDD_quantiles[[d]] <- percentiles_function(results = DDD_results, sim_pars = sim_pars,
                                                        printit = 0, quantiles_choice = quantiles_choice)
       titolo  <- paste0("DDD - Correlation analysis with ", Nsims[d], "/", max_sims, " trees.")
       pdfname <- paste0("DDD_Correlation ", datasets[d])
       correlation_analysis(results = DDD_results, sim_pars = sim_pars, titolo = titolo,
                            pdfname = pdfname, path = results_folder, openit = 0)
 
-      pdf(file = paste0("models_comparison - ", toString(dataset_pars[[d]]), ".pdf"))
-      model_comparison(sls.Results = sls_results1, DDD.Results = DDD_results1,
-                       title = paste0("sls vs DDD comparison - ", toString(dataset_pars[[d]])))
-      dev.off()
+      model_comparison(sls.Results = sls_results1,
+                       DDD.Results = DDD_results1,
+                       dataset_pars1 = dataset_pars[[d]],
+                       path = results_folder)
     }
   }
 
   parnames2 <- parnames[idparsopt]
   sls_result.table <- matrix(NA, nrow = Nd, ncol = 1 + prod(dim(sls_quantiles[[1]])) + Npars)
   DDD_result.table <- matrix(NA, nrow = Nd, ncol = 1 + prod(dim(DDD_quantiles[[1]])) + Npars)
-  quantiles_names <- format(round(quantiles_choice, 2), nsmall = 2)
+  quantiles_names  <- format(round(quantiles_choice, 2), nsmall = 2)
 
   par_quantiles_names <- vector("list", Npars)
   for (ll in seq_along(par_quantiles_names))
@@ -257,31 +322,84 @@ sls.analyze_data <- function(max_sims = 1000,
   return(list(sls_result.table = sls_result.table, DDD_result.table = DDD_result.table))
 }
 
-sls.analyze_data2 <- function(result.table, error_bars = 0){
+sls.analyze_data2 <- function(resultstable, error_bars = 0){
 
   library(ggplot2); library(RColorBrewer)
 
-  pippo_draw <- function(sub_res_table, error_bars = error_bars){
-    library(ggplot2)
-    palette <- rainbow(n = nrow(sub_res_table), s = 0.5)
+  pippo_draw <- function(sub_res_table, error_bars = error_bars, model_name){
+
     sub_res_table <- data.frame(sub_res_table)
-    bb <- ggplot2::ggplot(data = sub_res_table, ggplot2::aes(x = sub_res_table$sim.lambda_M, y = sub_res_table$sim.mu_M)) +
-      ggplot2::labs(x = "lambda_M", y = "mu_M") +
-      ggplot2::geom_point(ggplot2::aes(x = sub_res_table$lambda_M0.50, y = sub_res_table$mu_M0.50), col = palette[1:dim(sub_res_table)[1]], size = 10, shape = 13)
 
-    bb <- bb + ggplot2::geom_point(ggplot2::aes(x = sub_res_table$sim.lambda_M, y = sub_res_table$sim.mu_M), col = palette[1:dim(sub_res_table)[1]], size = 5) +
-      ggplot2::theme_dark() +
-      ggplot2::theme(axis.text = ggplot2::element_text(size = 12), axis.title = ggplot2::element_text(size = 14, face = "bold"))
+    if (1) { #2nd attempt
+      library(ggplot2)
 
-    return(bb)
+      data2 <- sub_res_table
+      Npars <- 4
+      true_values <- unique(data2[,1:Npars])
+      data3 <- data2[1:nrow(true_values), 1:ncol(data2)]
+      for (i in 1:Npars)
+      {
+        data3[,(3:5) + 3*i] <- true_values[,i]
+      }
+      data3[,1:Npars] <- true_values
+      data3$cond <- -1
+      data4 <- rbind(data2, data3)
+
+      colors <- factor(data4$sim.lambda_M^0.98 * data4$sim.mu_M^1.02);
+      colors_names <- apply(cbind(data4$sim.lambda_M, data4$sim.mu_M), MARGIN = 1, FUN = "toString")
+      # xx <- paste0(expression(lambda[M]), "=", data4$sim.lambda_M); yy <- paste0(expression(mu[M]), "=", data4$sim.mu_M)
+      # # xx <- paste0(expression("λ[M]"), " = ", data4$sim.lambda_M); # yy <- paste0(expression("μ[M]"), " = ", data4$sim.mu_M)
+      # colors_names <- apply(cbind(xx, yy), MARGIN = 1, FUN = function(x) paste0(x[1], ", ", x[2]))
+
+      palette  <- rainbow(n = nrow(sub_res_table), s = 0.5)
+      palette2 <- rainbow(n = length(unique(colors)), s = 0.5)
+
+      text_size <- 12
+      sp4 <- ggplot(data4,
+                    aes(x = lambda_M0.50,
+                        y = mu_M0.50,
+                        shape = factor(data4$cond),
+                        col = colors,
+                        size = 0.05
+                    )
+             ) +
+             ggtitle(paste0("Results for model ", model_name)
+             ) +
+             ggplot2::labs(x = expression(lambda[M]), #"lambda_M"
+                           y = expression(mu[M])#"mu_M"
+             ) +
+             geom_point(
+             ) +
+             scale_color_manual(name   = bquote("Parameter setting \n(" ~lambda[M]~","~mu[M]~")"),
+                                values = palette2,
+                                labels = unique((colors_names))
+             ) +
+             scale_shape_manual(name   = "Conditioning",
+                                values = c(19, 21, 24, 22),
+                                labels = c("True values", "0", "1", "2")
+             ) +
+             guides(size = FALSE #remove "size" from the legend
+             ) +
+             theme(legend.text  = element_text(size = (text_size)),
+                   legend.title = element_text(size = (text_size + 4), face = "bold"),
+                   axis.title   = element_text(size = (text_size + 2), face = "bold"),
+                   axis.text    = element_text(size = text_size),
+                   plot.title   = element_text(size = 18, face = "bold")
+             ) +
+             theme_dark(
+             ) +
+             guides(shape = guide_legend(override.aes = list(size = 3))); sp4# scatterplot
+    }
+
+    return(sp4)
   }
 
   Lr <- length(result.table)
-  model_names <- c("sls", "DDD")
+  model_names <- c("sls", "DDD"); ii <- 1
 
   for (ii in 1:Lr)
   {
-    res <- result.table[[ii]][apply(!is.na(result.table[[ii]]), 1, prod) != 0,]
+    res <- resultstable[[ii]][apply(!is.na(resultstable[[ii]]), 1, prod) != 0,]
     pippo <- as.data.frame(res)
     colnames(pippo) <- colnames(res)
     pippo2 <- cbind(pippo, row(pippo)[,1])
@@ -290,11 +408,14 @@ sls.analyze_data2 <- function(result.table, error_bars = 0){
     folder_name <- "F://Dropbox//University//Progress//RQ4-single_lineage_rate_shifts//results"
     setwd(folder_name)
 
-    png(filename = paste0(model_names[[ii]], "_results.png"))
-    pippo_draw(pippo2)
-    dev.off()
+    # grDevices::png(filename = paste0(model_names[[ii]], "_results.png"))
+    grDevices::pdf(file = paste0(model_names[[ii]], "_results.pdf"))
+    results_plot <- pippo_draw(sub_res_table = pippo2, model_name = model_names[[ii]])
+    print(results_plot)
+    grDevices::dev.off()
   }
 }
 
+# actual analysis
 resultstable <- sls.analyze_data(max_sims = 2000)
-sls.analyze_data2(resultstable)
+sls.analyze_data2(resultstable = resultstable)
