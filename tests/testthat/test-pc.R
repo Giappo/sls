@@ -42,7 +42,7 @@ test_that("Pc1 never smaller than Pc3 (Pc3 is a stricter condition)", {
   res   <- 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec))
   pars2 <- c(res, 1, cond, tsplit, 0 , soc)
 
-  conditioning <- sls::Pc_1shift2(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
+  conditioning <- sls::Pc_1shift(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
   testthat::expect_true(conditioning[[1]] >= conditioning[[3]])
 
   #test2
@@ -61,7 +61,7 @@ test_that("Pc1 never smaller than Pc3 (Pc3 is a stricter condition)", {
   res   <- 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec))
   pars2 <- c(res, 1, cond, tsplit, 0 , soc)
 
-  conditioning <- sls::Pc_1shift2(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
+  conditioning <- sls::Pc_1shift(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
   testthat::expect_true(conditioning[[1]] >= conditioning[[3]])
 
   #test3
@@ -80,7 +80,7 @@ test_that("Pc1 never smaller than Pc3 (Pc3 is a stricter condition)", {
   res   <- 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec))
   pars2 <- c(res, 1, cond, tsplit, 0 , soc)
 
-  conditioning <- sls::Pc_1shift2(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
+  conditioning <- sls::Pc_1shift(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
   testthat::expect_true(conditioning[[1]] >= conditioning[[3]])
 
   #test4
@@ -99,7 +99,7 @@ test_that("Pc1 never smaller than Pc3 (Pc3 is a stricter condition)", {
   res   <- 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec))
   pars2 <- c(res, 1, cond, tsplit, 0 , soc)
 
-  conditioning <- sls::Pc_1shift2(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
+  conditioning <- sls::Pc_1shift(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
 
   testthat::expect_true(conditioning[[1]] >= conditioning[[3]])
 })
@@ -121,7 +121,7 @@ test_that("If lambda2=mu2=0 (inert subclade), Pc1 equal to Pc3 (PS = 1)", {
   res   <- 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec))
   pars2 <- c(res, 1, cond, tsplit, 0 , soc)
 
-  conditioning <- sls::Pc_1shift2(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
+  conditioning <- sls::Pc_1shift(brtsM = brtsM, brtsS = brtsS, pars1 = pars1, pars2 = pars2)
 
   testthat::expect_true(conditioning[[1]] == conditioning[[3]])
 })
@@ -137,7 +137,7 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
   t_d <- 4.8
 
   pars1 <- c(simpars[1], simpars[2], Inf, simpars[3], simpars[4], Inf, t_d)
-  sim   <- sls::sls_sim2(pars1 = pars1, age = age, soc = soc, cond = cond)
+  sim   <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
   brts  <- sim$brts; brtsM <- brts[[1]]; brtsS <- brts[[2]]; brts
 
   tsplit <- min(abs(brtsM[abs(brtsM) > t_d]))
@@ -154,7 +154,7 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
   DDDloglik1 <- DDD::dd_KI_loglik(pars1 = pars1, pars2 = pars2_1,
                                   brtsM = abs(brtsM), brtsS = abs(brtsS), missnumspec = missnumspec)
 
-  conditioning <- sls::Pc_1shift2(pars1 = pars1, pars2 = pars2_1, brtsM = brtsM, brtsS = brtsS)
+  conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2_1, brtsM = brtsM, brtsS = brtsS)
   Pc <- conditioning[[cond]]; Pc
 
   test <- abs(DDDloglik1 - (DDDloglik0 - log(Pc)))

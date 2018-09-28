@@ -13,11 +13,11 @@ check_survival <- function(L, final_time = 0) {
   return(cond)
 }
 
-#' Does something
+#' Simulation code (old)
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-sls_sim <- function(pars, t0, starting_species = c(2,1), cond) {
+sls_sim0 <- function(pars, t0, starting_species = c(2,1), cond) {
 
   lambdas <- c(pars[1], pars[3])
   mus     <- c(pars[2], pars[4])
@@ -176,11 +176,11 @@ sls_sim <- function(pars, t0, starting_species = c(2,1), cond) {
   # return(L.list)
 }
 
-#' Does something
+#' Simulates a process with a single lineage rate shift
 #' @inheritParams default_params_doc
 #' @return result
 #' @export
-sls_sim2 <- function(pars1, age, soc, cond) {
+sls_sim <- function(pars1, age, soc, cond) {
 
   missnumspec <- c(0,0)
   lambdas <- c(pars1[1], pars1[4])

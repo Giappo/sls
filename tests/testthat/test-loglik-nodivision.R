@@ -1,9 +1,9 @@
-context("likelihoods2")
+context("likelihoods with no division")
 
 test_that( "test P and Q approach equivalence", {
 
   #define difference
-  likelihood_diff <- function(fun1 = sls::lik_shift_P2_noratio,
+  likelihood_diff <- function(fun1 = sls::loglik_slsP_nodivision,
                               fun2 = DDD::dd_KI_loglik,
                               pars1,
                               pars2,
@@ -43,7 +43,7 @@ test_that( "test P and Q approach equivalence", {
     missnumspec <- 0
   }
 
-  diff <- likelihood_diff(fun1 = sls::lik_shift_P2_noratio,
+  diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
                           fun2 = DDD::dd_KI_loglik,
                           pars1 = pars1,
                           pars2 = pars2,
@@ -69,7 +69,7 @@ test_that( "test P and Q approach equivalence", {
     missnumspec <- 0
   }
 
-  diff <- likelihood_diff(fun1 = sls::lik_shift_P2_noratio,
+  diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
                           fun2 = DDD::dd_KI_loglik,
                           pars1 = pars1,
                           pars2 = pars2,
@@ -82,40 +82,42 @@ test_that( "test P and Q approach equivalence", {
   )
 
   #test3
-  maxs <- 20; res <- rep(NA, maxs)
+  lM <- 18 + 2 * (ribir:::is_on_travis()); age <- 8;
+  maxs <- 30 * 90^(ribir:::is_on_travis()); res <- rep(NA, maxs); test_threshold <- 1e-3; max_iterations <- 8 + (ribir:::is_on_travis())
   for (s in 1:maxs) {
     set.seed(s)
-    if (1) {
+    diff <- 1; precision <- 3 * lM; iterations <- 1
+    while (abs(diff) > test_threshold && !is.infinite(diff) && iterations < max_iterations) {
       l1 <- runif(n = 1, min = 0.1 , max = 1)
-      m1 <- runif(n = 1, min = 0.02, max = l1*(3/4))
+      m1 <- runif(n = 1, min = 0.02, max = l1 * (3/4))
       l2 <- l1 * 2
       m2 <- m1 / 2
       lambdas <- c(l1, l2)
       mus     <- c(m1, m2)
-      lM      <- 20
-      brtsM   <- c(10, sort(runif(n = (lM - 1), min = 0, max = 10), decreasing = TRUE))
-      tsplit  <- sample(x = brtsM[-c(1:3, 22:25)], size = 1)
+      brtsM   <- c(age, sort(runif(n = (lM - 1), min = 0, max = age), decreasing = TRUE))
+      tsplit  <- sample(x = brtsM[-c(1:floor(lM/6), (lM - floor(lM/6)):lM)], size = 1)
       td      <- tsplit - 0.1
-      brtsS   <- sort(runif(n = floor(lM)/2, min = 0, max = td - 0.1), decreasing = TRUE)
+      brtsS   <- sort(runif(n = floor(lM/2), min = 0, max = td - 0.1), decreasing = TRUE)
       cond    <- 0
       pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-      pars2   <- c(500, 1, cond, tsplit, 0, 2)
       missnumspec <- 0
+
+      pars2   <- c(precision, 1, cond, tsplit, 0, 2)
+      diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
+                              fun2 = DDD::dd_KI_loglik,
+                              pars1 = pars1,
+                              pars2 = pars2,
+                              brtsM = brtsM,
+                              brtsS = brtsS,
+                              missnumspec = missnumspec); diff
+      precision  <- precision  * 2
+      iterations <- iterations + 1
     }
-
-    diff <- likelihood_diff(fun1 = sls::lik_shift_P2_noratio,
-                            fun2 = DDD::dd_KI_loglik,
-                            pars1 = pars1,
-                            pars2 = pars2,
-                            brtsM = brtsM,
-                            brtsS = brtsS,
-                            missnumspec = missnumspec); diff
-
     res[s] <- diff
   }
 
   testthat::expect_true(
-    abs(res) < 1e-3 | is.infinite(abs(res))
+    all(abs(res) < test_threshold | is.infinite(abs(res)))
   )
 
 })

@@ -1,11 +1,38 @@
 # rm(list = ls())
 # functions
-collect_data <- function(model_names = c("sls", "DDD")) {
+collect_data <- function() {
 
-  home_dir <- substring(getwd(), 1, 21)
-  proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir, "/Progress/")))
-  folder_name <- paste0(home_dir, "/Progress/", list.files(paste0(home_dir, "/Progress"))[proj.coords])
-  results_folder <- paste0(folder_name, "/results")
+  get.dropbox.folder <- function() {
+
+    list.of.packages <- c("RJSONIO")
+    new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) install.packages(new.packages)
+    require("RJSONIO")
+
+    if (Sys.info()['sysname'] == 'Darwin')
+    {
+      info <- RJSONIO::fromJSON(
+        file.path(path.expand("~"),'.dropbox','info.json'))
+    }
+    if (Sys.info()['sysname'] == 'Windows')
+    {
+      info <- RJSONIO::fromJSON(
+        if (file.exists(file.path(Sys.getenv('APPDATA'), 'Dropbox','info.json'))) {
+          file.path(Sys.getenv('APPDATA'), 'Dropbox', 'info.json')
+        } else {
+          file.path(Sys.getenv('LOCALAPPDATA'),'Dropbox','info.json')
+        }
+      )
+    }
+    dropbox_base <- info$personal$path
+  }
+  db_dir <- get.dropbox.folder()
+  home_dir <- db_dir
+  home_dir <- paste0(db_dir, "\\university\\Progress\\"); list.files(home_dir)
+  proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir)))
+  folder_name <- paste0(home_dir, list.files(paste0(home_dir))[proj.coords])
+  results_mother_folder <- paste0(folder_name, "/results")
+  results_folder <- choose.dir(default = results_mother_folder)
   datasets <- list.files(results_folder, pattern = "^[0]")
 
   dataset_pars <- vector("list", Nd <- length(datasets))
@@ -15,6 +42,7 @@ collect_data <- function(model_names = c("sls", "DDD")) {
   }
 
   parnames  <- c("lambda_M", "mu_M", "K_M", "lambda_S", "mu_S", "K_S", "t_d")
+  useful_quantities <- c("lambda_M", "mu_M", "lambda_S", "mu_S", "LL", "tree_id")
   idparsopt <- c(1,2,4,5); Npars <- length(idparsopt)
   parnames2 <- parnames[idparsopt]
   sim.parnames <- paste0("sim.", parnames2)
@@ -23,10 +51,14 @@ collect_data <- function(model_names = c("sls", "DDD")) {
   for (d in 1:Nd)
   {# d loop
     print(d)
+
     sim_pars   <- dataset_pars[[d]][1:Npars];
     cond       <- dataset_pars[[d]][Npars + 1]
     local_path <- paste0(results_folder, "//", datasets[d]);
-    model_ids  <- model_results2 <- model_results <- vector("list", length(model_names)) ;m <- 1
+    names0  <- list.files(pattern = "[.]txt", path = local_path, full.names = TRUE)
+    names1 <- gsub(".*/","", names0)
+    model_names <- unique(gsub("_MLE.*","", names1))
+    model_ids  <- model_results2 <- model_results <- vector("list", length(model_names)); m <- 1
     d_results  <- NULL; m <- 1
     for (m in seq_along(model_names))
     {# m loop
@@ -41,8 +73,9 @@ collect_data <- function(model_names = c("sls", "DDD")) {
           ifelse(exists("targetTable"), targetTable <- rbind(targetTable, fileData), targetTable <- fileData)
         }# s loop
         results0  <- targetTable; rm(targetTable);
-        names(results0) <- c(parnames, "LL", "df", "conv", "tree_id")
-        useful_quantities <- c("lambda_M", "mu_M", "lambda_S", "mu_S", "LL", "tree_id")
+        names(results0) <- c(parnames, "LL", "df", "conv", "tips_M", "tips_S", "tree_id")[1:ncol(results0)]
+        names(results0)[ncol(results0)] <- "tree_id"
+
         results1  <- results0[, names(results0) %in% useful_quantities]; names(results1)
         results2  <- results1; names(results2)[1:Npars] <- MLE.parnames
         right_ids <- results2[results2[, 1] != -1, "tree_id"]; length(right_ids)
@@ -76,6 +109,9 @@ collect_data <- function(model_names = c("sls", "DDD")) {
     dim(all_results[all_results$model == model_names[m - 1],]) == dim(all_results[all_results$model == model_names[m],])
     )
   }
+
+  all_results$directory <- results_folder
+
   return(all_results)
 }
 
@@ -83,10 +119,11 @@ showplot.box <- function(data) {
 
   library(ggplot2); library(reshape2); library(scales)
 
-  home_dir <- substring(getwd(), 1, 21)
-  proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir, "/Progress/")))
-  folder_name <- paste0(home_dir, "/Progress/", list.files(paste0(home_dir, "/Progress"))[proj.coords])
-  results_folder <- paste0(folder_name, "/results")
+  # home_dir <- substring(getwd(), 1, 21)
+  # proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir, "/Progress/")))
+  # folder_name <- paste0(home_dir, "/Progress/", list.files(paste0(home_dir, "/Progress"))[proj.coords])
+  # results_folder <- paste0(folder_name, "/results")
+  results_folder <- data$directory[1]
   path <- paste0(results_folder, "/boxplots")
   if (!file.exists(path)) {dir.create(file.path(path), showWarnings = FALSE)}
 
@@ -198,11 +235,12 @@ showplot.correlation <- function(data) {
 
   library(ggplot2); library(reshape2); library(scales)
 
-  home_dir <- substring(getwd(), 1, 21)
-  proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir, "/Progress/")))
-  folder_name <- paste0(home_dir, "/Progress/", list.files(paste0(home_dir, "/Progress"))[proj.coords])
-  results_folder <- paste0(folder_name, "/results")
-  path <- paste0(results_folder, "/correlation_plots")
+  # home_dir <- substring(getwd(), 1, 21)
+  # proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir, "/Progress/")))
+  # folder_name <- paste0(home_dir, "/Progress/", list.files(paste0(home_dir, "/Progress"))[proj.coords])
+  # results_folder <- paste0(folder_name, "/results")
+  results_folder <- data$directory[1]
+  path <- paste0(results_folder, "/correlationplots")
   if (!file.exists(path)) {dir.create(file.path(path), showWarnings = FALSE)}
 
   data2 <- data
@@ -347,11 +385,13 @@ showplot.cloud <- function(data) {
 
   library(ggplot2); library(reshape2); library(scales)
 
-  home_dir <- substring(getwd(), 1, 21)
-  proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir, "/Progress/")))
-  folder_name <- paste0(home_dir, "/Progress/", list.files(paste0(home_dir, "/Progress"))[proj.coords])
-  results_folder <- paste0(folder_name, "/results")
+  # home_dir <- substring(getwd(), 1, 21)
+  # proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir, "/Progress/")))
+  # folder_name <- paste0(home_dir, "/Progress/", list.files(paste0(home_dir, "/Progress"))[proj.coords])
+  # results_folder <- paste0(folder_name, "/results")
+  results_folder <- data$directory[1]
   path <- paste0(results_folder, "/cloudplots")
+
   if (!file.exists(path)) {dir.create(file.path(path), showWarnings = FALSE)}
 
   data2 <- data
@@ -398,7 +438,7 @@ showplot.cloud <- function(data) {
         mu[S]==.(muS),
         cond==.(conditioning)
       ))
-    ); print(pa)
+    ); #print(pa)
 
     #log lambda vs log mu
     pb <- ggplot2::ggplot(subdata2,
@@ -426,7 +466,7 @@ showplot.cloud <- function(data) {
     scale_x_continuous(trans = log2_trans()
     ) +
     scale_y_continuous(trans = log2_trans()
-    ); print(pb)
+    ); #print(pb)
 
     #(lambda-mu) vs (mu/lambda)
     pc <- ggplot2::ggplot(subdata2,
@@ -450,7 +490,7 @@ showplot.cloud <- function(data) {
           mu[S]==.(muS),
           cond==.(conditioning)
         ))
-      ); print(pc)
+      ); #print(pc)
 
     #log(lambda-mu) vs log(mu/lambda)
     pd <- ggplot2::ggplot(subdata2,
@@ -478,7 +518,7 @@ showplot.cloud <- function(data) {
       scale_x_continuous(trans = log2_trans()
       ) +
       scale_y_continuous(trans = log2_trans()
-      ); print(pd)
+      ); #print(pd)
 
     #print outputs on pdf
     pdfname <- paste0("lambda_vs_mu", pars_string)
