@@ -3,7 +3,7 @@ context("likelihoods with no division")
 test_that( "test P and Q approach equivalence", {
 
   #define difference
-  likelihood_diff <- function(fun1 = sls::lik_shift_P_nodivision,
+  likelihood_diff <- function(fun1 = sls::loglik_slsP_nodivision,
                               fun2 = DDD::dd_KI_loglik,
                               pars1,
                               pars2,
@@ -43,7 +43,7 @@ test_that( "test P and Q approach equivalence", {
     missnumspec <- 0
   }
 
-  diff <- likelihood_diff(fun1 = sls::lik_shift_P_nodivision,
+  diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
                           fun2 = DDD::dd_KI_loglik,
                           pars1 = pars1,
                           pars2 = pars2,
@@ -69,7 +69,7 @@ test_that( "test P and Q approach equivalence", {
     missnumspec <- 0
   }
 
-  diff <- likelihood_diff(fun1 = sls::lik_shift_P_nodivision,
+  diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
                           fun2 = DDD::dd_KI_loglik,
                           pars1 = pars1,
                           pars2 = pars2,
@@ -82,9 +82,8 @@ test_that( "test P and Q approach equivalence", {
   )
 
   #test3
-  # devtools::use_travis(
-  lM <- 18; age <- 8;
-  maxs <- 30; res <- rep(NA, maxs); test_threshold <- 1e-3; max_iterations <- 8
+  lM <- 18 + 2 * (ribir:::is_on_travis()); age <- 8;
+  maxs <- 30 * 90^(ribir:::is_on_travis()); res <- rep(NA, maxs); test_threshold <- 1e-3; max_iterations <- 8 + (ribir:::is_on_travis())
   for (s in 1:maxs) {
     set.seed(s)
     diff <- 1; precision <- 3 * lM; iterations <- 1
@@ -104,7 +103,7 @@ test_that( "test P and Q approach equivalence", {
       missnumspec <- 0
 
       pars2   <- c(precision, 1, cond, tsplit, 0, 2)
-      diff <- likelihood_diff(fun1 = sls::lik_shift_P_nodivision,
+      diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
                               fun2 = DDD::dd_KI_loglik,
                               pars1 = pars1,
                               pars2 = pars2,

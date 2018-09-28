@@ -12,12 +12,24 @@ sls_ML_cluster <- function(s,
                            age = 10,
                            optimmethod = 'simplex',
                            tolerance = 1E-2,
-                           fun1 = sls:::lik_shift_P,
-                           fun2 = sls:::lik_shift_DDD)
+                           fun1 = sls::loglik_slsP,
+                           fun2 = sls::loglik_DDD)
 {
   set.seed(s)
   # optimmethod <- 'subplex' or 'simplex'
   # pars <- c(0.3, 0.1, 0.6, 0.05)
+
+  fun_list <- ls("package:sls")
+  for (i in seq_along(fun_list))
+  {
+    if (all.equal(get(fun_list[i]), fun1) == TRUE) {whichfunction1 <- i}
+    if (all.equal(get(fun_list[i]), fun2) == TRUE) {whichfunction2 <- i}
+  }
+
+  fun_name_1 <- toString(fun_list[whichfunction1])
+  fun_name_2 <- toString(fun_list[whichfunction2])
+  model1 <- unlist(strsplit(fun_name_1, split = 'loglik_', fixed = TRUE))[2]
+  model2 <- unlist(strsplit(fun_name_2, split = 'loglik_', fixed = TRUE))[2]
 
   soc  <- 2
   tol  <- rep(tolerance, 3) * c(1, 10^-1, 10^-3)
@@ -38,11 +50,14 @@ sls_ML_cluster <- function(s,
   tsplit <- min(abs(brtsM[abs(brtsM) > t_d]))
   res <- 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec))
 
-  pars2 <- c(res, ddmodel, cond, tsplit, 0, soc, tol, maxiter)
+  pars2    <- c(res, ddmodel, cond, tsplit, 0, soc, tol, maxiter)
   outnames <- c("lambda_M", "mu_M", "K_M", "lambda_S", "mu_S", "K_S", "t_d", "LL", "df", "conv")
   simpath  <- getwd()
   datapath <- paste0(simpath, "/data")
-  save(sim, file = paste0(datapath, "/sim_", s, ".RData"))
+  if (.Platform$OS.type != "windows")
+  {
+    save(sim, file = paste0(datapath, "/sim_", s, ".RData"))
+  }
 
   #loglik 1
   MLE_1 <- unlist(
@@ -63,7 +78,7 @@ sls_ML_cluster <- function(s,
   names(MLE_1) <- outnames
   out_1 <- c(MLE_1, NM, NS, s);
   names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
-  write.table(matrix(out_1, ncol = length(out_1)), file = paste0(simpath, "/MLE_model1", s, ".txt"),
+  write.table(matrix(out_1, ncol = length(out_1)), file = paste0(simpath, "/", model1,"_MLE", s, ".txt"),
               append = TRUE, row.names = FALSE, col.names = FALSE, sep = ",")
 
   #DDD_KI
@@ -81,10 +96,11 @@ sls_ML_cluster <- function(s,
                 tol = tol,
                 optimmethod = optimmethod)
   )
+
   names(MLE_2) <- outnames
   out_2 <- c(MLE_2, NM, NS, s);
   names(out_2) <- c(names(MLE_2), "tips_M", "tips_S", "tree_id")
-  write.table(matrix(out_2, ncol = length(out_2)), file = paste0(simpath, "/MLE_model2", s, ".txt"),
+  write.table(matrix(out_2, ncol = length(out_2)), file = paste0(simpath, "/", model2,"_MLE", s, ".txt"),
               append = TRUE, row.names = FALSE, col.names = FALSE, sep = ",")
   return(list(out_1 = out_1, out_2 = out_2))
 }

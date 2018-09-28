@@ -4,7 +4,7 @@
 \alias{sls_ML}
 \title{Internal MBD function}
 \usage{
-sls_ML(loglik_function = sls:::lik_shift_P, brtsM, brtsS, tsplit,
+sls_ML(loglik_function = sls::loglik_slsP, brtsM, brtsS, tsplit,
   initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + missnumspec[1]), 2 * (1 +
   length(brtsS) + missnumspec[length(missnumspec)]), (tsplit + max(brtsS))/2),
   parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
