@@ -16,7 +16,7 @@ sls_ML_cluster <- function(s,
 {
   fun <- eval(fun)
   s <- as.numeric(s)
-  sim_pars <- as.numeric(sim_pars)
+  simpars <- as.numeric(simpars)
   cond <- as.numeric(cond)
 
   set.seed(s)
