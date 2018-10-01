@@ -17,11 +17,18 @@ sls_ML_cluster <- function(s,
   set.seed(s)
   # optimmethod <- 'subplex' or 'simplex'
   # pars <- c(0.3, 0.1, 0.6, 0.05)
+  fun <- eval(fun)
 
   fun_list <- ls("package:sls")
+  whichfunction1 <- NULL
   for (i in seq_along(fun_list))
   {
     if (all.equal(get(fun_list[i]), fun) == TRUE) {whichfunction1 <- i}
+  }
+
+  if (is.null(whichfunction1))
+  {
+   stop('This is not a likelihood function provided by sls!')
   }
 
   fun_name_1 <- toString(fun_list[whichfunction1])

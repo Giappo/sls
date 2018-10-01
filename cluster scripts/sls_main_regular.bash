@@ -8,6 +8,7 @@ mu_S=$4
 cond=$5
 max_sims=$6
 model=$7
+function="sls::loglik_"$model
 
 cd /home/$USER/sls/
 
@@ -34,7 +35,9 @@ echo "rm -rfv errors/*"
 
 echo "library(sls)" > zzz_ML_regular.R
 echo "args = as.numeric(commandArgs(TRUE))" >> zzz_ML_regular.R
-echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = paste0('sls::loglik_', args[7]))))" >> zzz_ML_regular.R
+#echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = paste0('sls::loglik_', toString(args[7])))))" >> zzz_ML_regular.R
+#echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=args[7])" >> zzz_ML_regular.R
+echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = args[7])))" >> zzz_ML_regular.R
 
 for((s = 1; s <= max_sims; s++))
 do
@@ -42,7 +45,8 @@ do
 echo "#!/bin/bash" > SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
 echo "#SBATCH --time=169:59:00" >> SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
 echo "module load R/3.4.4-foss-2018a-X11-20180131" >> SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
-echo "Rscript zzz_ML_regular.R $s $lambda_M $mu_M $lambda_S $mu_S $cond $model" >> SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
+#echo "Rscript zzz_ML_regular.R $s $lambda_M $mu_M $lambda_S $mu_S $cond $model" >> SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
+echo "Rscript zzz_ML_regular.R $s $lambda_M $mu_M $lambda_S $mu_S $cond $function" >> SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
 echo "rm SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model" >> SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
 
 #NEVER ASK FOR MORE THAN 9GB OF MEMORY!
