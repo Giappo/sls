@@ -14,10 +14,14 @@ sls_ML_cluster <- function(s,
                            tolerance = 1E-2,
                            fun = sls::loglik_slsP)
 {
+  fun <- eval(fun)
+  s <- as.numeric(s)
+  sim_pars <- as.numeric(sim_pars)
+  cond <- as.numeric(cond)
+
   set.seed(s)
   # optimmethod <- 'subplex' or 'simplex'
   # pars <- c(0.3, 0.1, 0.6, 0.05)
-  fun <- eval(fun)
 
   fun_list <- ls("package:sls")
   whichfunction1 <- NULL

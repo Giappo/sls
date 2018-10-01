@@ -16,7 +16,7 @@ chmod +x install_packages.bash
 ./install_packages.bash --output=testinst.out
 #sbatch install_packages.bash
 
-sleep 40
+sleep 30
 
 rm testinst.out
 
@@ -34,11 +34,16 @@ echo "rm -rfv errors/*"
 #sbatch /home/$USER/mbd_like/install_packages.bash & sleep 60
 
 echo "library(sls)" > zzz_ML_gelifes.R
-echo "args = as.numeric(commandArgs(TRUE))" >> zzz_ML_gelifes.R
+#echo "args = as.numeric(commandArgs(TRUE))" >> zzz_ML_gelifes.R
+echo "args = commandArgs(TRUE)" >> zzz_ML_gelifes.R
+#echo "args0 = as.numeric(commandArgs(TRUE))" >> zzz_ML_gelifes.R
+#echo "args <- as.numeric(args0)" >> zzz_ML_gelifes.R
+#echo "args[is.na(args)] <- args0[is.na(args)]" >> zzz_ML_gelifes.R
+
 #echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = paste0('sls::loglik_', toString(args[7])))))" >> zzz_ML_gelifes.R
 #echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=args[7])" >> zzz_ML_gelifes.R
-#echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = args[7])))" >> zzz_ML_gelifes.R
-echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(args[7]))" >> zzz_ML_gelifes.R
+echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = paste0(toString(args[7])))))" >> zzz_ML_gelifes.R
+#echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(args[7]))" >> zzz_ML_gelifes.R
 
 for((s = 1; s <= max_sims; s++))
 do
