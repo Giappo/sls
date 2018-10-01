@@ -17,8 +17,7 @@ test_that( "simulated trees respect conditional instances", {
     set.seed(s)
     for (cond in 1:3)
     {
-      # L <- sls::sls_sim(pars, t0 = t0, starting_species = starting_species, cond = cond)$L
-      sim <- sls::sls_sim2(pars1 = pars1, age = age, soc = soc, cond = cond)
+      sim <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
       L <- sim$L
       checkM <- unique(sign(L[[1]][(L[[1]][,4] == -1),3])); checkM
       checkS <- unique(sign(L[[2]][(L[[2]][,4] == -1),3])); checkS
@@ -40,8 +39,7 @@ test_that( "simulated trees respect conditional instances", {
     set.seed(s)
     for (cond in 1:3)
     {
-      # test <- sls::sls_sim(pars, t0 = t0, starting_species = starting_species, cond = cond);test$L[[2]]; test$brts[[2]]
-      sim <- sls::sls_sim2(pars1 = pars1, age = age, soc = soc, cond = cond)
+      sim <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
       brts <- sim$brts
       L1 <- sim$L[[1]]
       alive_at_the_present <- (L1[,4] < 0)

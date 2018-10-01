@@ -4,12 +4,16 @@
 \alias{sls_ML}
 \title{Internal MBD function}
 \usage{
-sls_ML(loglik_function = sls:::lik_shift_P, initparsopt, parsfix,
-  idparsopt = 1:4, idparsfix = (1:4)[-idparsopt], brtsM, brtsS, cond = 1,
-  optimmethod = "simplex", pars.transform = 1, res = 10 * (1 +
-  length(c(brtsM, brtsS))), tol = c(0.001, 1e-04, 1e-06), maxiter = 1000 *
+sls_ML(loglik_function = sls::loglik_slsP, brtsM, brtsS, tsplit,
+  initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + missnumspec[1]), 2 * (1 +
+  length(brtsS) + missnumspec[length(missnumspec)]), (tsplit + max(brtsS))/2),
+  parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
+  idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) *
+  idparsfix)], res = 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec)),
+  ddmodel = 1, missnumspec = c(0, 0), cond = 1, soc = 2,
+  tol = c(0.001, 1e-04, 1e-06), maxiter = 1000 *
   round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE,
-  verbose = TRUE)
+  optimmethod = "subplex")
 }
 \description{
 Internal MBD function.

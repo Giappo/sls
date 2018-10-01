@@ -2,19 +2,11 @@
 % Please edit documentation in R/sls_sim.R
 \name{sls_sim}
 \alias{sls_sim}
-\title{Does something}
+\title{Simulates a process with a single lineage rate shift}
 \usage{
-sls_sim(pars, t0, starting_species = c(2, 1), cond)
+sls_sim(pars1, age, soc, cond)
 }
 \arguments{
-\item{pars}{parameters of the likelihood functions:
-\itemize{
-  \item pars[1] is lambdaM, i.e. speciation rate of the main clade;
-  \item pars[2] is muM, i.e. extinction rate of the main clade;
-  \item pars[3] is lambdaS, i.e. speciation rate of the sub clade;
-  \item pars[4] is muS, i.e. extinction rate of the sub clade;
-}}
-
 \item{cond}{type of conditioning:
 \itemize{
   \item cond = 0 no conditiong;
@@ -27,5 +19,5 @@ sls_sim(pars, t0, starting_species = c(2, 1), cond)
 result
 }
 \description{
-Does something
+Simulates a process with a single lineage rate shift
 }
