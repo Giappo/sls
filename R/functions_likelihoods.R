@@ -83,9 +83,9 @@ loglik_slsP <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
   return(loglik)
 }
 
-#' @title P-likelihood
+#' @title P-likelihood (with no division)
 #' @author Giovanni Laudanno
-#' @description Calculates the likelihood convoluting Nee's functions
+#' @description Calculates the likelihood convoluting Nee's functions. There is no division. It should yield the same likelihood as DDD.
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
@@ -303,16 +303,7 @@ loglik_slsQ <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
 #' @export
 loglik_DDD <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0))
 {
-  # lambdas <- c(pars1[1], pars1[4])
-  # mus     <- c(pars1[2], pars1[5])
-  # Ks      <- c(pars1[3], pars1[6])
-  # td      <- pars1[7]
-  # nmax   <- pars2[1]
-
-  # tsplit <- pars2[4]
-  # N0     <- pars2[6]
-  cond <- pars2[3]
-  # pars2[3] <- 0 # i will impose my conditioning
+  cond <- pars2[3] # i will impose my conditioning
   pars1copy <- pars1; pars1copy[7] <- abs(pars1copy[7])
   pars2copy <- pars2; pars2copy[4] <- abs(pars2copy[4]); pars2copy[3] <- 0 #i will impose my conditioning
   testit::assert(pars2copy[4] %in% abs(brtsM)) #tsplit in brtsM

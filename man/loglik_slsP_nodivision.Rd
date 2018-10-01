@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions_likelihoods.R
 \name{loglik_slsP_nodivision}
 \alias{loglik_slsP_nodivision}
-\title{P-likelihood}
+\title{P-likelihood (with no division)}
 \usage{
 loglik_slsP_nodivision(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM,
   brtsS, missnumspec = c(0, 0))
@@ -16,7 +16,7 @@ loglik_slsP_nodivision(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM,
 The likelihood
 }
 \description{
-Calculates the likelihood convoluting Nee's functions
+Calculates the likelihood convoluting Nee's functions. There is no division. It should yield the same likelihood as DDD.
 }
 \author{
 Giovanni Laudanno
