@@ -6,8 +6,9 @@ mu_M=$2
 lambda_S=$3
 mu_S=$4
 cond=$5
-max_sims=$6
-model=$7
+min_sims=$6
+max_sims=$7
+model=$8
 function="sls::loglik_"$model
 
 cd /home/$USER/sls/
@@ -36,16 +37,13 @@ echo "rm -rfv errors/*"
 echo "library(sls)" > zzz_ML_gelifes.R
 #echo "args = as.numeric(commandArgs(TRUE))" >> zzz_ML_gelifes.R
 echo "args = commandArgs(TRUE)" >> zzz_ML_gelifes.R
-#echo "args0 = as.numeric(commandArgs(TRUE))" >> zzz_ML_gelifes.R
-#echo "args <- as.numeric(args0)" >> zzz_ML_gelifes.R
-#echo "args[is.na(args)] <- args0[is.na(args)]" >> zzz_ML_gelifes.R
 
 #echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = paste0('sls::loglik_', toString(args[7])))))" >> zzz_ML_gelifes.R
 #echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=args[7])" >> zzz_ML_gelifes.R
-echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = paste0(toString(args[7])))))" >> zzz_ML_gelifes.R
 #echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(args[7]))" >> zzz_ML_gelifes.R
+echo "sls:::sls_ML_cluster(s=args[1],simpars=c(args[2],args[3],args[4],args[5]),cond=args[6],t_d=4,fun=eval(parse(text = paste0(toString(args[7])))))" >> zzz_ML_gelifes.R
 
-for((s = 1; s <= max_sims; s++))
+for((s = min_sims; s <= max_sims; s++))
 do
 
 echo "#!/bin/bash" > SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
@@ -57,7 +55,7 @@ echo "rm SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model" >> SLSjob$s$lambda_M$m
 
 #NEVER ASK FOR MORE THAN 9GB OF MEMORY!
 #sbatch --partition=regular --mem=9GB --job-name=ML$s$lambda_M$mu_M$lambda_S$mu_S$cond$model --mail-type=FAIL,TIME_LIMIT --mail-user=glaudanno@gmail.com SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
-sbatch --partition=gelifes --mem=9GB --job-name=ML$s$lambda_M$mu_M$lambda_S$mu_S$cond$model --mail-type=FAIL,TIME_LIMIT --mail-user=glaudanno@gmail.com SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
+sbatch --partition=gelifes --mem=9GB --job-name=ML$s-$lambda_M$mu_M$lambda_S$mu_S$cond$model --mail-type=FAIL,TIME_LIMIT --mail-user=glaudanno@gmail.com SLSjob$s$lambda_M$mu_M$lambda_S$mu_S$cond$model
 
 done
 
