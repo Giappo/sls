@@ -262,7 +262,7 @@ showplot.box <- function(data) {
   models <- sort(models)
   testit::assert(length(models) == 2)
   model_comparison_folder <- paste0(results_folder, "\\", models[1], "_vs_", models[2])
-  if (!file.exists(model_comparison_folder)) {dir.create(model_comparison_folder)}
+  if (!file.exists(model_comparison_folder)) {dir.create(model_comparison_folder, showWarnings = FALSE)}
   path <- paste0(model_comparison_folder, "/boxplots")
   if (!file.exists(path)) {dir.create(file.path(path), showWarnings = FALSE)}
 

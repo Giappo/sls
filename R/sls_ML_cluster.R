@@ -66,6 +66,7 @@ sls_ML_cluster <- function(s,
   datafile_name <- paste0(datapath, "/sim_", s, ".RData")
   if (.Platform$OS.type != "windows" & !file.exists(datafile_name))
   {
+    if (!file.exists(datapath)) {dir.create(datapath, showWarnings = FALSE)}
     save(sim, file = datafile_name)
   }
 
