@@ -14,11 +14,13 @@ sls_ML_cluster <- function(s,
                            tolerance = 1E-2,
                            fun = sls::loglik_slsP)
 {
+  library(sls)
   fun <- eval(fun)
   s <- as.numeric(s)
   simpars <- as.numeric(simpars)
   cond <- as.numeric(cond)
 
+  print(s)
   set.seed(s)
   # optimmethod <- 'subplex' or 'simplex'
   # pars <- c(0.3, 0.1, 0.6, 0.05)
@@ -32,10 +34,10 @@ sls_ML_cluster <- function(s,
 
   if (is.null(whichfunction1))
   {
-   stop('This is not a likelihood function provided by sls!')
+    stop('This is not a likelihood function provided by sls!')
   }
 
-  fun_name_1 <- toString(fun_list[whichfunction1])
+  fun_name_1 <- toString(fun_list[whichfunction1]); print(fun_name_1)
   model1     <- unlist(strsplit(fun_name_1, split = 'loglik_', fixed = TRUE))[2]
 
   soc  <- 2
