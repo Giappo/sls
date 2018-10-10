@@ -4,7 +4,16 @@
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
+loglik_slsP <- function(pars1,
+                        pars2 = c(2 + sum(missnumspec) + 2 * length(brtsM) + 1 + 2 * length(brtsS),  #maximum number of species involved in the computation
+                                  1,  #ddmodel: not actually used by this function
+                                  1,  #conditioning
+                                  min(abs(brtsM[abs(brtsM) > pars1[7]])), # tshift
+                                  0,  #print things: not actually used by this function
+                                  2), #stem or crown (soc)
+                        brtsM,
+                        brtsS,
+                        missnumspec = c(0,0)) {
 
   lambdas <- c(pars1[1], pars1[4])
   mus     <- c(pars1[2], pars1[5])

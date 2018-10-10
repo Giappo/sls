@@ -2,6 +2,9 @@ context("likelihoods with no division")
 
 test_that( "test P and Q approach equivalence", {
 
+
+  while (!require("ribir")) {devtools::install_github("richelbilderbeek/ribir")}
+
   #define difference
   likelihood_diff <- function(fun1 = sls::loglik_slsP_nodivision,
                               fun2 = DDD::dd_KI_loglik,

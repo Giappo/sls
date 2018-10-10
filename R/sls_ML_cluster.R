@@ -70,28 +70,28 @@ sls_ML_cluster <- function(s,
     save(sim, file = datafile_name)
   }
 
-  #loglik 1
-  MLE_1 <- unlist(
-    sls::sls_ML(loglik_function = fun,
-                brtsM = brtsM,
-                brtsS = brtsS,
-                tsplit = tsplit,
-                idparsopt = idparsopt,
-                initparsopt = initparsopt,
-                idparsfix = idparsfix,
-                parsfix = parsfix,
-                idparsnoshift = idparsnoshift,
-                cond = cond,
-                tol = tol,
-                optimmethod = optimmethod)
-  )
-
-  names(MLE_1) <- outnames
-  out_1 <- c(MLE_1, NM, NS, s);
-  names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
   file_name <- paste0(simpath, "/", model1, "_MLE", s, ".txt")
   if (!file.exists(file_name))
   {
+    MLE_1 <- unlist(
+      sls::sls_ML(loglik_function = fun,
+                  brtsM = brtsM,
+                  brtsS = brtsS,
+                  tsplit = tsplit,
+                  idparsopt = idparsopt,
+                  initparsopt = initparsopt,
+                  idparsfix = idparsfix,
+                  parsfix = parsfix,
+                  idparsnoshift = idparsnoshift,
+                  cond = cond,
+                  tol = tol,
+                  optimmethod = optimmethod)
+    )
+
+    names(MLE_1) <- outnames
+    out_1 <- c(MLE_1, NM, NS, s);
+    names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
+
     write.table(matrix(out_1, ncol = length(out_1)), file = file_name,
                 append = TRUE, row.names = FALSE, col.names = FALSE, sep = ",")
   }
