@@ -198,6 +198,100 @@ collect_data <- function() {
   return(all_results)
 }
 
+data_overview <- function(data) {
+
+  data1 <- data
+  all_models <- levels(droplevels(unique(data1$model)))
+  cat(paste0("There are results for the following models: ")); print(all_models)
+  simpars.names <- c("sim.lambda_M","sim.mu_M","sim.lambda_S","sim.mu_S","cond")
+  data2 <- data1[, simpars.names]
+  parsettings <- unique(data2); Nd <- nrow(parsettings); Nd
+  Ndm <- matrix(0, ncol = length(all_models), nrow = Nd)
+  d_models <- vector("list", Nd); d <- 1
+  for (d in 1:Nd)
+  {# d loop
+    primed_data <- 2^data2[,1]*3^data2[,2]*5^data2[,3]*7^data2[,4]*11^data2[,5]
+    primed_pars <- 2^parsettings[d,1]*3^parsettings[d,2]*5^parsettings[d,3]*7^parsettings[d,4]*11^parsettings[d,5]
+    drows <- which(primed_data == primed_pars)
+    data3 <- data1[drows,]
+    d_models[[d]] <- levels(droplevels(unique(data3$model)))
+    m <- 1
+    for (m in seq_along(all_models))
+    {
+      Ndm[d, m] <- sum(data3$model == all_models[m])
+    }
+  }; d_models
+  overview <- matrix(NA, nrow = Nd, ncol = (ncol(parsettings) + length(all_models)))
+  colnames(overview) <- c(colnames(data2), all_models)
+  # overview[,1:ncol(parsettings)] <- parsettings
+  overview[, simpars.names] <- as.matrix(parsettings)
+
+  # for (d in 1:Nd)
+  # {# d loop
+  #   overview[d, (length(simpars.names) + 1): ncol(overview)] <- d_models[[d]] %in% all_models
+  # }
+  overview[, (length(simpars.names) + 1): ncol(overview)] <- Ndm
+  return(overview)
+}
+
+load_trees <- function(s) {
+
+  testit::assert(is.numeric(s))
+  testit::assert(floor(s) == ceiling(s))
+
+  db_dir <- get.dropbox.folder()
+  home_dir <- db_dir
+  home_dir <- paste0(db_dir, "\\university\\Progress\\"); list.files(home_dir)
+  proj.coords <- pmatch(x = "RQ4", table = list.files(paste0(home_dir)))
+  folder_name <- paste0(home_dir, list.files(paste0(home_dir))[proj.coords])
+  results_mother_folder <- paste0(folder_name, "/results")
+  # results_folder <- choose.dir(default = results_mother_folder)
+  results_folder <- results_mother_folder
+  datasets <- list.files(results_folder, pattern = "^[0]")
+
+  dataset_pars <- vector("list", Nd <- length(datasets))
+  for (d in 1:Nd)
+  {
+    dataset_pars[[d]] <- as.numeric(unlist( strsplit(x = datasets[d], split = "-")))
+  }
+  cat("Available datasets are: ")
+  print(datasets)
+  x <- readline("What dataset do you choose? \n")
+
+  dataset_folder <- paste0(results_folder, "/" ,datasets[as.numeric(x)])
+  data_folder <- paste0(dataset_folder, "/", "data")
+  # list.files(data_folder)
+  if (missing(s)) {
+    s <- readline("What tree do you choose? \n")
+  }
+  tree_file <- paste0(data_folder, "/", "sim_", s ,".Rdata")
+  # simtrees <- NULL
+  if (length(s) == 1)
+    {
+    while (!file.exists(tree_file)) {
+      print("This tree is not present. \n")
+      s <- readline("What tree do you choose? \n")
+      tree_file <- paste0(data_folder, "/", "sim_", s ,".Rdata")
+    }
+    simtrees <- get(load(tree_file))
+  }else
+  {
+    simtrees <- list(); ss <- 1
+    for (ss in s)
+    {
+      if (!file.exists(tree_file[ss]))
+      {
+        simtrees[[ss]] <- NULL
+      }else
+      {
+        simtrees[[ss]] <- get(load(tree_file[ss]))
+      }
+    }
+  }
+
+  return(simtrees)
+}
+
 allow_model_comparison <- function(data, model1, model2) {
   models <- unique(data$model)
   if (!(model1 %in% models)) {stop('model1 is not present in the data')}
@@ -770,11 +864,20 @@ showplot.cloud <- function(data) {
 
 # DATA ANALYSIS -----------------------------------------------------------------------------
 
+data0 <- collect_data()
+data_overview(data0)
+
 # correct_model_label(old_model_name = "sls", new_model_name = "slsP")
 # delete_useless_files()
-data0 <- collect_data()
-data  <- allow_model_comparison(data0, model1 = "slsP", model2 = "DDD")
-showplot.box(data)
-showplot.correlation(data)
-showplot.cloud(data)
+# load_trees(1:50)
+
+data01  <- allow_model_comparison(data0, model1 = "slsP", model2 = "DDD")
+showplot.box(data01)
+showplot.correlation(data01)
+showplot.cloud(data01)
+
+
+
+test <- load_trees(1:20)
+
 

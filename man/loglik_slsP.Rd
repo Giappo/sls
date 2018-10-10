@@ -4,8 +4,9 @@
 \alias{loglik_slsP}
 \title{P-likelihood}
 \usage{
-loglik_slsP(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS,
-  missnumspec = c(0, 0))
+loglik_slsP(pars1, pars2 = c(2 + sum(missnumspec) + 2 * length(brtsM) + 1 + 2
+  * length(brtsS), 1, 1, min(abs(brtsM[abs(brtsM) > pars1[7]])), 0, 2), brtsM,
+  brtsS, missnumspec = c(0, 0))
 }
 \arguments{
 \item{brtsM}{branching times for the Main-clade}
