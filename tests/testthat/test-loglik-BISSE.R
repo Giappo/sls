@@ -156,3 +156,85 @@ test_that( "test BISSE and DDD logliks equivalence in case of one shift", {
   }
 
 })
+
+test_that( "test BISSE alternative functions", {
+
+  diff4 <- function(pars, brts) {
+
+    BISSEA1 <- sls::BISSE_loglik(pars, brts)
+    BISSEA2 <- sls::BISSE_loglik(pars/2, brts)
+    BISSEB1 <- sls::BISSE_loglik2(pars, brts)
+    BISSEB2 <- sls::BISSE_loglik2(pars/2, brts)
+
+    diff1 <- abs(BISSEA1 - BISSEB1)
+    diff2 <- abs(BISSEA2 - BISSEB2)
+
+    return(c(diff1, diff2))
+  }
+
+  #test1
+  brts  <- c(10, 4, 2)
+  pars  <- c(0.3, 0.1)
+
+  testthat::expect_true(
+    all(diff4(pars = pars, brts = brts) <= 1e-5)
+  )
+
+  #test2
+  for (s in 1:20)
+  {
+    set.seed(s)
+    brts  <- c(10, sort(runif(n = 30, min = 0.01, max = 10 - 0.01), decreasing = TRUE))
+    pars  <- c(x <- runif(n = 1, min = 0.1, max = 1), runif(n = 1, min = 0.05, max = x*3/4))
+
+    testthat::expect_true(
+      all(diff4(pars = pars, brts = brts) <= 1e-5)
+    )
+  }
+
+})
+
+test_that( "test BISSE alternative functions for the version with shift (the old wrong one)", {
+
+diff5 <- function(parsM, parsS, brtsM, brtsS) {
+
+  parsM1 <- parsM  ; parsS1 <- parsS;
+  parsM2 <- parsM/2; parsS2 <- parsS * 3/4;
+
+  BISSEA1 <- sls::BISSE_loglik_shift(parsM = parsM1, parsS = parsS1,
+                                    brtsM = brtsM, brtsS = brtsS); BISSEA1
+  BISSEA2 <- sls::BISSE_loglik_shift(parsM = parsM2, parsS = parsS2,
+                                    brtsM = brtsM, brtsS = brtsS); BISSEA2
+  BISSEB1 <- sls::BISSE_loglik_shift2(pars = parsM1, brts = brtsM, td = brtsS[1]) +
+             sls::BISSE_loglik2(pars = parsS1, brts = brtsS, N0 = 1); BISSEB1
+  BISSEB2 <- sls::BISSE_loglik_shift2(pars = parsM2, brts = brtsM, td = brtsS[1]) +
+             sls::BISSE_loglik2(pars = parsS2, brts = brtsS, N0 = 1); BISSEB2
+
+
+  diff1 <- abs(BISSEA1 - BISSEB1)
+  diff2 <- abs(BISSEA2 - BISSEB2)
+
+  return(c(diff1, diff2))
+}
+
+#test1
+brts  <- c(10, 4, 2)
+pars  <- c(0.3, 0.1)
+
+testthat::expect_true(
+  all(diff5(parsM = parsM, brtsM = brtsM, parsS = parsS, brtsS = brtsS) <= 1e-5)
+)
+
+#test2
+for (s in 1:20)
+{
+  set.seed(s)
+  brts  <- c(10, sort(runif(n = 30, min = 0.01, max = 10 - 0.01), decreasing = TRUE))
+  pars  <- c(x <- runif(n = 1, min = 0.1, max = 1), runif(n = 1, min = 0.05, max = x*3/4))
+
+  testthat::expect_true(
+    all(diff5(parsM = parsM, brtsM = brtsM, parsS = parsS, brtsS = brtsS) <= 1e-5)
+  )
+}
+
+})

@@ -13,8 +13,9 @@ loglik_slsP <- function(pars1,
                                   2), #stem or crown (soc)
                         brtsM,
                         brtsS,
-                        missnumspec = c(0,0)) {
-
+                        missnumspec = c(0,0)
+)
+{
   lambdas <- c(pars1[1], pars1[4])
   mus     <- c(pars1[2], pars1[5])
   Ks      <- c(pars1[3], pars1[6])
@@ -98,7 +99,18 @@ loglik_slsP <- function(pars1,
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP_nodivision <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
+loglik_slsP_nodivision <- function(pars1,
+                                   pars2 = c(2 + sum(missnumspec) + 2 * length(brtsM) + 1 + 2 * length(brtsS),  #maximum number of species involved in the computation
+                                             1,  #ddmodel: not actually used by this function
+                                             1,  #conditioning
+                                             min(abs(brtsM[abs(brtsM) > pars1[7]])), # tshift
+                                             0,  #print things: not actually used by this function
+                                             2), #stem or crown (soc)
+                                   brtsM,
+                                   brtsS,
+                                   missnumspec = c(0,0)
+)
+{
 
   lambdas <- c(pars1[1], pars1[4])
   mus     <- c(pars1[2], pars1[5])
@@ -183,7 +195,17 @@ loglik_slsP_nodivision <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), 
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsQ <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS)
+loglik_slsQ <- function(pars1,
+                        pars2 = c(2 + sum(missnumspec) + 2 * length(brtsM) + 1 + 2 * length(brtsS),  #maximum number of species involved in the computation
+                                  1,  #ddmodel: not actually used by this function
+                                  1,  #conditioning
+                                  min(abs(brtsM[abs(brtsM) > pars1[7]])), # tshift
+                                  0,  #print things: not actually used by this function
+                                  2), #stem or crown (soc)
+                        brtsM,
+                        brtsS,
+                        missnumspec = c(0,0)
+)
 {
   missnumspec <- c(0,0)
   lambdas <- c(pars1[1], pars1[4])
@@ -310,7 +332,17 @@ loglik_slsQ <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_DDD <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0))
+loglik_DDD <- function(pars1,
+                       pars2 = c(2 + sum(missnumspec) + 2 * length(brtsM) + 1 + 2 * length(brtsS),  #maximum number of species involved in the computation
+                                 1,  #ddmodel: not actually used by this function
+                                 1,  #conditioning
+                                 min(abs(brtsM[abs(brtsM) > pars1[7]])), # tshift
+                                 0,  #print things: not actually used by this function
+                                 2), #stem or crown (soc)
+                       brtsM,
+                       brtsS,
+                       missnumspec = c(0,0)
+)
 {
   cond <- pars2[3] # i will impose my conditioning
   pars1copy <- pars1; pars1copy[7] <- abs(pars1copy[7])

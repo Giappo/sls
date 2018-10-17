@@ -97,6 +97,8 @@ combine_pns_nodivision <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls::
   # sum((nvec^-1)*(Re(IDFT(DFT(x0) * DFT(y0))))) #cool!
 }
 
+
+
 #' #' Does something
 #' #' @inheritParams default_params_doc
 #' #' @return Convolution of the probabilities for all the processes

@@ -2,9 +2,9 @@
 % Please edit documentation in R/BISSE_functions.R
 \name{BISSE_loglik_shift}
 \alias{BISSE_loglik_shift}
-\title{BISSE loglik}
+\title{BISSE loglik with shift}
 \usage{
-BISSE_loglik_shift(parsM, parsS, brtsM, brtsS)
+BISSE_loglik_shift(parsM, parsS, brtsM, brtsS, N0M = 2)
 }
 \arguments{
 \item{brtsM}{branching times for the Main-clade}
@@ -15,7 +15,7 @@ BISSE_loglik_shift(parsM, parsS, brtsM, brtsS)
 loglik
 }
 \description{
-Provides BISSE loglik function
+Provides BISSE loglik function in a presence of a shift.
 }
 \author{
 Giovanni Laudanno
