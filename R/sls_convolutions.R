@@ -83,7 +83,7 @@ combine_pns0 <- function(lambda, mu, ts, tbar, nmax = 1e2) {
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
 #' @export
-combine_pns_nodivision <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
+combine_pns_nodiv <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
   nvec <- 1:nmax
   N <- length(ts)
   X <- vector("list", N)
@@ -115,4 +115,5 @@ combine_pns_nodivision <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls::
 #'   Re(sum((nvec^-1) * fft(apply(pippo, MARGIN = 2, "prod"), inverse = TRUE))) #awesome!
 #'   # sum((nvec^-1)*(Re(IDFT(DFT(x0) * DFT(y0))))) #cool!
 #' }
+
 

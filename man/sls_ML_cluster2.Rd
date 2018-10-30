@@ -4,9 +4,10 @@
 \alias{sls_ML_cluster2}
 \title{Internal sls function}
 \usage{
-sls_ML_cluster2(s, simpars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8, cond = 1,
-  initparsopt = c(0.5, 0.3, 0.5, 0.3), age = 10, optimmethod = "simplex",
-  tolerance = 0.01, fun1 = sls::loglik_slsP, fun2 = sls::loglik_DDD)
+sls_ML_cluster2(s, simpars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
+  cond = 1, initparsopt = c(0.5, 0.3, 0.5, 0.3), age = 10,
+  optimmethod = "simplex", tolerance = 0.01, fun1 = sls::loglik_slsP,
+  fun2 = sls::loglik_DDD)
 }
 \description{
 Internal sls function.

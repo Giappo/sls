@@ -7,8 +7,8 @@ ht <- function(pars, z = 0, t) {
   return(ht)
 }
 
-#alt for BISSE_loglik
-BISSE_loglik2 <- function(pars, brts, N0, t0,
+#alt for loglik_bisse
+loglik_bisse2 <- function(pars, brts, N0, t0,
                           E0 = 0, D0 = 1,
                           LOG = TRUE, lambdaterms = TRUE) {
   lambda <- pars[1]
@@ -19,16 +19,16 @@ BISSE_loglik2 <- function(pars, brts, N0, t0,
   return(out)
 }
 
-#alt for BISSE_loglik with a split in the middle td
-BISSE_loglik3 <- function(pars, brts, N0, t0, td,
+#alt for loglik_bisse with a split in the middle td
+loglik_bisse3 <- function(pars, brts, N0, t0, td,
                           LOG = TRUE, lambdaterms = TRUE) {
   testit::assert(all(td != brts))
   lambda <- pars[1]
   brts1 <- brts[brts > td]; brts2 <- sort(c(td, brts[brts < td]), decreasing = TRUE)
-  DD1 <- BISSE_loglik2(pars, brts1, N0 = N0, t0 = td,
+  DD1 <- loglik_bisse2(pars, brts1, N0 = N0, t0 = td,
                        E0 = Et(pars = pars, t0 = t0, tf = td, E0 = 0, D0 = 1),
                        LOG = FALSE, lambdaterms = FALSE)
-  DD2 <- BISSE_loglik2(pars, brts2, N0 = (N0 + length(brts1) - 1), t0 = 0,
+  DD2 <- loglik_bisse2(pars, brts2, N0 = (N0 + length(brts1) - 1), t0 = 0,
                        LOG = FALSE, lambdaterms = FALSE)
 
   DD <- DD1 * DD2 * lambda^(length(brts[-1]) * lambdaterms)
@@ -36,16 +36,16 @@ BISSE_loglik3 <- function(pars, brts, N0, t0, td,
   return(out)
 }
 
-#alt for BISSE_loglik with a decoupling in the middle td
-BISSE_loglik4 <- function(pars, brts, N0, t0, td,
+#alt for loglik_bisse with a decoupling in the middle td
+loglik_bisse4 <- function(pars, brts, N0, t0, td,
                           LOG = TRUE, lambdaterms = TRUE) {
   testit::assert(all(td != brts))
   lambda <- pars[1]
   brts1 <- brts[brts > td]; brts2 <- sort(c(td, brts[brts < td]), decreasing = TRUE)
-  DD1 <- BISSE_loglik2(pars, brts1, N0 = N0, t0 = td,
+  DD1 <- loglik_bisse2(pars, brts1, N0 = N0, t0 = td,
                        E0 = Et(pars = pars, t0 = t0, tf = td, E0 = 0, D0 = 1),
                        LOG = FALSE, lambdaterms = FALSE)
-  DD2 <- BISSE_loglik2(pars, brts2, N0 = (N0 + length(brts1) - 1) - 1, t0 = 0,
+  DD2 <- loglik_bisse2(pars, brts2, N0 = (N0 + length(brts1) - 1) - 1, t0 = 0,
                        LOG = FALSE, lambdaterms = FALSE)
 
   DD <- DD1 * DD2 * lambda^(length(brts[-1]) * lambdaterms)
@@ -54,12 +54,12 @@ BISSE_loglik4 <- function(pars, brts, N0, t0, td,
 }
 
 #BISSE version of slsP (?)
-BISSE_loglik5 <- function(pars, brts, N0, t0, td,
+loglik_bisse5 <- function(pars, brts, N0, t0, td,
                           LOG = TRUE, lambdaterms = TRUE) {
   testit::assert(all(td != brts))
   lambda <- pars[1]
   brts1 <- brts[brts > td]; brts2 <- sort(c(td, brts[brts < td]), decreasing = TRUE)
-  DD1 <- BISSE_loglik2(pars, brts1, N0 = N0, t0 = td,
+  DD1 <- loglik_bisse2(pars, brts1, N0 = N0, t0 = td,
                        E0 = (Ed <- Et(pars = pars, t0 = t0, tf = td, E0 = 0, D0 = 1)),
                        LOG = FALSE, lambdaterms = FALSE)
 
@@ -81,7 +81,7 @@ BISSE_loglik5 <- function(pars, brts, N0, t0, td,
   )
   divterm2 <- aux2.1 / aux2.2
 
-  DD2 <- BISSE_loglik2(pars, brts2, N0 = k - 1, t0 = 0,
+  DD2 <- loglik_bisse2(pars, brts2, N0 = k - 1, t0 = 0,
                        LOG = FALSE, lambdaterms = FALSE)
 
   DD <- DD1 * DD2 * lambda^(length(brts[-1]) * lambdaterms)
@@ -94,24 +94,24 @@ BISSE_loglik5 <- function(pars, brts, N0, t0, td,
 ##
 pars = c(0.3, 0.2); brts = c(10, 6, 2); N0 = 2; t0 = 0
 td <- 5; brts1 <- brts[brts > td]; brts2 <- c(td, brts[brts < td])
-test1  <- BISSE_loglik(pars, brts); test1
-test2  <- BISSE_loglik2(pars, brts, N0 = 2, t0 = t0, lambdaterms = T); test2
+test1  <- loglik_bisse(pars, brts); test1
+test2  <- loglik_bisse2(pars, brts, N0 = 2, t0 = t0, lambdaterms = T); test2
 
 ##
 pars = c(0.3, 0.2); brts = c(10, 6, 2); N0 = 2; t0 = 0
-test1 <- BISSE_loglik2(pars = pars, brts = brts, N0 = N0, t0 = t0); test1
-test2 <- BISSE_loglik3(pars = pars, brts = brts, N0 = N0, t0 = t0, td = runif(n = 1, min = 1, max = 9)); test2
+test1 <- loglik_bisse2(pars = pars, brts = brts, N0 = N0, t0 = t0); test1
+test2 <- loglik_bisse3(pars = pars, brts = brts, N0 = N0, t0 = t0, td = runif(n = 1, min = 1, max = 9)); test2
 
 ##
 pars = c(0.3, 0.2); brts = c(10, 6, 2); N0 = 2; t0 = 0; td = runif(n = 1, min = 1, max = 9); td
-test1 <- BISSE_loglik4(pars = pars, brts = brts, N0 = N0, t0 = t0, td = td); test1
-test2 <- sls::BISSE_loglik_shift(parsM = pars, parsS = pars, brtsM = brts, brtsS = td, N0M = 2) -
-  sls::BISSE_loglik(pars = pars, brts = td, N0 = 1); test2
+test1 <- loglik_bisse4(pars = pars, brts = brts, N0 = N0, t0 = t0, td = td); test1
+test2 <- sls::loglik_bisse_shift(parsM = pars, parsS = pars, brtsM = brts, brtsS = td, N0M = 2) -
+  sls::loglik_bisse(pars = pars, brts = td, N0 = 1); test2
 
 ##
 pars = c(0.3, 0.2); brts = c(10, 6, 2); N0 = 2; t0 = 0; set.seed(1); td = runif(n = 1, min = 1, max = 9); td
-test1 <- BISSE_loglik5(pars = pars, brts = brts, N0 = N0, t0 = t0, td = td); test1
-test2 <- sls::loglik_slsP_nodivision(pars1 = c(parsM[1], parsM[2], Inf, parsM[1], parsM[2], Inf, td),
+test1 <- loglik_bisse5(pars = pars, brts = brts, N0 = N0, t0 = t0, td = td); test1
+test2 <- sls::loglik_slsP_nodiv(pars1 = c(parsM[1], parsM[2], Inf, parsM[1], parsM[2], Inf, td),
                                      pars2 = c(200, 1, 0, min(brts[brts > td]), 0, N0),
                                      missnumspec = 0, brtsM = brts, brtsS = NULL) -
-         sls::BISSE_loglik(pars = pars, brts = td, N0 = 1); test2
+         sls::loglik_bisse(pars = pars, brts = td, N0 = 1); test2

@@ -36,7 +36,7 @@ Et <- function(pars, t0, tf, E0, D0) {
 #' @inheritParams default_params_doc
 #' @return loglik
 #' @export
-BISSE_loglik <- function(pars, brts, N0 = 2, tds = NULL, D0s = NULL, tp = 0) {
+loglik_bisse <- function(pars, brts, N0 = 2, tds = NULL, D0s = NULL, tp = 0) {
 
   testit::assert(length(tds) == length(D0s))
   testit::assert(all(brts > tp))
@@ -99,59 +99,19 @@ BISSE_loglik <- function(pars, brts, N0 = 2, tds = NULL, D0s = NULL, tp = 0) {
   return(log(DDf))
 }
 
-#' @title BISSE loglik with shift
-#' @author Giovanni Laudanno
-#' @description Provides BISSE loglik function in a presence of a shift.
-#' @inheritParams default_params_doc
-#' @return loglik
-#' @export
-BISSE_loglik_shift <- function(parsM,
-                               parsS,
-                               brtsM,
-                               brtsS,
-                               N0M = 2) {
-  loglikS <- sls::BISSE_loglik(pars = parsS, brts = brtsS, N0 = 1)
-  loglik  <- sls::BISSE_loglik(pars = parsM, brts = brtsM, N0 = N0M,
-                               tds = brtsS[1], D0s = exp(loglikS))
-
-  return(loglik)
-}
-
 #' @title BISSE loglik
 #' @author Giovanni Laudanno
 #' @description Provides BISSE loglik function (alternative version)
 #' @inheritParams default_params_doc
 #' @return loglik
 #' @export
-BISSE_loglik2 <- function(pars, brts, N0 = 2, t0 = 0,
+loglik_bisse2 <- function(pars, brts, N0 = 2, t0 = 0,
                           E0 = 0, D0 = 1,
                           LOG = TRUE, lambdaterms = TRUE) {
   lambda <- pars[1]
   BRTS <- c(rep(brts[1], N0 - 1), brts)
   DD <- prod(Dt(pars = pars, tf = BRTS, t0 = t0, E0 = E0, D0 = D0))
   DD <- DD * lambda^(length(brts[-1]) * lambdaterms)
-  out <- (LOG) * log(DD) + (1 - LOG) * DD
-  return(out)
-}
-
-#' @title BISSE loglik shift
-#' @author Giovanni Laudanno
-#' @description Provides BISSE loglik shift function (alternative version). Yields the old (wrong) BISSE result for the Main Clade only.
-#' @inheritParams default_params_doc
-#' @return loglik
-#' @export
-BISSE_loglik_shift2 <- function(pars, brts, N0 = 2, t0 = 0, td,
-                                LOG = TRUE, lambdaterms = TRUE) {
-  testit::assert(all(td != brts))
-  lambda <- pars[1]
-  brts1 <- brts[brts > td]; brts2 <- sort(c(td, brts[brts < td]), decreasing = TRUE)
-  DD1 <- sls::BISSE_loglik2(pars, brts1, N0 = N0, t0 = td,
-                       E0 = sls::Et(pars = pars, t0 = t0, tf = td, E0 = 0, D0 = 1),
-                       LOG = FALSE, lambdaterms = FALSE)
-  DD2 <- sls::BISSE_loglik2(pars, brts2, N0 = (N0 + length(brts1) - 1) - 1, t0 = t0,
-                       LOG = FALSE, lambdaterms = FALSE)
-
-  DD <- DD1 * DD2 * lambda^(length(brts[-1]) * lambdaterms)
   out <- (LOG) * log(DD) + (1 - LOG) * DD
   return(out)
 }

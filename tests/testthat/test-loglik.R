@@ -1,124 +1,121 @@
-context("likelihoods")
+context("likelihoods - division")
 
-test_that( "test P and Q approach equivalence", {
+test_that( "all the likelihoods with division yield the same result", {
 
-  #test1
-  lambdas <- c(0.3, 0)
-  mus     <- c(0.1, 0)
-  brtsM   <- c(10, 8, 7, 2)
-  brtsS   <- NULL
-  tsplit  <- c(7)
-  td      <- c(5.5)
-  pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-  pars2   <- c(100, 1, 1, tsplit, 0, 2)
+  testthat::skip('I skip it because it is slow. It works, though.')
 
-  lik_P <- sls::loglik_slsP(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::loglik_slsQ(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+  while (!require("ribir")) {devtools::install_github("richelbilderbeek/ribir")}
 
-  testthat::expect_equal(
-    lik_P, lik_Q
+  diff <- function(
+    parsM, parsS, brtsM, brtsS, cond,
+    fun1, fun2,
+    precision = 1e2,
+    ratios = FALSE
   )
+  {
 
-  #test2
-  lambdas <- c(0.3, 0.6)
-  mus     <- c(0.1, 0.05)
-  brtsM   <- c(10, 8, 7, 2)
-  brtsS   <- NULL
-  tsplit  <- c(7)
-  td      <- c(5.5)
-  pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-  pars2   <- c(100, 1, 1, tsplit, 0, 2)
+    parsM1 <- parsM  ; parsS1 <- parsS
 
-  lik_P <- sls::loglik_slsP(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::loglik_slsQ(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
+    res1.1 <- fun1(parsM = parsM1,
+                   parsS = parsS1,
+                   brtsM = brtsM,
+                   brtsS = brtsS,
+                   cond = cond,
+                   nmax = precision
+    ); res1.1
 
-  testthat::expect_equal(
-    lik_P, lik_Q
+    res2.1 <- fun2(
+      parsM = parsM1,
+      parsS = parsS1,
+      brtsM = brtsM,
+      brtsS = brtsS,
+      cond = cond,
+      nmax = precision
+    ); res2.1
+
+    res1.2 <- res2.2 <- 0
+    if (ratios == TRUE)
+    {
+      parsM2 <- parsM/2; parsS2 <- parsS * 3/4;
+
+      res1.2 <- fun1(parsM = parsM2,
+                     parsS = parsS2,
+                     brtsM = brtsM,
+                     brtsS = brtsS,
+                     cond = cond,
+                     nmax = precision
+      ); res1.2
+
+      res2.2 <- fun2(
+        parsM = parsM2,
+        parsS = parsS2,
+        brtsM = brtsM,
+        brtsS = brtsS,
+        cond = cond,
+        nmax = precision
+      ); res2.2
+    }
+
+    Delta1 <- res1.1 - res1.2; Delta1
+    Delta2 <- res2.1 - res2.2; Delta2
+
+    diff <- abs(Delta1 - Delta2)
+
+    return(diff)
+  }
+  test.diff <- function(
+    parsM, parsS, brtsM, brtsS, cond,
+    fun1, fun2,
+    precision = 1e2, threshold = 1e-3
   )
+  {
+    out <- 1; max_rep <- 10; rep <- 0
+    while (out > threshold && rep <= max_rep)
+    {
+      precision <- precision * 2
+      out <- diff(parsM = parsM, parsS = parsS, brtsM = brtsM, brtsS = brtsS, cond = cond,
+                  fun1 = fun1, fun2 = fun2,
+                  precision = precision)
+      rep <- rep + 1
+    }
+    out
+  }
 
-  #test3
-  lambdas <- c(0.3, 0)
-  mus     <- c(0.1, 0)
-  brtsM   <- c(10, 8, 7, 2)
-  brtsS   <- c(5, 3)
-  tsplit  <- c(7)
-  td      <- c(5.5)
-  pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-  pars2   <- c(100, 1, 1, tsplit, 0, 2)
-
-  lik_P <- sls::loglik_slsP(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::loglik_slsQ(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
-
-  testthat::expect_equal(
-    lik_P, lik_Q
+  models <- c(sls::loglik_slsP,
+              sls::loglik_slsQ
   )
+  threshold <- (!ribir::is_on_travis()) * 10^-2 +
+               (ribir::is_on_travis())  * (1/2) * 10^-3
 
-  #test4
-  lambdas <- c(0.3, 0.6)
-  mus     <- c(0.1, 0.05)
-  brtsM   <- c(10, 8, 7, 2)
-  brtsS   <- c(5, 3)
-  tsplit  <- c(7)
-  td      <- c(5.5)
-  pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-  pars2   <- c(100, 1, 1, tsplit, 0, 2)
+  cond <- 0
+  for (s in 1:(4 + 4 * ribir::is_on_travis()))
+  {
+    set.seed(s)
+    t0s    <- c(6, 2)
+    brtsM  <- c(t0s[1], sort(runif(n = 20, min = 0.01, max = t0s[1] - 0.01), decreasing = TRUE))
+    parsM  <- c(x <- runif(n = 1, min = 0.1, max = 1), runif(n = 1, min = 0.05, max = x * 3/4))
+    brtsS  <- c(t0s[2], sort(runif(n = 10, min = 0.01, max = t0s[2] - 0.01), decreasing = TRUE))
+    parsS  <- c(x <- runif(n = 1, min = 0.1, max = 1), runif(n = 1, min = 0.05, max = x * 3/4)) * c(2, 0.5)
+    cond   <- (cond == 0) * 1 + (cond == 1) * 0
 
-  lik_P <- sls::loglik_slsP(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::loglik_slsQ(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
-
-  testthat::expect_equal(
-    lik_P, lik_Q
-  )
-
-  #test5
-  lambdas <- c(0.2, 0)
-  mus     <- c(0.1, 0)
-  brtsM   <- c(10, 9.5, 8, 7, 2, 1)
-  brtsS   <- c(6, 5, 3, 2.5)
-  tsplit  <- c(8)
-  td      <- tsplit - 0.5
-  pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-  pars2   <- c(100, 1, 1, tsplit, 0, 2)
-
-  lik_P <- sls::loglik_slsP(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::loglik_slsQ(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
-
-  testthat::expect_equal(
-    lik_P, lik_Q
-  )
-
-  #test6
-  lambdas <- c(0.2, 0.6)
-  mus     <- c(0.1, 0.03)
-  brtsM   <- c(10, 9.5, 8, 7, 2, 1)
-  brtsS   <- c(6, 5, 3, 2.5)
-  tsplit  <- c(8)
-  td      <- tsplit - 0.5
-  pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-  pars2   <- c(100, 1, 1, tsplit, 0, 2)
-
-  lik_P <- sls::loglik_slsP(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::loglik_slsQ(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
-
-  testthat::expect_true(
-    abs(lik_P - lik_Q) < 1e-3
-  )
-
-  #test7
-  lambdas <- c(0.2, 0.8)
-  mus     <- c(0.1, 0.01)
-  brtsM   <- c(10, 9.5, 8, 7, 2, 1)
-  brtsS   <- c(6, 5, 3, 2.5)
-  tsplit  <- c(8)
-  td      <- tsplit - 0.5
-  pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-  pars2   <- c(100, 1, 1, tsplit, 0, 2)
-
-  lik_P <- sls::loglik_slsP(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_P
-  lik_Q <- sls::loglik_slsQ(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS); lik_Q
-
-  testthat::expect_true(
-    abs(lik_P - lik_Q) < 1e-3
-  )
+    for (i in 1:(length(models) - 1))
+    {
+      for (j in (i + 1):length(models))
+      {
+        testthat::expect_true(
+          test.diff(
+            parsM = parsM,
+            parsS = parsS,
+            brtsM = brtsM,
+            brtsS = brtsS,
+            cond = cond,
+            fun1 = models[[i]],
+            fun2 = models[[j]],
+            threshold = threshold
+          ) <= threshold
+        )
+      }
+    }
+  }
 
 })

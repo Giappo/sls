@@ -4,7 +4,7 @@
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP <- function(pars1,
+loglik_slsP_old <- function(pars1,
                         pars2 = c(2 + sum(missnumspec) + 2 * length(brtsM) + 1 + 2 * length(brtsS),  #maximum number of species involved in the computation
                                   1,  #ddmodel: not actually used by this function
                                   1,  #conditioning
@@ -84,7 +84,7 @@ loglik_slsP <- function(pars1,
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- Pc_1shift_old(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -99,7 +99,7 @@ loglik_slsP <- function(pars1,
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP_nodivision <- function(pars1,
+loglik_slsP_nodiv_old <- function(pars1,
                                    pars2 = c(2 + sum(missnumspec) + 2 * length(brtsM) + 1 + 2 * length(brtsS),  #maximum number of species involved in the computation
                                              1,  #ddmodel: not actually used by this function
                                              1,  #conditioning
@@ -158,7 +158,7 @@ loglik_slsP_nodivision <- function(pars1,
   if (length(tsM_post_shift) == 0) {tsM_post_shift <- 0}
   if (length(tsM_pre_shift ) == 0) {cat("There are no branching times before the shift"); return(-Inf)}
 
-  likM_pre_shift  <- sls::combine_pns_nodivision(lambda = lambdas[1], mu = mus[1], ts = tsM_pre_shift, tbar = td, nmax = nmax); log(likM_pre_shift)
+  likM_pre_shift  <- sls::combine_pns_nodiv(lambda = lambdas[1], mu = mus[1], ts = tsM_pre_shift, tbar = td, nmax = nmax); log(likM_pre_shift)
   likM_post_shift <- prod(
     sls::pn(n = 1, lambda = lambdas[1], mu = mus[1], t = tsM_post_shift)
   ) * sls:::pn(n = 1, t = td, lambda = lambdas[1], mu = mus[1])^(length(tsM_pre_shift) - 1); log(likM_post_shift)
@@ -180,7 +180,7 @@ loglik_slsP_nodivision <- function(pars1,
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- Pc_1shift_old(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
       Pc <- conditioning[[cond]]; Pc
     }
   }
