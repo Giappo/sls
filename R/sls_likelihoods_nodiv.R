@@ -31,8 +31,6 @@ loglik_slsP_nodiv <- function(
     rep(1, length(brts_m1))
   ); dim(BRTSM) <- c(2, length(brts_m1))
   TD <- c(td, -1); dim(TD) <- c(2, 1)
-  EVENTSM <- (M <- cbind(BRTSM, TD))[, order(-M[1, ])]
-  kvec_m_after <- (n_0 - 1) + cumsum(EVENTSM[2, ])
 
   if (n_0 == 2) {
     brts_m2 <- c(brts_m1[1], brts_m1)
@@ -332,8 +330,15 @@ loglik_bisse_shift <- function(
 #' @inheritParams default_params_doc
 #' @return loglik
 #' @export
-loglik_bisse_shift2 <- function(pars, brts, n_0 = 2, t0 = 0, td,
-                                LOG = TRUE, lambdaterms = TRUE) {
+loglik_bisse_shift2 <- function(
+  pars,
+  brts,
+  n_0 = 2,
+  t0 = 0,
+  td,
+  LOG = TRUE,
+  lambdaterms = TRUE
+) {
   testit::assert(all(td != brts))
   lambda <- pars[1]
   brts1 <- brts[brts > td]

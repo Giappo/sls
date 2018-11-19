@@ -11,9 +11,13 @@ combine_pns(lambda, mu, ts, tbar, nmax = 100, fun = sls:::pn_bar)
 
 \item{mu}{extinction rate}
 
+\item{ts}{times}
+
 \item{tbar}{time left from shift time to the present}
 
 \item{nmax}{maximum number of lineages to consider}
+
+\item{fun}{a function}
 }
 \value{
 Convolution of the probabilities for all the processes

@@ -1,5 +1,6 @@
 #' @title Calculates the likelihood for a subset of parameters
 #' @description Calculates the likelihood for a subset of parameters
+#' @inheritParams default_params_doc
 #' @details This is not to be called by the user.
 #' @export
 sls_loglik_choosepar <- function(

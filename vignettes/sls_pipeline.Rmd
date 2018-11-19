@@ -4,7 +4,7 @@ author: "Giovanni Laudanno"
 date: "`r Sys.Date()`"
 output: rmarkdown::pdf_document
 vignette: >
-  %\VignetteIndexEntry{razzo pipeline}
+  %\VignetteIndexEntry{sls pipeline}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   \usepackage[T1]{fontenc}
@@ -54,12 +54,13 @@ mus <- c(0.2, 0.1)
 cond <- 3
 LS <- sls::sls_sim.get_standard_LS(crown_age = 5, shift_time = 2)
 set.seed(1)
-sim <- sls::sls_sim2(
+sim <- sls::sls_sim(
   lambdas = lambdas, 
   mus = mus, 
   cond = cond,
   LS = LS
 )
+sim
 ```
 
 We can also plot both the main clade and the subclade
@@ -67,10 +68,10 @@ We can also plot both the main clade and the subclade
 ```{r}
 par(mfrow = c(1, 2))
 ape::plot.phylo(
-  DDD::L2phylo(sim[[1]], dropextinct = FALSE)
+  DDD::L2phylo(sim$l_tables[[1]], dropextinct = FALSE)
 )
 ape::plot.phylo(
-  DDD::L2phylo(sim[[2]], dropextinct = FALSE)
+  DDD::L2phylo(sim$l_tables[[2]], dropextinct = FALSE)
 )
 ```
 
@@ -79,51 +80,29 @@ ape::plot.phylo(
 We can calculate the (log) likelihood function for this main and sub clade
 
 ```{r}
-parsM <- c(0.2, 0.1)
-parsS <- c(0.5, 0.4)
-brtsM <- DDD::L2brts(sim[[1]])
-brtsS <- DDD::L2brts(sim[[2]])
+pars_m <- c(0.2, 0.1)
+pars_s <- c(0.5, 0.4)
+brts_m <- sim$brts[[1]]
+brts_s <- sim$brts[[2]]
 
 loglik <- sls::loglik_slsP(
-  parsM = parsM, 
-  parsS = parsS, 
-  brtsM = brtsM, 
-  brtsS = brtsS, 
+  pars_m = pars_m, 
+  pars_s = pars_s, 
+  brts_m = brts_m, 
+  brts_s = brts_s, 
   cond = cond
 )
 loglik
 ```
 
-We have many ways to calculate the same likelihood
+We have many ways to calculate the same likelihood. For example we can integrate the Q-equation
 
 ```{r}
-parsM <- c(0.2, 0.1)
-parsS <- c(0.5, 0.4)
-brtsM <- DDD::L2brts(sim[[1]])
-brtsS <- DDD::L2brts(sim[[2]])
-
 loglik <- sls::loglik_slsQ(
-  parsM = parsM, 
-  parsS = parsS, 
-  brtsM = brtsM, 
-  brtsS = brtsS, 
-  cond = cond
-)
-loglik
-```
-
-
-```{r}
-parsM <- c(0.2, 0.1)
-parsS <- c(0.5, 0.4)
-brtsM <- DDD::L2brts(sim[[1]])
-brtsS <- DDD::L2brts(sim[[2]])
-
-loglik <- sls::loglik_slsQ(
-  parsM = parsM, 
-  parsS = parsS, 
-  brtsM = brtsM, 
-  brtsS = brtsS, 
+  pars_m = pars_m, 
+  pars_s = pars_s, 
+  brts_m = brts_m, 
+  brts_s = brts_s, 
   cond = cond
 )
 loglik

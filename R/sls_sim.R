@@ -1,11 +1,14 @@
-# MAIN SCRIPT ----
+#' @title Simulate an sls process
+#' @description Simulate an sls process
+#' @inheritParams default_params_doc
+#' @return  best parameters
 #' @export
 sls_sim <- function(
   lambdas,
   mus,
   Ks = c(Inf, Inf),
   cond = 3,
-  LS = sls:::sls_sim.get_standard_LS(),
+  LS = sls::sls_sim.get_standard_LS(),
   l_matrix_size = 1e4
 ) {
   pars <- sls_sim.get_pars(

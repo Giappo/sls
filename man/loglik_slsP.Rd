@@ -7,6 +7,10 @@
 loglik_slsP(pars_m, pars_s, brts_m, brts_s, cond, n_0 = 2, nmax = 100)
 }
 \arguments{
+\item{pars_m}{parameters for the main clade (lambda, mu)}
+
+\item{pars_s}{parameters for the sub clade (lambda, mu)}
+
 \item{brts_m}{branching times for the Main-clade}
 
 \item{brts_s}{branching times for the Sub-clade}
@@ -15,11 +19,14 @@ loglik_slsP(pars_m, pars_s, brts_m, brts_s, cond, n_0 = 2, nmax = 100)
 \itemize{
   \item cond = 0 no conditiong;
   \item cond = 1 conditions on the survival of crown descendents;
-  \item cond = 2 conditions on the survival of subclade and
-   on the other crown descendents in the main clade;
+  \item cond = 2 not available;
   \item cond = 3 conditions on the survival of the subclade and
   both crown descendents in the main clade;
+  \item cond = 4 conditions on the survival of subclade and
+  on the other crown descendents in the main clade;
 }}
+
+\item{n_0}{starting number of lineages}
 
 \item{nmax}{maximum number of lineages to consider}
 }

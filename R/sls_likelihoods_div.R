@@ -17,11 +17,19 @@ loglik_slsP <- function(
     return(-Inf)
   }
 
+  sls_check_input(
+    brts_m = brts_m,
+    brts_s = brts_s,
+    cond = cond,
+    n_0 = n_0,
+    nmax = nmax
+  )
+
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
 
-  brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
-  brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
+  brts_m1 <- sort(brts_m, decreasing = TRUE)
+  brts_s1 <- sort(brts_s, decreasing = TRUE)
   td <- brts_s1[1]
 
   testit::assert(all(sign(brts_m1) == sign(brts_s1[1])))

@@ -8,6 +8,13 @@ sls_loglik_choosepar(trparsopt, trparsfix, idparsopt, idparsfix,
   idparsnoshift, pars2, brts_m, brts_s, missnumspec = c(0, 0),
   loglik_function = sls::loglik_slsP)
 }
+\arguments{
+\item{brts_m}{branching times for the Main-clade}
+
+\item{brts_s}{branching times for the Sub-clade}
+
+\item{loglik_function}{the loglik function you want to use}
+}
 \description{
 Calculates the likelihood for a subset of parameters
 }

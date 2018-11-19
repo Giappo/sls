@@ -4,8 +4,8 @@
 #' @inheritParams default_params_doc
 #' @return Fourier term
 #' @export
-phase.factor <- function(N, n, k) {
-  exp(1i * 2 * pi * n * k * (N ^ -1))
+phase.factor <- function(n_max, n, k) {
+  exp(1i * 2 * pi * n * k * (n_max ^ -1))
 }
 
 #' @title DFT
@@ -24,7 +24,7 @@ DFT <- function(vec) {
   O <- outer(
     X = 1:n_max,
     Y = 1:n_max,
-    FUN = function(n, k) sls::phase.factor(n = n, k = k, N = n_max)
+    FUN = function(n, k) sls::phase.factor(n = n, k = k, n_max = n_max)
   )
   O %*% vec
 }
@@ -45,7 +45,7 @@ IDFT <- function(vec) {
   O <- outer(
     X = 1:n_max,
     Y = 1:n_max,
-    FUN = function(n, k) sls::phase.factor(n = n, k = k, N = n_max)
+    FUN = function(n, k) sls::phase.factor(n = n, k = k, n_max = n_max)
   )
   solve(O) %*% vec
 }

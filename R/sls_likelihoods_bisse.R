@@ -2,6 +2,11 @@
 #' @author Giovanni Laudanno
 #' @description Provides BISSE's D function
 #' @inheritParams default_params_doc
+#' @param pars parameters of the likelihood functions:
+#' \itemize{
+#'   \item pars[1] is lambda, i.e. speciation rate;
+#'   \item pars[2] is mu, i.e. extinction rate;
+#' }
 #' @return D(t)
 #' @export
 Dt <- function(pars, t0, tf, E0, D0) {
@@ -20,6 +25,11 @@ Dt <- function(pars, t0, tf, E0, D0) {
 #' @author Giovanni Laudanno
 #' @description Provides BISSE E's function
 #' @inheritParams default_params_doc
+#' @param pars parameters of the likelihood functions:
+#' \itemize{
+#'   \item pars[1] is lambda, i.e. speciation rate;
+#'   \item pars[2] is mu, i.e. extinction rate;
+#' }
 #' @return E(t)
 #' @export
 Et <- function(pars, t0, tf, E0, D0) {
@@ -38,6 +48,11 @@ Et <- function(pars, t0, tf, E0, D0) {
 #' @author Giovanni Laudanno
 #' @description Provides BISSE loglik function
 #' @inheritParams default_params_doc
+#' @param pars parameters of the likelihood functions:
+#' \itemize{
+#'   \item pars[1] is lambda, i.e. speciation rate;
+#'   \item pars[2] is mu, i.e. extinction rate;
+#' }
 #' @return loglik
 #' @export
 loglik_bisse <- function(

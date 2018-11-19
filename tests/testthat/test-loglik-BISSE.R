@@ -169,12 +169,12 @@ testthat::expect_true(
 )
 
 #test2
-l_m <- 13 + (2 * (ribir:::is_on_travis()))
+l_m <- 13 + (2 * (ribir::is_on_travis()))
 age <- 10;
-maxs <- 10 + (90 * (ribir:::is_on_travis()))
+maxs <- 10 + (90 * (ribir::is_on_travis()))
 res <- rep(NA, maxs)
 test_threshold <- 1e-3
-max_iterations <- 8 + (ribir:::is_on_travis())
+max_iterations <- 8 + (ribir::is_on_travis())
 for (s in 1:maxs) {
   set.seed(s)
 

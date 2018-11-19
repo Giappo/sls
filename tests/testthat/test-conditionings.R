@@ -17,7 +17,7 @@ test_that("Analytical equivalence for conditional probability 1", {
   p_1_cs <- sls::pn(n = 1, t = ts - tc, lambda = lambdas[1], mu = mus[1])
   p_0_sp <- sls::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
   u_cs <- sls::ut(t = ts - tc, lambda = lambdas[1], mu = mus[1])
-  p_0_sp <- sls:::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
+  p_0_sp <- sls::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
   test2 <- p_1_cs *
     (1 - p_0_sp) *
     u_cs *

@@ -8,14 +8,16 @@ r_packages:
 r_github_packages:
   - jimhester/covr
   - jimhester/lintr
+  - ropensci/spelling
   - richelbilderbeek/ribir
   - MangoTheCat/goodpractice
   - KlausVigo/phangorn
 
 before_script:
   - if [ -f ".lintr" ]; then echo "Do use Hadley Wickham's style guide"; exit 1; fi
+  - sudo pip install proselint
 
-script: 
+script:
   - |
     R CMD build .
     travis_wait 40 R CMD check sls*tar.gz

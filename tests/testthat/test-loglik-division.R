@@ -105,7 +105,7 @@ test_that( "all the likelihoods with division yield the same result", {
   threshold <- (!ribir::is_on_travis()) * 1e-2 +
                (ribir::is_on_travis())  * (1 / 2) * 1e-3
 
-  cond <- 0
+  cond <- sls_conds()[1]
   for (s in 1:(4 + 4 * ribir::is_on_travis())) {
     set.seed(s)
     t0s    <- c(6, 2)
@@ -117,15 +117,15 @@ test_that( "all the likelihoods with division yield the same result", {
       x <- runif(n = 1, min = 0.1, max = 1),
       runif(n = 1, min = 0.05, max = x * 3 / 4)
     )
-    brts_s  <- c(
+    brts_s <- c(
       t0s[2],
       sort(runif(n = 10, min = 0.01, max = t0s[2] - 0.01), decreasing = TRUE)
     )
-    pars_s  <- c(
+    pars_s <- c(
       x <- runif(n = 1, min = 0.1, max = 1),
       runif(n = 1, min = 0.05, max = x * 3 / 4)
     ) * c(2, 0.5)
-    cond   <- (cond == 0) * 1 + (cond == 1) * 0
+    cond <- c(sls_conds(), sls_conds())[which(cond %in% sls_conds()) + 1]
 
     for (i in 1:(length(models) - 1)) {
       for (j in (i + 1):length(models)) {

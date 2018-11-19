@@ -5,27 +5,61 @@
 \title{This function does nothing. It is intended to inherit is parameters'
 documentation.}
 \usage{
-default_params_doc(lambda, mu, t, n, tbar, pars, brts, brts_m, brts_s,
-  nmax, matrix_size, lx, ddep, k, cond, vec)
+default_params_doc(lambda, mu, lambdas, mus, Ks, LS, LL, l_matrix_size,
+  data, clade, delta_n, delta_t, event, final_time, L, l_matrix, pars,
+  pars_m, pars_s, brts, brts_m, brts_s, n_0, nmax, cond, t, ts, tbar, n,
+  fun, k, vec, E0, D0, D0s, t0, tf, td, tds, LOG, lambdaterms, verbose,
+  startpars, loglik_function, matrix_size, lx, ddep, message)
 }
 \arguments{
 \item{lambda}{speciation rate}
 
 \item{mu}{extinction rate}
 
-\item{t}{time}
+\item{lambdas}{speciation rates, for all the clades}
 
-\item{n}{number of lineages}
+\item{mus}{extinction rate, for all the clades}
 
-\item{tbar}{time left from shift time to the present}
+\item{Ks}{carrying capacities, for all the clades}
+
+\item{LS}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_LS() for more info.}
+
+\item{LL}{the collection of all the l tables, for all the clades}
+
+\item{l_matrix_size}{the initial length of the l matrix. It will be
+increased if necessary}
+
+\item{data}{contains all the information about the simulated process}
+
+\item{clade}{the id of the clade}
+
+\item{delta_n}{in the Doob-Gillespie algorithm,
+the change in number of species}
+
+\item{delta_t}{in the Doob-Gillespie algorithm,
+the waiting time for the next event to occur}
+
+\item{event}{the event occurring in the simulated process at a given time}
+
+\item{final_time}{the final time that you want to consider for the survival
+of the species considered in the l table}
+
+\item{L}{the l table}
+
+\item{l_matrix}{the l table}
 
 \item{pars}{parameters of the likelihood functions:
 \itemize{
-  \item pars[1] is lambdaM, i.e. speciation rate of the main clade;
-  \item pars[2] is muM, i.e. extinction rate of the main clade;
-  \item pars[3] is lambdaS, i.e. speciation rate of the sub clade;
-  \item pars[4] is muS, i.e. extinction rate of the sub clade;
+  \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
+  \item pars[2] is mu_m, i.e. extinction rate of the main clade;
+  \item pars[3] is lambda_s, i.e. speciation rate of the sub clade;
+  \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
 }}
+
+\item{pars_m}{parameters for the main clade (lambda, mu)}
+
+\item{pars_s}{parameters for the sub clade (lambda, mu)}
 
 \item{brts}{branchin times}
 
@@ -33,7 +67,60 @@ default_params_doc(lambda, mu, t, n, tbar, pars, brts, brts_m, brts_s,
 
 \item{brts_s}{branching times for the Sub-clade}
 
+\item{n_0}{starting number of lineages}
+
 \item{nmax}{maximum number of lineages to consider}
+
+\item{cond}{type of conditioning:
+\itemize{
+  \item cond = 0 no conditiong;
+  \item cond = 1 conditions on the survival of crown descendents;
+  \item cond = 2 not available;
+  \item cond = 3 conditions on the survival of the subclade and
+  both crown descendents in the main clade;
+  \item cond = 4 conditions on the survival of subclade and
+  on the other crown descendents in the main clade;
+}}
+
+\item{t}{time}
+
+\item{ts}{times}
+
+\item{tbar}{time left from shift time to the present}
+
+\item{n}{number of lineages}
+
+\item{fun}{a function}
+
+\item{k}{frequencies in the Discrete Fourier Transform (DFT)}
+
+\item{vec}{a vector or a matrix to be transformed}
+
+\item{E0}{starting value for BiSSE's E function}
+
+\item{D0}{starting value for BiSSE's D function}
+
+\item{D0s}{starting values for BiSSE's D functions}
+
+\item{t0}{starting time}
+
+\item{tf}{ending time}
+
+\item{td}{decoupling time}
+
+\item{tds}{decoupling times}
+
+\item{LOG}{set it to TRUE if you desire the output in log form}
+
+\item{lambdaterms}{set it to TRUE if you desire the powers of lambda
+in the likelihood}
+
+\item{verbose}{set it to TRUE if you want to see the outputs on screen}
+
+\item{startpars}{parameters to start from for the search of the likelihood
+maximum}
+
+\item{loglik_function}{the loglik function you want to use}
 
 \item{matrix_size}{size of the matrix}
 
@@ -41,19 +128,7 @@ default_params_doc(lambda, mu, t, n, tbar, pars, brts, brts_m, brts_s,
 
 \item{ddep}{specifies the kind of diversity-dependent model you want to use}
 
-\item{k}{frequencies in discrete fourier transform}
-
-\item{cond}{type of conditioning:
-\itemize{
-  \item cond = 0 no conditiong;
-  \item cond = 1 conditions on the survival of crown descendents;
-  \item cond = 2 conditions on the survival of subclade and
-   on the other crown descendents in the main clade;
-  \item cond = 3 conditions on the survival of the subclade and
-  both crown descendents in the main clade;
-}}
-
-\item{vec}{a vector or a matrix to be transformed}
+\item{message}{the message to print}
 }
 \description{
 This function does nothing. It is intended to inherit is parameters'

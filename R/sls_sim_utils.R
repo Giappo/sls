@@ -398,9 +398,11 @@ sls_sim.get_brts <- function(
       brts[clade] <- NULL
       done <- 1
     }
-    L <- sls_sim.cut_l_matrix(
-      unname(data$LL[[clade]])
-    )
+    if (done == 0) {
+      L <- sls_sim.cut_l_matrix(
+        unname(data$LL[[clade]])
+      )
+    }
     if (!any(L[, 4] == -1) && done == 0) {
       brts[clade] <- NULL
       done <- 1
@@ -409,18 +411,21 @@ sls_sim.get_brts <- function(
       if (sum(L[, 4] == -1) == 1 | nrow(L) == 1) {
         brts[[clade]] <- L[1, 1]
       } else {
-        phylo <- DDD:::L2phylo(L, dropextinct = TRUE)
-        brts[[clade]] <- ape::branching.times(phylo)
+        phylo <- DDD::L2phylo(L, dropextinct = TRUE)
+        brts[[clade]] <- c(
+          L[1, 1],
+          ape::branching.times(phylo)
+        )
       }
     }
     if (LS$n_0[clade] == 2 && done == 0) {
-      brts[[clade]] <- DDD:::L2brts(
+      brts[[clade]] <- DDD::L2brts(
         L,
         dropextinct = TRUE
       )
     }
   }
-
+  brts <- unname(brts)
   brts
 }
 

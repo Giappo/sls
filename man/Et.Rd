@@ -9,11 +9,17 @@ Et(pars, t0, tf, E0, D0)
 \arguments{
 \item{pars}{parameters of the likelihood functions:
 \itemize{
-  \item pars[1] is lambdaM, i.e. speciation rate of the main clade;
-  \item pars[2] is muM, i.e. extinction rate of the main clade;
-  \item pars[3] is lambdaS, i.e. speciation rate of the sub clade;
-  \item pars[4] is muS, i.e. extinction rate of the sub clade;
+  \item pars[1] is lambda, i.e. speciation rate;
+  \item pars[2] is mu, i.e. extinction rate;
 }}
+
+\item{t0}{starting time}
+
+\item{tf}{ending time}
+
+\item{E0}{starting value for BiSSE's E function}
+
+\item{D0}{starting value for BiSSE's D function}
 }
 \value{
 E(t)

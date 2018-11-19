@@ -11,6 +11,8 @@ combine_pns0(lambda, mu, ts, tbar, nmax = 100)
 
 \item{mu}{extinction rate}
 
+\item{ts}{times}
+
 \item{tbar}{time left from shift time to the present}
 
 \item{nmax}{maximum number of lineages to consider}
