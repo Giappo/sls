@@ -10,8 +10,8 @@
 #' @param lambda speciation rate
 #' @param mu extinction rate
 #' @param brts branchin times
-#' @param brtsM branching times for the Main-clade
-#' @param brtsS branching times for the Sub-clade
+#' @param brts_m branching times for the Main-clade
+#' @param brts_s branching times for the Sub-clade
 #' @param t time
 #' @param tbar time left from shift time to the present
 #' @param n number of lineages
@@ -24,8 +24,10 @@
 #' \itemize{
 #'   \item cond = 0 no conditiong;
 #'   \item cond = 1 conditions on the survival of crown descendents;
-#'   \item cond = 2 conditions on the survival of subclade and on the other crown descendents in the main clade;
-#'   \item cond = 3 conditions on the survival of the subclade and both crown descendents in the main clade;
+#'   \item cond = 2 conditions on the survival of subclade and
+#'    on the other crown descendents in the main clade;
+#'   \item cond = 3 conditions on the survival of the subclade and
+#'   both crown descendents in the main clade;
 #' }
 #' @param vec a vector or a matrix to be transformed
 default_params_doc <- function(
@@ -36,8 +38,8 @@ default_params_doc <- function(
   tbar,
   pars,
   brts,
-  brtsM,
-  brtsS,
+  brts_m,
+  brts_s,
   nmax,
   matrix_size,
   lx,

@@ -4,100 +4,106 @@
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP <- function(parsM,
-                        parsS,
-                        brtsM,
-                        brtsS,
-                        cond,
-                        N0 = 2,
-                        nmax = 1e2
-)
-{
-  if (any(c(parsM, parsS) < 0)) {return(-Inf)}
+loglik_slsP <- function(
+  pars_m,
+  pars_s,
+  brts_m,
+  brts_s,
+  cond,
+  n_0 = 2,
+  nmax = 1e2
+) {
+  if (any(c(pars_m, pars_s) < 0)) {
+    return(-Inf)
+  }
 
-  lambdas <- c(parsM[1], parsS[1])
-  mus     <- c(parsM[2], parsS[2])
+  lambdas <- c(pars_m[1], pars_s[1])
+  mus     <- c(pars_m[2], pars_s[2])
 
-  brtsM1 <- sort(abs(brtsM), decreasing = TRUE)
-  brtsS1 <- sort(abs(brtsS), decreasing = TRUE)
-  td <- brtsS1[1]
+  brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
+  brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
+  td <- brts_s1[1]
 
-  testit::assert(all(sign(brtsM1) == sign(brtsS1[1])))
+  testit::assert(all(sign(brts_m1) == sign(brts_s1[1])))
   testit::assert(
-    all(sign(brtsS1 * !is.null(brtsS1)) == sign(td * !is.null(brtsS1)))
+    all(sign(brts_s1 * !is.null(brts_s1)) == sign(td * !is.null(brts_s1)))
   )
 
-  BRTSM <- rbind(brtsM1, rep(1, length(brtsM1))); dim(BRTSM) <- c(2, length(brtsM1))
+  BRTSM <- rbind(
+    brts_m1,
+    rep(1, length(brts_m1))
+  ); dim(BRTSM) <- c(2, length(brts_m1))
   TD <- c(td, -1); dim(TD) <- c(2, 1)
-  EVENTSM <- (M <- cbind(BRTSM, TD))[,order(-M[1,])]
-  kvecM_after <- (N0 - 1) + cumsum(EVENTSM[2,])
-  kvecM_before <- c(N0 - 1, kvecM_after[-length(kvecM_after)])
-  kvecM_before1 <- kvecM_before[EVENTSM[2,] > 0]
+  EVENTSM <- (M <- cbind(BRTSM, TD))[, order(-M[1, ])]
+  kvec_m_after <- (n_0 - 1) + cumsum(EVENTSM[2, ])
+  kvec_m_before <- c(n_0 - 1, kvec_m_after[-length(kvec_m_after)])
+  k_shift <- kvec_m_before[EVENTSM[2, ] == -1]
 
-  k_shift <- kvecM_before[EVENTSM[2,] == -1]
-
-  if (N0 == 2)
-  {
-    brtsM2 <- c(brtsM1[1], brtsM1)
-  }else
-  {
-    brtsM2 <- brtsM1
+  if (n_0 == 2) {
+    brts_m2 <- c(brts_m1[1], brts_m1)
+  } else {
+    brts_m2 <- brts_m1
   }
-  tsM_pre_shift  <- brtsM2[brtsM2 > td] - td; tsM_pre_shift
-  tsM_post_shift <- brtsM2[brtsM2 < td]     ; tsM_post_shift
-  if (length(tsM_post_shift) == 0) {tsM_post_shift <- 0}
-  if (length(tsM_pre_shift ) == 0) {cat("There are no branching times before the shift"); return(-Inf)}
+  ts_m_pre_shift  <- brts_m2[brts_m2 > td] - td; ts_m_pre_shift
+  ts_m_post_shift <- brts_m2[brts_m2 < td]     ; ts_m_post_shift
+  if (length(ts_m_post_shift) == 0) {
+    ts_m_post_shift <- 0
+  }
+  if (length(ts_m_pre_shift ) == 0) {
+    cat("There are no branching times before the shift"); return(-Inf)
+  }
 
-  likM_pre_shift  <- k_shift *
+  lik_m_pre_shift  <- k_shift *
     sls::combine_pns(
       lambda = lambdas[1],
       mu = mus[1],
-      ts = tsM_pre_shift,
+      ts = ts_m_pre_shift,
       tbar = td,
       nmax = nmax
-    ); log(likM_pre_shift)
-  likM_post_shift <- prod(
+    ); log(lik_m_pre_shift)
+  lik_m_post_shift <- prod(
     sls::pn(
       n = 1,
       lambda = lambdas[1],
       mu = mus[1],
-      t = tsM_post_shift
+      t = ts_m_post_shift
     )
   ) * sls:::pn(
     n = 1,
     t = td,
     lambda = lambdas[1],
     mu = mus[1]
-  )^(length(tsM_pre_shift) - 1); log(likM_post_shift)
-  likS_post_shift <- prod(
-    sls::pn(n = 1,
-            lambda = lambdas[2],
-            mu = mus[2],
-            t = brtsS1
-    )
-  ); log(likS_post_shift)
-  loglikM0 <- log(likM_pre_shift) + log(likM_post_shift)
-  loglikS0 <- log(likS_post_shift)
+  ) ^ (length(ts_m_pre_shift) - 1); log(lik_m_post_shift)
+  lik_s_post_shift <- prod(
+    sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brts_s1)
+  ); log(lik_s_post_shift)
+  loglik_m0 <- log(lik_m_pre_shift) + log(lik_m_post_shift)
+  loglik_s0 <- log(lik_s_post_shift)
 
-  # logcombinatoricsM <- ifelse(length(brtsM) > 1, sum(log(kvecM_before1[-1])), 0); exp(logcombinatoricsM)
-  # logcombinatoricsS <- ifelse(length(brtsS) > 0, lfactorial(length(brtsS[-1]))   , 0); exp(logcombinatoricsS)
-  logcombinatoricsM <- logcombinatoricsS <- 0 #combinatorics
-  lM <- length(brtsM1[brtsM1 != brtsM1[1]]) # number of speciations in the Main clade
-  lS <- length(brtsS1[brtsS1 != brtsS1[1]]) # number of speciations in the Sub clade
-  loglikM <- loglikM0 + logcombinatoricsM + log(lambdas[1] + (length(brtsM) == 0)) * lM
-  loglikS <- loglikS0 + logcombinatoricsS + log(lambdas[2] + (length(brtsS) == 0)) * lS
+  logcombinatorics_m <- logcombinatorics_s <- 0 #combinatorics
 
-  Pc <- sls::Pc_1shift(
-    parsM = parsM,
-    parsS = parsS,
-    brtsM = brtsM,
-    brtsS = brtsS,
+  # number of speciations in the Main clade
+  l_m <- length(brts_m1[brts_m1 != brts_m1[1]])
+
+  # number of speciations in the Sub clade
+  l_s <- length(brts_s1[brts_s1 != brts_s1[1]])
+
+  loglik_m <- loglik_m0 +
+    logcombinatorics_m + log(lambdas[1] + (length(brts_m) == 0)) * l_m
+  loglik_s <- loglik_s0 +
+    logcombinatorics_s + log(lambdas[2] + (length(brts_s) == 0)) * l_s
+
+  Pc <- sls::pc_1shift(
+    pars_m = pars_m,
+    pars_s = pars_s,
+    brts_m = brts_m,
+    brts_s = brts_s,
     cond = cond,
     nmax = nmax,
-    N0 = N0
+    n_0 = n_0
   )
 
-  loglik <- loglikM + loglikS - log(Pc); loglik
+  loglik <- loglik_m + loglik_s - log(Pc); loglik
   return(loglik)
 }
 
@@ -107,127 +113,129 @@ loglik_slsP <- function(parsM,
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsQ <- function(parsM,
-                        parsS,
-                        brtsM,
-                        brtsS,
-                        cond,
-                        N0 = 2,
-                        nmax = 1e2
-)
-{
+loglik_slsQ <- function(
+  pars_m,
+  pars_s,
+  brts_m,
+  brts_s,
+  cond,
+  n_0 = 2,
+  nmax = 1e2
+) {
 
-  if (any(c(parsM, parsS) < 0)) {return(-Inf)}
+  if (any(c(pars_m, pars_s) < 0)) {
+    return(-Inf)
+  }
 
-  lambdas <- c(parsM[1], parsS[1])
-  mus     <- c(parsM[2], parsS[2])
+  lambdas <- c(pars_m[1], pars_s[1])
+  mus     <- c(pars_m[2], pars_s[2])
   Ks      <- c(Inf, Inf)
 
-  brtsM1 <- sort(abs(brtsM), decreasing = TRUE)
-  brtsS1 <- sort(abs(brtsS), decreasing = TRUE)
-  td <- brtsS1[1]
+  brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
+  brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
+  td <- brts_s1[1]
 
-  missnumspec <- c(0,0)
-  N0s <- c(N0, 1)
+  missnumspec <- c(0, 0)
+  n_0s <- c(n_0, 1)
 
-  testit::assert(all(sign(brtsM) == sign(td)))
+  testit::assert(all(sign(brts_m) == sign(td)))
   testit::assert(
-    all(sign(brtsS * !is.null(brtsS)) == sign(td * !is.null(brtsS)))
+    all(sign(brts_s * !is.null(brts_s)) == sign(td * !is.null(brts_s)))
   )
 
   #BASIC SETTINGS AND CHECKS
-  Nclades <- length(lambdas)
-  brtsM1 <- sort(c(0, abs(c(brtsM, td))), decreasing = TRUE)
-  brtsS1 <- sort(c(0, abs(c(brtsS))), decreasing = TRUE)
-  brts_list <- list(brtsM = brtsM1, brtsS = brtsS1)
-  abstol <- 1e-16; reltol <- 1e-10
+  n_clades <- length(lambdas)
+  brts_m1 <- sort(c(0, abs(c(brts_m, td))), decreasing = TRUE)
+  brts_s1 <- sort(c(0, abs(c(brts_s))), decreasing = TRUE)
+  brts_list <- list(brts_m = brts_m1, brts_s = brts_s1)
   nvec <- 0:nmax
-  logliks <- rep(NA, Nclades)
+  logliks <- rep(NA, n_clades)
 
   #LIKELIHOOD INTEGRATION
   clade <- 0 #clade == 1 is the main clade, clade == 2 is the subclade
-  while ((clade <- clade + 1) <= Nclades)
-  {
+  while ( (clade <- clade + 1) <= n_clades) {
     #SETTING CLADE CONDITIONS
     lambda <- lambdas[clade]
     mu     <- mus[clade]
     K      <- Ks[clade]
-    soc     <- N0s[clade]
-    maxT   <- length(brts_list[[clade]])
+    soc    <- n_0s[clade]
+    max_t  <- length(brts_list[[clade]])
     brts   <- brts_list[[clade]]
 
     #SETTING INITIAL CONDITIONS (there's always a +1 because of Q0)
-    Qi <- c(1, rep(0, nmax))
-    Qt <- matrix(0, ncol = (nmax + 1), nrow = maxT)
-    Qt[1,] <- Qi
-    dimnames(Qt)[[2]] <- paste0("Q", 0:nmax)
+    q_i <- c(1, rep(0, nmax))
+    q_t <- matrix(0, ncol = (nmax + 1), nrow = max_t)
+    q_t[1, ] <- q_i
+    dimnames(q_t)[[2]] <- paste0("Q", 0:nmax)
     k <- soc
     t <- 2
-    D <- C <- rep(1, maxT)
+    D <- C <- rep(1, max_t)
 
     #EVOLVING THE INITIAL STATE TO THE LAST BRANCHING POINT
-    while (t <= maxT)
-    {
+    while (t <= max_t) {
       #Applying A operator
-      if (lambda == 0 && mu == 0)
-      {
-        Qt[t,] <- Qt[(t-1),]
-      }else
-      {
-        transition_matrix <- DDD:::dd_loglik_M_aux(pars = c(lambda, mu, K), lx = nmax + 1, k = k, ddep = 1)
-        Qt[t,] <- abs(expoRkit::expv(v = Qt[(t-1),], x = transition_matrix, t = abs(brts[t] - brts[t - 1])))
+      if (lambda == 0 && mu == 0) {
+        q_t[t, ] <- q_t[(t - 1), ]
+      } else {
+        transition_matrix <- DDD:::dd_loglik_M_aux(
+          pars = c(lambda, mu, K),
+          lx = nmax + 1,
+          k = k,
+          ddep = 1
+        )
+        q_t[t, ] <- abs(expoRkit::expv(
+          v = q_t[(t - 1), ],
+          x = transition_matrix,
+          t = abs(brts[t] - brts[t - 1])
+        ))
       }
 
       #Applying C operator (this is a trick to avoid precision issues)
-      C[t] <- 1/(sum(Qt[t,])); Qt[t,] <- Qt[t,] * C[t]
+      C[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * C[t]
 
       #Applying B operator
-      if (t < maxT)
-      {
-        if (brts[t] != td)
-        {
-          # Qt[t,] <- Qt[t,] * k * lambda
-          Qt[t,] <- Qt[t,] * lambda
+      if (t < max_t) {
+        if (brts[t] != td) {
+          q_t[t, ] <- q_t[t, ] * lambda
           k <- k + 1
-        }else
-        {
-          # Qt[t,] <- Qt[t,] * (k + nvec)^-1
-          Qt[t,] <- Qt[t,] * k * (k + nvec)^-1
+        } else {
+          q_t[t, ] <- q_t[t, ] * k * (k + nvec) ^ -1
           k <- k - 1
         }
 
         #Applying D operator (this works exactly like C)
-        D[t] <- 1/(sum(Qt[t,])); Qt[t,] <- Qt[t,] * D[t]
+        D[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * D[t]
 
         #Updating running parameters
         t <- t + 1
-      }else{break}
+      } else {
+        break
+      }
     }
 
     #Selecting the state I am interested in
-    vm <- 1/choose((k + missnumspec[clade]), k)
-    P  <- vm * Qt[t, (missnumspec[clade] + 1)] #I have to include +1 because of Q0
+    vm <- choose(k + missnumspec[clade], k) ^ -1
+    P  <- vm * q_t[t, (missnumspec[clade] + 1)]
 
     #Removing C and D effects from the LL
     loglik <- log(P) - sum(log(C)) - sum(log(D))
 
     #Various checks
     loglik <- as.numeric(loglik)
-    if (is.nan(loglik) | is.na(loglik))
-    {
+    if (is.nan(loglik) | is.na(loglik)) {
       loglik <- -Inf
     }
     logliks[clade] <- loglik
   }
 
-  Pc <- sls::Pc_1shift(
-    parsM = parsM,
-    parsS = parsS,
-    brtsM = brtsM,
-    brtsS = brtsS,
+  Pc <- sls::pc_1shift(
+    pars_m = pars_m,
+    pars_s = pars_s,
+    brts_m = brts_m,
+    brts_s = brts_s,
     cond = cond,
     nmax = nmax,
-    N0 = N0
+    n_0 = n_0
   )
 
   total_loglik <- sum(logliks) - log(Pc)
@@ -241,26 +249,21 @@ loglik_slsQ <- function(parsM,
 #' @return The likelihood
 #' @export
 loglik_slsPbeta <- function(
-  parsM,
-  parsS,
-  brtsM,
-  brtsS,
+  pars_m,
+  pars_s,
+  brts_m,
+  brts_s,
   cond,
-  N0 = 2,
+  n_0 = 2,
   nmax = 1e2
-)
-{
-  alpha <- function(lambda, mu, brtsM, brtsS)
-  {
-    A <- brtsM[1] - brtsS[1]
-    B <- brtsS[1]
+) {
+  alpha <- function(lambda, mu, brts_m, brts_s) {
+    A <- brts_m[1] - brts_s[1]
     out <- sls::pt(lambda = lambda, mu = mu, t = A) *
       (1 - sls::ut(lambda = lambda, mu = mu, t = A))
   }
-  beta <- function(lambda, mu, brtsM, brtsS)
-  {
-    A <- brtsM[1] - brtsS[1]
-    B <- brtsS[1]
+  beta <- function(lambda, mu, brts_m, brts_s) {
+    A <- brts_m[1] - brts_s[1]
     out <- sls::ut(lambda = lambda, mu = mu, t = A) *
       (1 - sls::pt(lambda = lambda, mu = mu, t = B))
   }

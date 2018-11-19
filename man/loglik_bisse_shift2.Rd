@@ -4,7 +4,7 @@
 \alias{loglik_bisse_shift2}
 \title{BISSE loglik shift}
 \usage{
-loglik_bisse_shift2(pars, brts, N0 = 2, t0 = 0, td, LOG = TRUE,
+loglik_bisse_shift2(pars, brts, n_0 = 2, t0 = 0, td, LOG = TRUE,
   lambdaterms = TRUE)
 }
 \arguments{

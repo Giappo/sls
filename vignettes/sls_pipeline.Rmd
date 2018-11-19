@@ -1,0 +1,130 @@
+---
+title: "sls pipeline"
+author: "Giovanni Laudanno"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{razzo pipeline}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[T1]{fontenc}
+  \usepackage{lmodern}
+---
+
+Legenda:
+
+This is the pipeline to follow for the sls project. 
+The aim of the project is to correctly estimate the likelihood for a process with a rate shift occurring on a single lineage at a given time.
+
+## Folder structure
+
+
+Filename|Description|Created by
+-------------|---------------------------------------|--------------------------
+
+Update our dependencies:
+
+```{r message=FALSE}
+if (1 == 2) {
+
+}
+```
+
+Load the library:
+
+```{r}
+library(sls, quietly = TRUE)
+```
+
+We will work in this folder:
+
+```{r}
+super_folder_name <- tempdir()
+project_folder_name <- file.path(super_folder_name, "razzo_project") 
+dir.create(path = project_folder_name, recursive = TRUE)
+```
+
+## Step 1: Simulations
+
+First we simulate the process
+
+```{r}
+lambdas <- c(0.3, 0.6)
+mus <- c(0.2, 0.1)
+cond <- 3
+LS <- sls::sls_sim.get_standard_LS(crown_age = 5, shift_time = 2)
+set.seed(1)
+sim <- sls::sls_sim2(
+  lambdas = lambdas, 
+  mus = mus, 
+  cond = cond,
+  LS = LS
+)
+```
+
+We can also plot both the main clade and the subclade
+
+```{r}
+par(mfrow = c(1, 2))
+ape::plot.phylo(
+  DDD::L2phylo(sim[[1]], dropextinct = FALSE)
+)
+ape::plot.phylo(
+  DDD::L2phylo(sim[[2]], dropextinct = FALSE)
+)
+```
+
+## Step 2: calculate the likelihood
+
+We can calculate the (log) likelihood function for this main and sub clade
+
+```{r}
+parsM <- c(0.2, 0.1)
+parsS <- c(0.5, 0.4)
+brtsM <- DDD::L2brts(sim[[1]])
+brtsS <- DDD::L2brts(sim[[2]])
+
+loglik <- sls::loglik_slsP(
+  parsM = parsM, 
+  parsS = parsS, 
+  brtsM = brtsM, 
+  brtsS = brtsS, 
+  cond = cond
+)
+loglik
+```
+
+We have many ways to calculate the same likelihood
+
+```{r}
+parsM <- c(0.2, 0.1)
+parsS <- c(0.5, 0.4)
+brtsM <- DDD::L2brts(sim[[1]])
+brtsS <- DDD::L2brts(sim[[2]])
+
+loglik <- sls::loglik_slsQ(
+  parsM = parsM, 
+  parsS = parsS, 
+  brtsM = brtsM, 
+  brtsS = brtsS, 
+  cond = cond
+)
+loglik
+```
+
+
+```{r}
+parsM <- c(0.2, 0.1)
+parsS <- c(0.5, 0.4)
+brtsM <- DDD::L2brts(sim[[1]])
+brtsS <- DDD::L2brts(sim[[2]])
+
+loglik <- sls::loglik_slsQ(
+  parsM = parsM, 
+  parsS = parsS, 
+  brtsM = brtsM, 
+  brtsS = brtsS, 
+  cond = cond
+)
+loglik
+```

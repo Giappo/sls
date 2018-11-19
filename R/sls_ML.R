@@ -1,80 +1,82 @@
 #' @title sls Maximum Likelihood
 #' @description Calculates ML.
-#' @details best parameters
+#' @return  best parameters
 #' @export
-sls_ML <- function(
+sls_ml <- function(
   loglik_function = sls::loglik_slsP,
-  brtsM,
-  brtsS,
+  brts_m,
+  brts_s,
   startpars = c(0.5, 0.3, 0.5, 0.3),
   cond = 1,
-  N0 = 2
-)
-{
-  tol = c(0.001, 1e-04, 1e-06)
-  maxiter = 1000 * round((1.25)^length(pars))
-  changeloglikifnoconv = FALSE
-  optimmethod = 'subplex'
+  n_0 = 2
+) {
+  tol <- c(0.001, 1e-04, 1e-06)
+  maxiter <- 1000 * round(1.25 ^ length(pars))
+  changeloglikifnoconv <- FALSE
+  optimmethod <- "subplex"
   failpars <- rep(-1, length(startpars))
+  failout  <- data.frame(t(failpars), loglik = -1, df = -1, conv = -1)
 
   pars <- startpars
 
   #Rampal's transformation
-  pars2 = pars/(1 + pars)
-  pars2[which(pars == Inf)] = 1
+  pars2 <- pars / (1 + pars)
+  pars2[which(pars == Inf)] <- 1
 
   fun <- function(pars) {
     loglik_function(
-      parsM = pars[1:2],
-      parsS = pars[3:4],
-      brtsM = brtsM,
-      brtsS = brtsS,
+      pars_m = pars[1:2],
+      pars_s = pars[3:4],
+      brts_m = brts_m,
+      brts_s = brts_s,
       cond = cond,
-      N0 = N0
+      n_0 = n_0
     )
   }
 
   initloglik <- fun(pars); pars; initloglik
   cat("The loglikelihood for the initial parameter values is", initloglik, "\n")
   flush.console()
-  if (initloglik == -Inf)
-  {
+  if (initloglik == -Inf) {
     cat("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n")
     out2 <- failout
-  }else
-  {
+  } else {
     out <- subplex::subplex(
       par = pars2,
       fn = function(x) -fun(x)
     ); out; fun(out$par)
-    if (out$conv > 0)
-    {
-      cat("Optimization has not converged. Try again with different initial values.\n")
-      out2 <- data.frame(t(failpars), loglik = -1, df = -1, conv = unlist(out$conv))
-    }else
-    {
-      outpars2 = as.numeric(unlist(out$par))
-      outpars = outpars2/(1 - outpars2)
+    if (out$conv > 0) {
+      cat(
+        "Optimization has not converged. Try again with different initial values.\n" # no lint
+      )
+      out2 <- data.frame(
+        t(failpars),
+        loglik = -1,
+        df = -1,
+        conv = unlist(out$conv)
+      )
+    } else {
+      outpars2 <- as.numeric(unlist(out$par))
+      outpars <- outpars2 / (1 - outpars2)
     }
   }
 
   invisible(outpars)
 }
 
-
   #' #' @title sls Maximum Likelihood
   #' #' @description Calculates ML.
   #' #' @details best parameters
   #' #' @export
   #' sls_ML <- function(loglik_function = sls::loglik_slsP,
-  #'                     brtsM, brtsS, tsplit,
-  #'                     initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + missnumspec[1]), 2 * (1 + length(brtsS) +
-  #'                     missnumspec[length(missnumspec)]), (tsplit + max(brtsS))/2),
+  #'                     brts_m, brts_s, tsplit,
+  #'                     initparsopt = c(0.5, 0.1, 2 * (1 + length(brts_m) + missnumspec[1]), 2 * (1 + length(brts_s) +
+  #'                     missnumspec[length(missnumspec)]), (tsplit + max(brts_s))/2),
   #'                     parsfix = NULL,
   #'                     idparsopt = c(1:3, 6:7),
   #'                     idparsfix = NULL,
   #'                     idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
-  #'                     res = 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec)),
+  #'                     res = 10 * (1 + length(c(brts_m, brts_s)) + sum(missnumspec)),
   #'                     ddmodel = 1,
   #'                     missnumspec = c(0,0),
   #'                     cond = 1,
@@ -101,16 +103,16 @@ sls_ML <- function(
   #'   }
   #'
   #'   options(warn = -1)
-  #'   brtsM = sort(abs(as.numeric(brtsM)), decreasing = TRUE)
-  #'   brtsS = sort(abs(as.numeric(brtsS)), decreasing = TRUE)
+  #'   brts_m = sort(abs(as.numeric(brts_m)), decreasing = TRUE)
+  #'   brts_s = sort(abs(as.numeric(brts_s)), decreasing = TRUE)
   #'   if (cond != 0 & soc == 1)
   #'   {
   #'     cat("Conditioning on survival of a clade with stem age currently not implemented.\n")
   #'     out2 <- failout
   #'   }else
   #'   {
-  #'     if (is.numeric(brtsM) == FALSE ||
-  #'         is.numeric(brtsS) == FALSE)
+  #'     if (is.numeric(brts_m) == FALSE ||
+  #'         is.numeric(brts_s) == FALSE)
   #'     {
   #'       cat("The branching times should be numeric.\n")
   #'       out2 <- failout
@@ -170,7 +172,7 @@ sls_ML <- function(
   #'                                                idparsopt = idparsopt,
   #'                                                idparsfix = idparsfix,
   #'                                                idparsnoshift = idparsnoshift,
-  #'                                                pars2 = pars2, brtsM = brtsM, brtsS = brtsS,
+  #'                                                pars2 = pars2, brts_m = brts_m, brts_s = brts_s,
   #'                                                missnumspec = missnumspec); initloglik
   #'         cat("The loglikelihood for the initial parameter values is", initloglik, "\n")
   #'         flush.console()
@@ -189,7 +191,7 @@ sls_ML <- function(
   #'                                idparsopt = idparsopt,
   #'                                idparsfix = idparsfix,
   #'                                idparsnoshift = idparsnoshift,
-  #'                                pars2 = pars2, brtsM = brtsM, brtsS = brtsS,
+  #'                                pars2 = pars2, brts_m = brts_m, brts_s = brts_s,
   #'                                missnumspec = missnumspec)
   #'           if (out$conv > 0)
   #'           {

@@ -1,6 +1,8 @@
-context("likelihoods - no division")
+context("likelihoods - division")
 
-test_that( "all the likelihoods with no division yield the same result", {
+test_that( "all the likelihoods with division yield the same result", {
+
+  # testthat::skip('I skip it because it is slow. It works, though.') # nolint
 
   while (!require("ribir")) {
     devtools::install_github("richelbilderbeek/ribir")
@@ -17,7 +19,6 @@ test_that( "all the likelihoods with no division yield the same result", {
     precision = 1e2,
     ratios = FALSE
   ) {
-
     pars_m1 <- pars_m  ; pars_s1 <- pars_s
 
     res1.1 <- fun1(
@@ -42,12 +43,13 @@ test_that( "all the likelihoods with no division yield the same result", {
     if (ratios == TRUE) {
       pars_m2 <- pars_m / 2; pars_s2 <- pars_s * 3 / 4;
 
-      res1.2 <- fun1(pars_m = pars_m2,
-                     pars_s = pars_s2,
-                     brts_m = brts_m,
-                     brts_s = brts_s,
-                     cond = cond,
-                     nmax = precision
+      res1.2 <- fun1(
+        pars_m = pars_m2,
+        pars_s = pars_s2,
+        brts_m = brts_m,
+        brts_s = brts_s,
+        cond = cond,
+        nmax = precision
       ); res1.2
 
       res2.2 <- fun2(
@@ -97,18 +99,16 @@ test_that( "all the likelihoods with no division yield the same result", {
   }
 
   models <- c(
-    sls::loglik_bisse_shift,
-    sls::loglik_DDD,
-    sls::loglik_slsP_nodiv,
-    sls::loglik_slsQ_nodiv
+    sls::loglik_slsP,
+    sls::loglik_slsQ
   )
   threshold <- (!ribir::is_on_travis()) * 1e-2 +
-               (ribir::is_on_travis())  * 1e-3
+               (ribir::is_on_travis())  * (1 / 2) * 1e-3
 
-  cond <- 0; s <- 1
-  for (s in 1:(2 + 4 * ribir::is_on_travis())) {
+  cond <- 0
+  for (s in 1:(4 + 4 * ribir::is_on_travis())) {
     set.seed(s)
-    t0s    <- c(4, 1.5)
+    t0s    <- c(6, 2)
     brts_m  <- c(
       t0s[1],
       sort(runif(n = 20, min = 0.01, max = t0s[1] - 0.01), decreasing = TRUE)
@@ -127,7 +127,6 @@ test_that( "all the likelihoods with no division yield the same result", {
     ) * c(2, 0.5)
     cond   <- (cond == 0) * 1 + (cond == 1) * 0
 
-    tests <- 0
     for (i in 1:(length(models) - 1)) {
       for (j in (i + 1):length(models)) {
         testthat::expect_true(
@@ -142,13 +141,8 @@ test_that( "all the likelihoods with no division yield the same result", {
             threshold = threshold
           ) <= threshold
         )
-        tests <- tests + 1
       }
     }
   }
-
-  testthat::expect_equal(
-    tests, length(models) * (length(models) - 1) / 2
-  )
 
 })
