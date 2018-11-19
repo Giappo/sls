@@ -9,6 +9,7 @@ r_github_packages:
   - jimhester/covr
   - jimhester/lintr
   - richelbilderbeek/ribir
+  - richelbilderbeek/beastier
   - MangoTheCat/goodpractice
   - KlausVigo/phangorn
 
