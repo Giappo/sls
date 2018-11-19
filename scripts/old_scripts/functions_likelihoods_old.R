@@ -4,8 +4,18 @@
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
-
+loglik_slsP_old <- function(
+  pars1,
+                        pars2 = c(2 + sum(missnumspec) + 2 * length(brts_m) + 1 + 2 * length(brts_s),  #maximum number of species involved in the computation
+                                  1,  #ddmodel: not actually used by this function
+                                  1,  #conditioning
+                                  min(abs(brts_m[abs(brts_m) > pars1[7]])), # tshift
+                                  0,  #print things: not actually used by this function
+                                  2), #stem or crown (soc)
+                        brts_m,
+                        brts_s,
+                        missnumspec = c(0,0)
+) {
   lambdas <- c(pars1[1], pars1[4])
   mus     <- c(pars1[2], pars1[5])
   Ks      <- c(pars1[3], pars1[6])
@@ -18,22 +28,22 @@ loglik_slsP <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
 
   dummy <- missnumspec #change this if you want to include missing species. it's probably not difficult, just modify pn for LM and LS
 
-  brtsM1 <- sort(abs(brtsM), decreasing = TRUE)
-  if (is.null(unlist(brtsS))) {brtsS1 <- td} else
+  brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
+  if (is.null(unlist(brts_s))) {brts_s1 <- td} else
   {
-    brtsS1 <- sort(abs(c(brtsS, td)), decreasing = TRUE)
+    brts_s1 <- sort(abs(c(brts_s, td)), decreasing = TRUE)
   }
-  td <- abs(td) * sign(brtsM1[1])
-  tsplit <- abs(tsplit) * sign(brtsM1[1])
+  td <- abs(td) * sign(brts_m1[1])
+  tsplit <- abs(tsplit) * sign(brts_m1[1])
 
-  testit::assert(all(sign(brtsM1) == sign(td)))
+  testit::assert(all(sign(brts_m1) == sign(td)))
   testit::assert(
-    all(sign(brtsS1 * !is.null(brtsS1)) == sign(td * !is.null(brtsS1)))
+    all(sign(brts_s1 * !is.null(brts_s1)) == sign(td * !is.null(brts_s1)))
   )
   testit::assert(all(sign(tsplit) == sign(td)))
-  if (!(tsplit %in% brtsM1)) {stop('tsplit has to be in the main clade branching times!')}
+  if (!(tsplit %in% brts_m1)) {stop('tsplit has to be in the main clade branching times!')}
 
-  BRTSM <- rbind(brtsM1, rep(1, length(brtsM1))); dim(BRTSM) <- c(2, length(brtsM1))
+  BRTSM <- rbind(brts_m1, rep(1, length(brts_m1))); dim(BRTSM) <- c(2, length(brts_m1))
   TD <- c(td, -1); dim(TD) <- c(2, 1)
   EVENTSM <- (M <- cbind(BRTSM, TD))[,order(-M[1,])]
   kvecM_after <- (N0 - 1) + cumsum(EVENTSM[2,])
@@ -42,13 +52,13 @@ loglik_slsP <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
 
   if (N0 == 2)
   {
-    brtsM2 <- c(brtsM1[1], brtsM1)
+    brts_m2 <- c(brts_m1[1], brts_m1)
   }else
   {
-    brtsM2 <- brtsM1
+    brts_m2 <- brts_m1
   }
-  tsM_pre_shift  <- brtsM2[brtsM2 > td] - td; tsM_pre_shift
-  tsM_post_shift <- brtsM2[brtsM2 < td]     ; tsM_post_shift
+  tsM_pre_shift  <- brts_m2[brts_m2 > td] - td; tsM_pre_shift
+  tsM_post_shift <- brts_m2[brts_m2 < td]     ; tsM_post_shift
   if (length(tsM_post_shift) == 0) {tsM_post_shift <- 0}
   if (length(tsM_pre_shift ) == 0) {cat("There are no branching times before the shift"); return(-Inf)}
 
@@ -57,24 +67,24 @@ loglik_slsP <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
     sls::pn(n = 1, lambda = lambdas[1], mu = mus[1], t = tsM_post_shift)
   ) * sls:::pn(n = 1, t = td, lambda = lambdas[1], mu = mus[1])^(length(tsM_pre_shift) - 1); log(likM_post_shift)
   likS_post_shift <- prod(
-    sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brtsS1        )
+    sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brts_s1        )
   ); log(likS_post_shift)
   loglikM0 <- log(likM_pre_shift) + log(likM_post_shift)
   loglikS0 <- log(likS_post_shift)
 
-  logcombinatoricsM <- ifelse(length(brtsM) > 1, sum(log(kvecM_before1[-1])), 0)
-  logcombinatoricsS <- ifelse(length(brtsS) > 0, lfactorial(length(brtsS))   , 0)
-  lM <- length(brtsM1[brtsM1 != brtsM1[1]]) # number of speciations in the Main clade
-  lS <- length(brtsS1[brtsS1 != brtsS1[1]]) # number of speciations in the Sub clade
-  loglikM <- loglikM0 + logcombinatoricsM + log(lambdas[1] + (length(brtsM) == 0)) * lM
-  loglikS <- loglikS0 + logcombinatoricsS + log(lambdas[2] + (length(brtsS) == 0)) * lS
+  logcombinatoricsM <- ifelse(length(brts_m) > 1, sum(log(kvecM_before1[-1])), 0)
+  logcombinatoricsS <- ifelse(length(brts_s) > 0, lfactorial(length(brts_s))   , 0)
+  lM <- length(brts_m1[brts_m1 != brts_m1[1]]) # number of speciations in the Main clade
+  lS <- length(brts_s1[brts_s1 != brts_s1[1]]) # number of speciations in the Sub clade
+  loglikM <- loglikM0 + logcombinatoricsM + log(lambdas[1] + (length(brts_m) == 0)) * lM
+  loglikS <- loglikS0 + logcombinatoricsS + log(lambdas[2] + (length(brts_s) == 0)) * lS
 
   Pc <- 1
   if (!missing(cond))
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- Pc_1shift_old(pars1 = pars1, pars2 = pars2, brts_m = brts_m, brts_s = brts_s)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -89,7 +99,18 @@ loglik_slsP <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP_nodivision <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0)) {
+loglik_slsP_nodiv_old <- function(pars1,
+                                   pars2 = c(2 + sum(missnumspec) + 2 * length(brts_m) + 1 + 2 * length(brts_s),  #maximum number of species involved in the computation
+                                             1,  #ddmodel: not actually used by this function
+                                             1,  #conditioning
+                                             min(abs(brts_m[abs(brts_m) > pars1[7]])), # tshift
+                                             0,  #print things: not actually used by this function
+                                             2), #stem or crown (soc)
+                                   brts_m,
+                                   brts_s,
+                                   missnumspec = c(0,0)
+)
+{
 
   lambdas <- c(pars1[1], pars1[4])
   mus     <- c(pars1[2], pars1[5])
@@ -103,22 +124,22 @@ loglik_slsP_nodivision <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), 
 
   dummy <- missnumspec #change this if you want to include missing species. it's probably not difficult, just modify pn for LM and LS
 
-  brtsM1 <- sort(abs(brtsM), decreasing = TRUE)
-  if (is.null(unlist(brtsS))) {brtsS1 <- td} else
+  brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
+  if (is.null(unlist(brts_s))) {brts_s1 <- td} else
   {
-    brtsS1 <- sort(abs(c(brtsS, td)), decreasing = TRUE)
+    brts_s1 <- sort(abs(c(brts_s, td)), decreasing = TRUE)
   }
-  td <- abs(td) * sign(brtsM1[1])
-  tsplit <- abs(tsplit) * sign(brtsM1[1])
+  td <- abs(td) * sign(brts_m1[1])
+  tsplit <- abs(tsplit) * sign(brts_m1[1])
 
-  testit::assert(all(sign(brtsM1) == sign(td)))
+  testit::assert(all(sign(brts_m1) == sign(td)))
   testit::assert(
-    all(sign(brtsS1 * !is.null(brtsS1)) == sign(td * !is.null(brtsS1)))
+    all(sign(brts_s1 * !is.null(brts_s1)) == sign(td * !is.null(brts_s1)))
   )
   testit::assert(all(sign(tsplit) == sign(td)))
-  if (!(tsplit %in% brtsM1)) {stop('tsplit has to be in the main clade branching times!')}
+  if (!(tsplit %in% brts_m1)) {stop('tsplit has to be in the main clade branching times!')}
 
-  BRTSM <- rbind(brtsM1, rep(1, length(brtsM1))); dim(BRTSM) <- c(2, length(brtsM1))
+  BRTSM <- rbind(brts_m1, rep(1, length(brts_m1))); dim(BRTSM) <- c(2, length(brts_m1))
   TD <- c(td, -1); dim(TD) <- c(2, 1)
   EVENTSM <- (M <- cbind(BRTSM, TD))[,order(-M[1,])]
   kvecM_after <- (N0 - 1) + cumsum(EVENTSM[2,])
@@ -127,39 +148,39 @@ loglik_slsP_nodivision <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), 
 
   if (N0 == 2)
   {
-    brtsM2 <- c(brtsM1[1], brtsM1)
+    brts_m2 <- c(brts_m1[1], brts_m1)
   }else
   {
-    brtsM2 <- brtsM1
+    brts_m2 <- brts_m1
   }
-  tsM_pre_shift  <- brtsM2[brtsM2 > td] - td; tsM_pre_shift
-  tsM_post_shift <- brtsM2[brtsM2 < td]     ; tsM_post_shift
+  tsM_pre_shift  <- brts_m2[brts_m2 > td] - td; tsM_pre_shift
+  tsM_post_shift <- brts_m2[brts_m2 < td]     ; tsM_post_shift
   if (length(tsM_post_shift) == 0) {tsM_post_shift <- 0}
   if (length(tsM_pre_shift ) == 0) {cat("There are no branching times before the shift"); return(-Inf)}
 
-  likM_pre_shift  <- sls::combine_pns_nodivision(lambda = lambdas[1], mu = mus[1], ts = tsM_pre_shift, tbar = td, nmax = nmax); log(likM_pre_shift)
+  likM_pre_shift  <- sls::combine_pns_nodiv(lambda = lambdas[1], mu = mus[1], ts = tsM_pre_shift, tbar = td, nmax = nmax); log(likM_pre_shift)
   likM_post_shift <- prod(
     sls::pn(n = 1, lambda = lambdas[1], mu = mus[1], t = tsM_post_shift)
   ) * sls:::pn(n = 1, t = td, lambda = lambdas[1], mu = mus[1])^(length(tsM_pre_shift) - 1); log(likM_post_shift)
   likS_post_shift <- prod(
-    sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brtsS1        )
+    sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brts_s1)
   ); log(likS_post_shift)
   loglikM0 <- log(likM_pre_shift) + log(likM_post_shift)
   loglikS0 <- log(likS_post_shift)
 
-  logcombinatoricsM <- ifelse(length(brtsM) > 1, sum(log(kvecM_before1[-1])), 0)
-  logcombinatoricsS <- ifelse(length(brtsS) > 0, lfactorial(length(brtsS))   , 0)
-  lM <- length(brtsM1[brtsM1 != brtsM1[1]]) # number of speciations in the Main clade
-  lS <- length(brtsS1[brtsS1 != brtsS1[1]]) # number of speciations in the Sub clade
-  loglikM <- loglikM0 + logcombinatoricsM + log(lambdas[1] + (length(brtsM) == 0)) * lM
-  loglikS <- loglikS0 + logcombinatoricsS + log(lambdas[2] + (length(brtsS) == 0)) * lS
+  logcombinatoricsM <- ifelse(length(brts_m) > 1, sum(log(kvecM_before1[-1])), 0)
+  logcombinatoricsS <- ifelse(length(brts_s) > 0, lfactorial(length(brts_s))   , 0)
+  lM <- length(brts_m1[brts_m1 != brts_m1[1]]) # number of speciations in the Main clade
+  lS <- length(brts_s1[brts_s1 != brts_s1[1]]) # number of speciations in the Sub clade
+  loglikM <- loglikM0 + logcombinatoricsM + log(lambdas[1] + (length(brts_m) == 0)) * lM
+  loglikS <- loglikS0 + logcombinatoricsS + log(lambdas[2] + (length(brts_s) == 0)) * lS
 
   Pc <- 1
   if (!missing(cond))
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- Pc_1shift_old(pars1 = pars1, pars2 = pars2, brts_m = brts_m, brts_s = brts_s)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -174,7 +195,17 @@ loglik_slsP_nodivision <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), 
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsQ <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS)
+loglik_slsQ <- function(pars1,
+                        pars2 = c(2 + sum(missnumspec) + 2 * length(brts_m) + 1 + 2 * length(brts_s),  #maximum number of species involved in the computation
+                                  1,  #ddmodel: not actually used by this function
+                                  1,  #conditioning
+                                  min(abs(brts_m[abs(brts_m) > pars1[7]])), # tshift
+                                  0,  #print things: not actually used by this function
+                                  2), #stem or crown (soc)
+                        brts_m,
+                        brts_s,
+                        missnumspec = c(0,0)
+)
 {
   missnumspec <- c(0,0)
   lambdas <- c(pars1[1], pars1[4])
@@ -187,18 +218,18 @@ loglik_slsQ <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
   tsplit <- pars2[4]
   N0s    <- c(pars2[6], 1)
 
-  testit::assert(all(sign(brtsM) == sign(td)))
+  testit::assert(all(sign(brts_m) == sign(td)))
   testit::assert(
-    all(sign(brtsS * !is.null(brtsS)) == sign(td * !is.null(brtsS)))
+    all(sign(brts_s * !is.null(brts_s)) == sign(td * !is.null(brts_s)))
   )
   testit::assert(all(sign(tsplit) == sign(td)))
-  if (!(tsplit %in% brtsM)) {stop('tsplit has to be in the main clade branching times!')}
+  if (!(tsplit %in% brts_m)) {stop('tsplit has to be in the main clade branching times!')}
 
   #BASIC SETTINGS AND CHECKS
   Nclades <- length(lambdas)
-  brtsM1 <- sort(c(0, abs(c(brtsM, td))), decreasing = TRUE)
-  brtsS1 <- sort(c(0, abs(c(brtsS, td))), decreasing = TRUE)
-  brts_list <- list(brtsM = brtsM1, brtsS = brtsS1)
+  brts_m1 <- sort(c(0, abs(c(brts_m, td))), decreasing = TRUE)
+  brts_s1 <- sort(c(0, abs(c(brts_s, td))), decreasing = TRUE)
+  brts_list <- list(brts_m = brts_m1, brts_s = brts_s1)
   abstol <- 1e-16; reltol <- 1e-10
   nvec <- 0:lx
   logliks <- rep(NA, Nclades)
@@ -286,7 +317,7 @@ loglik_slsQ <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
   {
     if (cond %in% c(1,2,3))
     {
-      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brts_m = brts_m, brts_s = brts_s)
       Pc <- conditioning[[cond]]; Pc
     }
   }
@@ -301,14 +332,24 @@ loglik_slsQ <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brts
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_DDD <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS, missnumspec = c(0,0))
+loglik_DDD <- function(pars1,
+                       pars2 = c(2 + sum(missnumspec) + 2 * length(brts_m) + 1 + 2 * length(brts_s),  #maximum number of species involved in the computation
+                                 1,  #ddmodel: not actually used by this function
+                                 1,  #conditioning
+                                 min(abs(brts_m[abs(brts_m) > pars1[7]])), # tshift
+                                 0,  #print things: not actually used by this function
+                                 2), #stem or crown (soc)
+                       brts_m,
+                       brts_s,
+                       missnumspec = c(0,0)
+)
 {
   cond <- pars2[3] # i will impose my conditioning
   pars1copy <- pars1; pars1copy[7] <- abs(pars1copy[7])
   pars2copy <- pars2; pars2copy[4] <- abs(pars2copy[4]); pars2copy[3] <- 0 #i will impose my conditioning
-  testit::assert(pars2copy[4] %in% abs(brtsM)) #tsplit in brtsM
+  testit::assert(pars2copy[4] %in% abs(brts_m)) #tsplit in brts_m
   loglik <- DDD::dd_KI_loglik(pars1 = pars1copy, pars2 = pars2copy,
-                              brtsM = abs(brtsM), brtsS = abs(brtsS), missnumspec = missnumspec)
+                              brts_m = abs(brts_m), brts_s = abs(brts_s), missnumspec = missnumspec)
 
   Pc <- 1
   if (!missing(cond))
@@ -316,7 +357,7 @@ loglik_DDD <- function(pars1, pars2 = c(100, 1, 1, brtsM[2], 0, 2), brtsM, brtsS
     if (cond %in% c(1,2,3))
     {
       pars2[3] <- cond
-      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS)
+      conditioning <- sls::Pc_1shift(pars1 = pars1, pars2 = pars2, brts_m = brts_m, brts_s = brts_s)
       Pc <- conditioning[[cond]]; Pc
     }
   }

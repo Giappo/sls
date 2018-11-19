@@ -2,14 +2,14 @@
 % Please edit documentation in R/sls_loglik_choosepar.R
 \name{sls_loglik_choosepar}
 \alias{sls_loglik_choosepar}
-\title{Internal MBD function}
+\title{Calculates the likelihood for a subset of parameters}
 \usage{
-sls_loglik_choosepar(trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
-  pars2, brtsM, brtsS, missnumspec = c(0, 0),
+sls_loglik_choosepar(trparsopt, trparsfix, idparsopt, idparsfix,
+  idparsnoshift, pars2, brts_m, brts_s, missnumspec = c(0, 0),
   loglik_function = sls::loglik_slsP)
 }
 \description{
-Internal MBD function.
+Calculates the likelihood for a subset of parameters
 }
 \details{
 This is not to be called by the user.

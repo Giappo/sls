@@ -4,9 +4,11 @@
 #' @inheritParams default_params_doc
 #' @return The time intervals
 #' @export
-brts2time_intervals = function (brts){
+brts2time_intervals <- function(
+  brts
+) {
   time_points <- -unlist(unname(sort(abs(brts), decreasing = TRUE)) )
-  branching_times <- -sort(abs(as.numeric(time_points)),decreasing = TRUE)
+  branching_times <- -sort(abs(as.numeric(time_points)), decreasing = TRUE)
   births <- c(0, unname(table(branching_times))[-1])
   unique_branching_times <- as.numeric(names(table(branching_times)))
   time_intervals <- c((diff(unique_branching_times)), (abs(tail(unique_branching_times,1))) )
@@ -22,7 +24,11 @@ brts2time_intervals = function (brts){
 #' @inheritParams default_params_doc
 #' @return The transition matrix
 #' @export
-P_transition_matrix <- function(lambda, mu, matrix_size){
+P_transition_matrix <- function(
+  lambda,
+  mu,
+  matrix_size
+) {
   nvec <- 0:(matrix_size - 1)
   M <- matrix(0, nrow = matrix_size, ncol = matrix_size)
   M[row(M) == col(M) + 1] <- M[row(M) == col(M) + 1] + lambda * (nvec[1:(matrix_size - 1)])
@@ -43,7 +49,10 @@ P_transition_matrix <- function(lambda, mu, matrix_size){
 #' \item the second row gives the number of lineages immediately after that time point;
 #' }
 #' @export
-L2LTT <- function(L, shifts = NULL) {
+L2LTT <- function(
+  L,
+  shifts = NULL
+) {
   #full LTT
   adds <- L[, 1]
   rems <- L[L[,4] != -1, 4]
@@ -93,7 +102,7 @@ L2LTT <- function(L, shifts = NULL) {
     if (sum(kmat1[1,1] == kmat1[1,]) > 1) {kmat1 <- kmat1[, -(1:(sum(kmat1[1,1] == kmat1[1,]) - 1))]}; kmat1
   }else
   {
-   kmat1 <- kvec1
+    kmat1 <- kvec1
   }
   LTT_reconstructed <- kmat1; reco_LTT; L1
   dim(LTT_reconstructed) <- c(2, length(unique(times1)))
@@ -101,14 +110,227 @@ L2LTT <- function(L, shifts = NULL) {
   return(list(LTT_full = LTT_full, LTT_reconstructed = LTT_reconstructed))
 }
 
+##### CONDITIONINGS
+#' @title DDD-conditioning
+#' @author Giovanni Laudanno
+#' @description Calculates the conditioning from the DDD package for the Key Innovation model
+#' @inheritParams default_params_doc
+#' @return Conditioning probability
+#' @export
+DDD_conditioning <- function(
+  pars,
+  brts_m,
+  brts_s,
+  lx,
+  ddep = 1
+) {
+  lambdas <- c(pars[1], pars[3])
+  mus     <- c(pars[2], pars[4])
+  pars1 <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, brts_s[1])
+  laM = pars1[1]
+  muM = pars1[2]
+  KM = pars1[3]
+  laS = pars1[4]
+  muS = pars1[5]
+  KS = pars1[6]
+  tinn = -abs(pars1[7])
+  lmax = lx #pars2[1]
+  # ddep = pars2[2]
+
+  m = 0
+  lxM = min(max(1 + m[1], 1 + ceiling(KM)), ceiling(lmax))
+  lxS = min(max(1 + m[1], 1 + ceiling(KS)), ceiling(lmax))
+
+  tcrown = brts_m[1]
+  tpres  = 0
+  # tinn <- brts_s[1]
+  lx = lxS
+  # lxS <- lxM <- lx
+  probs = rep(0, lx)
+  probs[2] = 1
+  probs = DDD:::dd_loglik_M(pars1[4:6], lx, 0, ddep,
+                            tt = abs(tpres - tinn), probs)
+  PS = 1 - probs[1]
+  lx = lxM
+  probs = matrix(0, lx, lx)
+  probs[2, 2] = 1
+  dim(probs) = c(lx * lx, 1)
+  ly = lx^2
+  probs = DDD:::dd_loglik_M2(pars = pars1[1:3], lx = lx,
+                             ddep = ddep, tt = abs(tinn - tcrown), p = probs)
+  dim(probs) = c(lx, lx)
+  probs[1, 1:lx] = 0
+  probs[1:lx, 1] = 0
+  auxM1 = rep(0:(lx - 1), times = lx) + rep(0:(lx - 1), each = lx)
+  probs = probs * rep(0:(lx - 1), times = lx)/auxM1
+  dim(probs) = c(lx, lx)
+  probs = rbind(probs[2:lx, 1:lx], rep(0, lx))
+  dim(probs) = c(lx * lx, 1)
+  probs = DDD:::dd_loglik_M2(pars = pars1[1:3], lx = lx,
+                             ddep = ddep, tt = abs(tpres - tinn), p = probs)
+  dim(probs) = c(lx, lx)
+  PM12 = sum(probs[2:lx, 2:lx])
+  PM2 = sum(probs[1, 2:lx])
+  logliknorm = log(2) + log(PM12 + PS * PM2); exp(logliknorm)
+  return(exp(logliknorm))
+}
+
+#' @title sls-conditioning (old version)
+#' @author Giovanni Laudanno
+#' @description Calculates three different kind of conditioning probabilities
+#' @inheritParams default_params_doc
+#' @return Three different conditioning probabilities
+#' @export
+Pc_1shift0 <- function(pars, brts_m, brts_s, Nmax = 100) {
+
+  lambdas <- c(pars[1], pars[3])
+  mus     <- c(pars[2], pars[4])
+
+  if (length(brts_s) > 0)
+  {
+    tc <- brts_m[1]
+    ts <- brts_s[1]
+    tp <- 0
+    A <- abs(ts - tc); B <- abs(tp - ts)
+    PS <- 1 - pn(n = 0, t = B, lambda = lambdas[2], mu = mus[2])
+    nvec <- 1:Nmax
+    ns1  <- row(matrix(NA, nrow = Nmax, ncol = Nmax))
+    ns2  <- col(matrix(NA, nrow = Nmax, ncol = Nmax))
+    pA   <- sls::pt(t = A, lambda = lambdas[1], mu = mus[1]); pA
+    uA   <- sls::ut(t = A, lambda = lambdas[1], mu = mus[1]); uA
+    pB1  <- sls::pt(t = B, lambda = lambdas[1], mu = mus[1]); pB1
+    pB2  <- sls::pt(t = B, lambda = lambdas[2], mu = mus[2]); pB2
+    pns1 <- sls::pn(n = ns1, t = A, lambda = lambdas[1], mu = mus[1]); rownames(pns1) <- paste0("ns1=", nvec); colnames(pns1) <- paste0("ns2=", nvec); head(pns1)
+    pns2 <- sls::pn(n = ns2, t = A, lambda = lambdas[1], mu = mus[1]); rownames(pns2) <- paste0("ns1=", nvec); colnames(pns2) <- paste0("ns2=", nvec); head(pns2)
+    aux1 <- pns1 * pns2 * (ns1/(ns1 + ns2)) * (1 - (1 - pB1)^ns2)
+    P1   <- sum(aux1) #branch 2 survives till the present
+    aux2 <- aux1 * (1 - (1 - pB1)^(ns1 - 1)); head(aux2)
+    P2   <- sum(aux2) #both branches 1 and 2 survive till the present
+  }else
+  {
+    P1 <- (1 - sls::pn(n = 0, lambda = lambdas[1], mu = mus[1]))
+    P2 <- (1/2) * (1 - sls::pn(n = 0, lambda = lambdas[1], mu = mus[1]))^2 #both branches 1 and 2 survive till the present
+    PS <- 0
+  }
+
+  Pc1  <- 2 * PS * P1 + 2 * (1 - PS) * P2
+  Pc2  <- 2 * PS * P2
+  Pc3  <- 2 * PS * P1
+
+  return(list(Pc1 = Pc1, Pc2 = Pc2, Pc3 = Pc3))
+}
+
+##### DEBUG FUNCTIONS
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+debug_DDD_conditioning <- function(lambdas, mus, brts_m, brts_s, lx, ddep = 1) {
+  pars1 <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, brts_s[1])
+  laM = pars1[1]
+  muM = pars1[2]
+  KM = pars1[3]
+  laS = pars1[4]
+  muS = pars1[5]
+  KS = pars1[6]
+  tinn = -abs(pars1[7])
+  lmax = lx #pars2[1]
+  # ddep = pars2[2]
+
+  m = 0
+  lxM = min(max(1 + m[1], 1 + ceiling(KM)), ceiling(lmax))
+  lxS = min(max(1 + m[1], 1 + ceiling(KS)), ceiling(lmax))
+
+  tcrown = brts_m[1]
+  tpres  = 0
+  # tinn <- brts_s[1]
+  lx = lxS
+  # lxS <- lxM <- lx
+  probs = rep(0, lx)
+  probs[2] = 1
+  probs = DDD:::dd_loglik_M(pars1[4:6], lx, 0, ddep,
+                            tt = abs(tpres - tinn), probs)
+  PS = 1 - probs[1]
+  lx = lxM
+  probs = matrix(0, lx, lx)
+  probs[2, 2] = 1
+  dim(probs) = c(lx * lx, 1)
+  ly = lx^2
+  probs = DDD:::dd_loglik_M2(pars = pars1[1:3], lx = lx,
+                             ddep = ddep, tt = abs(tinn - tcrown), p = probs)
+  dim(probs) = c(lx, lx)
+
+  PM2cs = sum(probs[1, 2:lx])
+
+  probs[1, 1:lx] = 0
+  probs[1:lx, 1] = 0
+  auxM1 = rep(0:(lx - 1), times = lx) + rep(0:(lx - 1), each = lx)
+  probs = probs * rep(0:(lx - 1), times = lx)/auxM1
+  dim(probs) = c(lx, lx)
+  probs = rbind(probs[2:lx, 1:lx], rep(0, lx))
+
+  # PM2cs_after = sum(probs[1, 2:lx])
+
+  dim(probs) = c(lx * lx, 1)
+  probs = DDD:::dd_loglik_M2(pars = pars1[1:3], lx = lx,
+                             ddep = ddep, tt = abs(tpres - tinn), p = probs)
+  dim(probs) = c(lx, lx)
+  PM12 = sum(probs[2:lx, 2:lx])
+  PM2 = sum(probs[1, 2:lx])
+  logliknorm = log(2) + log(PM12 + PS * PM2); exp(logliknorm)
+  return(list(PS = PS, PM2 = PM2, PM12 = PM12, PM2cs = PM2cs))
+}
+
+#' Does something
+#' @inheritParams default_params_doc
+#' @return result
+#' @export
+debug_Pc_1shift <- function(brts_m, brts_s, lambdas, mus) {
+
+  tp <- 0 ;tc <- brts_m[1]; ts <- brts_s[1]
+  testit:::assert(tp > ts)
+  testit:::assert(ts > tc)
+
+  PM1   <- (1 - sls::pn(n = 0, t = tp - tc, lambda = lambdas[1], mu = mus[1]))
+  PM2cs <- (1 - sls::pn(n = 0, t = ts - tc, lambda = lambdas[1], mu = mus[1]))
+  PS    <- (1 - sls::pn(n = 0, t = tp - ts, lambda = lambdas[2], mu = mus[2]))
+
+  P1cs <- sls::pn(n = 1, t = ts - tc, lambda = lambdas[1], mu = mus[1])
+  P0sp <- sls::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
+  ucs  <- sls::ut(t = ts - tc, lambda = lambdas[1], mu = mus[1])
+
+  PM2cp <- P1cs *
+    (1 - P0sp) *
+    ucs *
+    (1 - ucs)^-1 *
+    (1 - ucs * P0sp)^-1
+
+  Pc1 <- PM1 * (PS * PM2cs + (1 - PS) * PM2cp)
+  Pc2 <- PM1 * PS * PM2cp
+  Pc3 <- PM1 * PS * PM2cs
+  return(list(PS = PS, PM1 = PM1, PM2cs = PM2cs, PM2cp = PM2cp))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 #####OTHER FUNCTIONS THAT I DON'T NEED/USE NOW
 #' #' Does something
 #' #' @inheritParams default_params_doc
 #' #' @return result
 #' #' @export
-#' old_Pc_1shift <- function(brtsM, brtsS, lambdas, mus) {
+#' old_Pc_1shift <- function(brts_m, brts_s, lambdas, mus) {
 #'
-#'   tp <- 0 ;tc <- brtsM[1]; ts <- brtsS[1]
+#'   tp <- 0 ;tc <- brts_m[1]; ts <- brts_s[1]
 #'   testit:::assert(tp > ts)
 #'   testit:::assert(ts > tc)
 #'
@@ -137,9 +359,9 @@ L2LTT <- function(L, shifts = NULL) {
 #' #' @inheritParams default_params_doc
 #' #' @return result
 #' #' @export
-#' Bart_Pc1 <- function(brtsM, brtsS, lambdas, mus) {
-#'   tc <- brtsM[1]
-#'   ts <- brtsS[1]
+#' Bart_Pc1 <- function(brts_m, brts_s, lambdas, mus) {
+#'   tc <- brts_m[1]
+#'   ts <- brts_s[1]
 #'   tp <- 0
 #'   A <- ts - tc; B <- tp - ts
 #'   Nmax <- 100
@@ -161,9 +383,9 @@ L2LTT <- function(L, shifts = NULL) {
 #' #' @inheritParams default_params_doc
 #' #' @return result
 #' #' @export
-#' Pc_1shift2 <- function(brtsM, brtsS, lambdas, mus) {
+#' Pc_1shift2 <- function(brts_m, brts_s, lambdas, mus) {
 #'
-#'   tp <- 0 ;tc <- brtsM[1]; ts <- brtsS[1]
+#'   tp <- 0 ;tc <- brts_m[1]; ts <- brts_s[1]
 #'   testit:::assert(tp > ts)
 #'   testit:::assert(ts > tc)
 #'
@@ -212,11 +434,11 @@ L2LTT <- function(L, shifts = NULL) {
 #' #' @inheritParams default_params_doc
 #' #' @return result
 #' #' @export
-#' Qc3_1shift0 <- function(brtsM, brtsS, lambdas, mus, lx = 500) {
+#' Qc3_1shift0 <- function(brts_m, brts_s, lambdas, mus, lx = 500) {
 #'
 #'   #BASIC SETTINGS AND CHECKS
 #'   Nclades <- length(lambdas)
-#'   brts_list <- list(brtsM = rep(brtsM[1], sum(brtsM == brtsM[1])), brtsS = brtsS[1])
+#'   brts_list <- list(brts_m = rep(brts_m[1], sum(brts_m == brts_m[1])), brts_s = brts_s[1])
 #'   shift_times <- unlist(lapply(brts_list, FUN = function(x) x[1]))
 #'   abstol <- 1e-16; reltol <- 1e-10
 #'   #MAIN
@@ -235,14 +457,14 @@ L2LTT <- function(L, shifts = NULL) {
 #'     time_intervals <- sls::brts2time_intervals(time_points)
 #'     lambda <- lambdas[clade]
 #'     mu     <- mus[clade]
-#'     N0     <- sum(brts_list[[clade]] == brts_list[[clade]][1])
+#'     n_0     <- sum(brts_list[[clade]] == brts_list[[clade]][1])
 #'
 #'     #SETTING INITIAL CONDITIONS (there's always a +1 because of Q0)
 #'     Qi <- c(1, rep(0, lx))
 #'     Qt <- matrix(0, ncol = (lx + 1), nrow = length(time_intervals))
 #'     Qt[1,] <- Qi
 #'     dimnames(Qt)[[2]] <- paste0("Q", 0:lx)
-#'     k <- N0
+#'     k <- n_0
 #'     t <- 2
 #'     D <- C <- rep(1, (length(time_intervals)))
 #'
@@ -326,19 +548,19 @@ L2LTT <- function(L, shifts = NULL) {
 #' #' @inheritParams default_params_doc
 #' #' @return result
 #' #' @export
-#' Qc3_1shift <- function(brtsM, brtsS, lambdas, mus, maxN = 10) {
+#' Qc3_1shift <- function(brts_m, brts_s, lambdas, mus, maxN = 10) {
 #'
-#'   brts_list <- list(brtsM = rep(brtsM[1], sum(brtsM == brtsM[1])), brtsS = brtsS[1])
+#'   brts_list <- list(brts_m = rep(brts_m[1], sum(brts_m == brts_m[1])), brts_s = brts_s[1])
 #'   shift_times <- unlist(lapply(brts_list, FUN = function(x) x[1]))
 #'   abstol <- 1e-16; reltol <- 1e-10
-#'   tc <- brts_list$brtsM[1]; ts <- brts_list$brtsS[1]; tp <- 0
+#'   tc <- brts_list$brts_m[1]; ts <- brts_list$brts_s[1]; tp <- 0
 #'   lambda <- lambdas[1]; mu <- mus[1]
 #'
 #'   nvec1 <- 0:maxN; maxN1 <- length(nvec1); maxN1
 #'   nvec2 <- 0:((maxN2 <- maxN1^2) - 1); maxN2
-#'   N0 <- sum(brts_list[[1]] == brts_list[[1]][1]); N0
+#'   n_0 <- sum(brts_list[[1]] == brts_list[[1]][1]); n_0
 #'
-#'   Pi <- c(rep(0, maxN2)); Pi[N0 + 1] <- 1
+#'   Pi <- c(rep(0, maxN2)); Pi[n_0 + 1] <- 1
 #'   Pt <- matrix(0, ncol = maxN2, nrow = 2)
 #'   Pt[1,] <- Pi
 #'   dimnames(Pt)[[2]] <- paste0("P", nvec2); head(Pt)
@@ -433,9 +655,9 @@ L2LTT <- function(L, shifts = NULL) {
 #          (lambda - lambda * z - LL * (mu - lambda * z))^-1
 #   return(out)
 # }
-# Pc1_1shift <- function(brtsM, brtsS, lambdas, mus) {
+# Pc1_1shift <- function(brts_m, brts_s, lambdas, mus) {
 #
-#   tp <- 0 ;tc <- brtsM[1]; ts <- brtsS[1]
+#   tp <- 0 ;tc <- brts_m[1]; ts <- brts_s[1]
 #   testit:::assert(tp > ts)
 #   testit:::assert(ts > tc)
 #
@@ -456,9 +678,9 @@ L2LTT <- function(L, shifts = NULL) {
 #   out <- PM1 * (PS * PM2cs + (1 - PS) * PM2cp)
 #   return(out)
 # }
-# Pc3_1shift <- function(brtsM, brtsS, lambdas, mus) {
+# Pc3_1shift <- function(brts_m, brts_s, lambdas, mus) {
 #
-#   tp <- 0 ;tc <- brtsM[1]; ts <- brtsS[1]
+#   tp <- 0 ;tc <- brts_m[1]; ts <- brts_s[1]
 #   testit:::assert(tp > ts)
 #   testit:::assert(ts > tc)
 #   Pc <- (1 - sls::pn(n = 0, t = tp - tc, lambda = lambdas[1], mu = mus[1])) * #survival of crown species not undergoing the shift

@@ -5,8 +5,8 @@
 \title{This function does nothing. It is intended to inherit is parameters'
 documentation.}
 \usage{
-default_params_doc(lambda, mu, t, n, tbar, pars, brts, brtsM, brtsS, nmax,
-  matrix_size, lx, ddep, k, cond, vec)
+default_params_doc(lambda, mu, t, n, tbar, pars, brts, brts_m, brts_s,
+  nmax, matrix_size, lx, ddep, k, cond, vec)
 }
 \arguments{
 \item{lambda}{speciation rate}
@@ -29,9 +29,9 @@ default_params_doc(lambda, mu, t, n, tbar, pars, brts, brtsM, brtsS, nmax,
 
 \item{brts}{branchin times}
 
-\item{brtsM}{branching times for the Main-clade}
+\item{brts_m}{branching times for the Main-clade}
 
-\item{brtsS}{branching times for the Sub-clade}
+\item{brts_s}{branching times for the Sub-clade}
 
 \item{nmax}{maximum number of lineages to consider}
 
@@ -47,8 +47,10 @@ default_params_doc(lambda, mu, t, n, tbar, pars, brts, brtsM, brtsS, nmax,
 \itemize{
   \item cond = 0 no conditiong;
   \item cond = 1 conditions on the survival of crown descendents;
-  \item cond = 2 conditions on the survival of subclade and on the other crown descendents in the main clade;
-  \item cond = 3 conditions on the survival of the subclade and both crown descendents in the main clade;
+  \item cond = 2 conditions on the survival of subclade and
+   on the other crown descendents in the main clade;
+  \item cond = 3 conditions on the survival of the subclade and
+  both crown descendents in the main clade;
 }}
 
 \item{vec}{a vector or a matrix to be transformed}

@@ -16,7 +16,19 @@ test_that("DFT yields the same result as the standard convolution", {
   ts <- c(10, 8, 7, 3)
   tbar <- 2
   nmax <- 15
-  res_conv <- sls::combine_pns0(lambda = lambda, mu = mu, ts = ts, tbar = tbar, nmax = nmax)
-  res_dft  <- sls::combine_pns(lambda = lambda, mu = mu, ts = ts, tbar = tbar, nmax = nmax)
+  res_conv <- sls::combine_pns0(
+    lambda = lambda,
+    mu = mu,
+    ts = ts,
+    tbar = tbar,
+    nmax = nmax
+  )
+  res_dft  <- sls::combine_pns(
+    lambda = lambda,
+    mu = mu,
+    ts = ts,
+    tbar = tbar,
+    nmax = nmax
+  )
   testthat::expect_equal(res_conv, res_dft)
 })

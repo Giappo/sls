@@ -4,7 +4,9 @@
 #' @inheritParams default_params_doc
 #' @return Fourier term
 #' @export
-phase.factor <- function(N, n, k) {exp(1i * 2 * pi * n * k * (N^-1))}
+phase.factor <- function(N, n, k) {
+  exp(1i * 2 * pi * n * k * (N ^ -1))
+}
 
 #' @title DFT
 #' @author Giovanni Laudanno
@@ -13,9 +15,17 @@ phase.factor <- function(N, n, k) {exp(1i * 2 * pi * n * k * (N^-1))}
 #' @return DFT
 #' @export
 DFT <- function(vec) {
-  if (is.matrix(vec)) {Nmax <- nrow(vec)}
-  if (is.vector(vec)) {Nmax <- length(vec)}
-  O <- outer(X = 1:Nmax, Y = 1:Nmax, FUN = function(n,k) sls::phase.factor(n = n, k = k, N = Nmax))
+  if (is.matrix(vec)) {
+    n_max <- nrow(vec)
+  }
+  if (is.vector(vec)) {
+    n_max <- length(vec)
+  }
+  O <- outer(
+    X = 1:n_max,
+    Y = 1:n_max,
+    FUN = function(n, k) sls::phase.factor(n = n, k = k, N = n_max)
+  )
   O %*% vec
 }
 
@@ -26,9 +36,17 @@ DFT <- function(vec) {
 #' @return Inverse DFT
 #' @export
 IDFT <- function(vec) {
-  if (is.matrix(vec)) {Nmax <- nrow(vec)}
-  if (is.vector(vec)) {Nmax <- length(vec)}
-  O <- outer(X = 1:Nmax, Y = 1:Nmax, FUN = function(n,k) sls::phase.factor(n = n, k = k, N = Nmax))
+  if (is.matrix(vec)) {
+    n_max <- nrow(vec)
+  }
+  if (is.vector(vec)) {
+    n_max <- length(vec)
+  }
+  O <- outer(
+    X = 1:n_max,
+    Y = 1:n_max,
+    FUN = function(n, k) sls::phase.factor(n = n, k = k, N = n_max)
+  )
   solve(O) %*% vec
 }
 
@@ -38,18 +56,29 @@ IDFT <- function(vec) {
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
 #' @export
-combine_pns <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
+combine_pns <- function(
+  lambda,
+  mu,
+  ts,
+  tbar,
+  nmax = 1e2,
+  fun = sls:::pn_bar
+) {
   nvec <- 1:nmax
   N <- length(ts)
   X <- vector("list", N)
-  for (t in 1:N)
-  {
+  for (t in 1:N) {
     X[[t]] <- fun(n = nvec, t = ts[t], lambda = lambda, mu = mu, tbar = tbar)
   }
-  pippo <- matrix(unlist(lapply(X, FUN = sls::DFT)), nrow = N, byrow = T); rownames(pippo) <- paste0("t", 1:N)
-  # apply(pippo, MARGIN = 2, "prod")
-  Re(sum((nvec^-1) * sls::IDFT(apply(pippo, MARGIN = 2, "prod")))) #awesome!
-  # sum((nvec^-1)*(Re(IDFT(DFT(x0) * DFT(y0))))) #cool!
+  pippo <- matrix(
+    unlist(lapply(X, FUN = sls::DFT)),
+    nrow = N,
+    byrow = T
+  )
+  rownames(pippo) <- paste0("t", 1:N)
+  Re(sum(
+    (nvec ^ -1) * sls::IDFT(apply(pippo, MARGIN = 2, "prod"))
+  )) # awesome!
 }
 
 #' @title Combine pn (basic)
@@ -58,21 +87,37 @@ combine_pns <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
 #' @export
-combine_pns0 <- function(lambda, mu, ts, tbar, nmax = 1e2) {
+combine_pns0 <- function(
+  lambda,
+  mu,
+  ts,
+  tbar,
+  nmax = 1e2
+) {
   N  <- length(ts)
 
   ls <- rep(lambda, N)
   ms <- rep(mu, N)
   nvec <- 1:nmax
 
-  ns      <- expand.grid(replicate(expr = nvec, n = N, simplify = FALSE)); colnames(ns) <- paste0("n",1:N); head(ns)
-  LAMBDAS <- matrix(ls, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T); colnames(LAMBDAS) <- paste0("lambda",1:N); head(LAMBDAS)
-  MUS     <- matrix(ms, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T); colnames(MUS) <- paste0("mu",1:N); head(MUS)
-  TS      <- matrix(ts, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T); colnames(TS) <- paste0("t",1:N); head(TS)
+  ns      <- expand.grid(replicate(expr = nvec, n = N, simplify = FALSE))
+  colnames(ns) <- paste0("n", 1:N); head(ns)
+  LAMBDAS <- matrix(ls, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
+  colnames(LAMBDAS) <- paste0("lambda", 1:N); head(LAMBDAS)
+  MUS     <- matrix(ms, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
+  colnames(MUS) <- paste0("mu", 1:N); head(MUS)
+  TS      <- matrix(ts, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
+  colnames(TS) <- paste0("t", 1:N); head(TS)
 
   out <- sum(
-    apply(sls:::pn_bar(n = ns, t = TS, tbar = tbar, lambda = LAMBDAS, mu = MUS), MARGIN = 1, FUN = prod) *
-      apply(ns, MARGIN = 1, FUN = sum)^-1
+    apply(sls:::pn_bar(
+      n = ns,
+      t = TS,
+      tbar = tbar,
+      lambda = LAMBDAS,
+      mu = MUS
+    ), MARGIN = 1, FUN = prod) *
+      apply(ns, MARGIN = 1, FUN = sum) ^ -1
   ); out
   return(out)
 }
@@ -83,18 +128,23 @@ combine_pns0 <- function(lambda, mu, ts, tbar, nmax = 1e2) {
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
 #' @export
-combine_pns_nodivision <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
+combine_pns_nodiv <- function(
+  lambda,
+  mu,
+  ts,
+  tbar,
+  nmax = 1e2,
+  fun = sls:::pn_bar
+) {
   nvec <- 1:nmax
   N <- length(ts)
   X <- vector("list", N)
-  for (t in 1:N)
-  {
+  for (t in 1:N) {
     X[[t]] <- fun(n = nvec, t = ts[t], lambda = lambda, mu = mu, tbar = tbar)
   }
-  pippo <- matrix(unlist(lapply(X, FUN = sls::DFT)), nrow = N, byrow = T); rownames(pippo) <- paste0("t", 1:N)
-  # apply(pippo, MARGIN = 2, "prod")
+  pippo <- matrix(unlist(lapply(X, FUN = sls::DFT)), nrow = N, byrow = T)
+  rownames(pippo) <- paste0("t", 1:N)
   Re(sum(sls::IDFT(apply(pippo, MARGIN = 2, "prod")))) #awesome!
-  # sum((nvec^-1)*(Re(IDFT(DFT(x0) * DFT(y0))))) #cool!
 }
 
 #' #' Does something
@@ -109,8 +159,5 @@ combine_pns_nodivision <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls::
 #'     X[[t]] <- fun(n = nvec, t = ts[t], lambda = lambda, mu = mu, tbar = tbar)
 #'   }
 #'   pippo <- matrix(unlist(lapply(X, FUN = fft)), nrow = N, byrow = T); rownames(pippo) <- paste0("t",1:N)
-#'   # apply(pippo, MARGIN = 2, "prod")
 #'   Re(sum((nvec^-1) * fft(apply(pippo, MARGIN = 2, "prod"), inverse = TRUE))) #awesome!
-#'   # sum((nvec^-1)*(Re(IDFT(DFT(x0) * DFT(y0))))) #cool!
 #' }
-

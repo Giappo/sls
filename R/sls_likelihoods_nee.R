@@ -6,9 +6,14 @@
 #' @export
 pt  <- function (lambda, mu, t) {
   time <- t
-  Lambda <- exp((mu - lambda) * time)
-  out    <- (lambda == mu) * (1/(1 + lambda * time)) +
-    (lambda != mu) * ((lambda - mu + (lambda == mu))/(lambda - mu * Lambda * (lambda != mu) + (lambda == mu)))
+  Lambda <- exp(
+    (mu - lambda) * time
+  )
+  out    <- (lambda == mu) * (1 / (1 + lambda * time)) +
+    (lambda != mu) * (
+      (lambda - mu + (lambda == mu)) /
+        (lambda - mu * Lambda * (lambda != mu) + (lambda == mu))
+    )
   return(unname(out))
 }
 
@@ -20,9 +25,14 @@ pt  <- function (lambda, mu, t) {
 #' @export
 ut  <- function (lambda, mu, t) {
   time <- t
-  Lambda <- exp((mu - lambda) * time)
-  out    <- (lambda == mu) * (lambda * time/(1 + lambda * time)) +
-    (lambda != mu) * ((lambda - lambda * Lambda + (lambda == mu)) / (lambda - mu * Lambda * (lambda != mu) + (lambda == mu)))
+  Lambda <- exp(
+    (mu - lambda) * time
+  )
+  out    <- (lambda == mu) * (lambda * time / (1 + lambda * time)) +
+    (lambda != mu) * (
+      (lambda - lambda * Lambda + (lambda == mu)) /
+        (lambda - mu * Lambda * (lambda != mu) + (lambda == mu))
+    )
   return(unname(out))
 }
 
@@ -35,7 +45,7 @@ ut  <- function (lambda, mu, t) {
 pn <- function(lambda, mu, t, n) {
   out <- (n > 0) * sls::pt(t = t, lambda = lambda, mu = mu) *
     (1 - sls::ut(t = t, lambda = lambda, mu = mu)) *
-    sls::ut(t = t, lambda = lambda, mu = mu)^(n - 1 + 2*(n == 0)) +
+    sls::ut(t = t, lambda = lambda, mu = mu) ^ (n - 1 + 2 * (n == 0)) +
     (n == 0) * (1 - sls::pt(t = t, lambda = lambda, mu = mu))
   return(out)
 }
@@ -50,8 +60,8 @@ pn_bar <- function(lambda, mu, t, n, tbar = 0) {
   out <- (n > 0) * sls::pt(t = t, lambda = lambda, mu = mu) *
     (1 - sls::ut(t = t, lambda = lambda, mu = mu)) *
     n *
-    sls::ut(t = t, lambda = lambda, mu = mu)^(n - 1) *
-    (1 - sls::pt(t = tbar, lambda = lambda, mu = mu))^(n - 1 + (n == 0)) +
+    sls::ut(t = t, lambda = lambda, mu = mu) ^ (n - 1) *
+    (1 - sls::pt(t = tbar, lambda = lambda, mu = mu)) ^ (n - 1 + (n == 0)) +
     (n == 0) * (1 - sls::pt(t = t, lambda = lambda, mu = mu))
   return(out)
 }
