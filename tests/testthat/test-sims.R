@@ -3,7 +3,7 @@ context("simulations")
 syntetic_data <- function(
   n_species = 30,
   shifted = FALSE,
-  LS,
+  LS = sls::sls_sim.get_standard_LS(),
   clade = 1
 ) {
   age <- LS[1, 1]
@@ -33,15 +33,27 @@ syntetic_data <- function(
   )
 
   if (shifted == TRUE) {
+    deltas <- list(
+      delta_n = 1,
+      delta_t = 0.1
+    )
     data_new <- sls_sim.use_event(
       data = data,
       clade = 1,
       event = "shift",
-      t = tshift,
-      LS = sls::sls_sim.get_standard_LS()
-    )$data
+      deltas = deltas,
+      LS = LS
+    )
     data <- data_new
   }
+
+  event_times <- c(
+    data$LL[[clade]][data$LL[[clade]][, 1] != 0, 1],
+    data$LL[[clade]][data$LL[[clade]][, 4] != -1, 4]
+  )
+  data$t[[clade]] <- min(
+    event_times
+  )
   data
 }
 
@@ -54,7 +66,7 @@ test_that("sls_sim.get_pars", {
   )
 })
 
-test_that("sls_sim.initialize_LL_new_clade", {
+test_that("sls_sim.initialize_data_new_clade", {
 
   LS <- sls::sls_sim.get_standard_LS()
   lambdas <- c(0.2, 0.4); mus <- c(0.1, 0.05); Ks <- c(Inf, Inf)
@@ -62,7 +74,7 @@ test_that("sls_sim.initialize_LL_new_clade", {
   n_clades <- length(lambdas)
 
   suppressWarnings(rm(data))
-  data <- sls::sls_sim.initialize_LL_new_clade(
+  data <- sls::sls_sim.initialize_data_new_clade(
     data = data,
     pars = pars,
     clade = 0,
@@ -70,7 +82,7 @@ test_that("sls_sim.initialize_LL_new_clade", {
   )
 
   clade <- 1
-  data <- sls::sls_sim.initialize_LL_new_clade(
+  data <- sls::sls_sim.initialize_data_new_clade(
     data = data,
     pars = pars,
     clade = clade,
@@ -85,7 +97,7 @@ test_that("sls_sim.initialize_LL_new_clade", {
   )
 
   clade <- 2
-  data <- sls_sim.initialize_LL_new_clade(
+  data <- sls_sim.initialize_data_new_clade(
     data = data,
     pars = pars,
     clade = clade,
@@ -109,8 +121,8 @@ test_that("sls_sim.sample_deltas", {
   pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
 
   suppressWarnings(rm(data))
-  clade <- 1; data <- sls_sim.initialize_LL_new_clade(pars = pars, clade = 0)
-  data <- sls_sim.initialize_LL_new_clade(
+  clade <- 1; data <- sls_sim.initialize_data_new_clade(pars = pars, clade = 0)
+  data <- sls_sim.initialize_data_new_clade(
     data = data,
     pars = pars,
     clade = clade,
@@ -135,22 +147,25 @@ test_that("sls_sim.decide_event", {
   LS <- sls::sls_sim.get_standard_LS()
   pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
   suppressWarnings(rm(LL))
-  clade <- 1; data <- sls_sim.initialize_LL_new_clade(pars = pars, clade = 0)
-  data <- sls_sim.initialize_LL_new_clade(
+  clade <- 1; data <- sls_sim.initialize_data_new_clade(pars = pars, clade = 0)
+  data <- sls_sim.initialize_data_new_clade(
     pars = pars,
     clade = clade,
     data = data,
     LS = LS
   )
 
-  t <- 0.5
+  ###
+  clade <- 1
   delta_n <- 1
   delta_t <- 1
-  clade <- 1
+  deltas <- list(
+    delta_n = unname(delta_n),
+    delta_t = unname(delta_t)
+  )
+  data$t[[clade]] <- 0.5
   test_end <- sls_sim.decide_event(
-    delta_n = delta_n,
-    delta_t = delta_t,
-    t = t,
+    deltas = deltas,
     data = data,
     clade = clade,
     LS = LS
@@ -160,14 +175,17 @@ test_that("sls_sim.decide_event", {
     test_end == "end"
   )
 
-  t <- 5.5
+  ###
+  clade <- 1
   delta_n <- 1
   delta_t <- 1
-  clade <- 1
+  deltas <- list(
+    delta_n = unname(delta_n),
+    delta_t = unname(delta_t)
+  )
+  data$t[[clade]] <- 5.5
   test_speciation <- sls_sim.decide_event(
-    delta_n = delta_n,
-    delta_t = delta_t,
-    t = t,
+    deltas = deltas,
     data = data,
     clade = clade,
     LS = LS
@@ -177,14 +195,17 @@ test_that("sls_sim.decide_event", {
     test_speciation == "speciation"
   )
 
-  t <- 5.5
+  ###
+  clade <- 1
   delta_n <- -1
   delta_t <- 1
-  clade <- 1
+  deltas <- list(
+    delta_n = unname(delta_n),
+    delta_t = unname(delta_t)
+  )
+  data$t[[clade]] <- 5.5
   test_extinction <- sls_sim.decide_event(
-    delta_n = delta_n,
-    delta_t = delta_t,
-    t = t,
+    deltas = deltas,
     data = data,
     clade = clade,
     LS = LS
@@ -195,25 +216,27 @@ test_that("sls_sim.decide_event", {
   )
 
   # it should not shift if the shift is already saved in L
-  t <- 4.5
-  delta_n <- 1
-  delta_t <- 1
   clade <- 1
+  delta_n <- -1
+  delta_t <- 1
+  deltas <- list(
+    delta_n = unname(delta_n),
+    delta_t = unname(delta_t)
+  )
   tshift <- 4
-  data <- sls_sim.initialize_LL_new_clade(
+  data <- sls_sim.initialize_data_new_clade(
     pars = pars,
     clade = clade,
     data = data,
     LS = LS
   )
-  data$LL[[clade]][3, ] <- c(6, -2, -3, tshift, 2)
-  data$Nmax <- length(
+  data$LL[[clade]][3, ] <- c(6, -2, -3, tshift, 2) # register the shift
+  data$Nmax[[clade]] <- length(
     unique(data$LL[[clade]][, 3])[unique(data$LL[[clade]][, 3]) != 0]
   )
+  data$t[[clade]] <- 4.5
   test_not_shift <- sls_sim.decide_event(
-    delta_n = delta_n,
-    delta_t = delta_t,
-    t = t,
+    deltas = deltas,
     data = data,
     clade = clade,
     LS = LS
@@ -226,21 +249,24 @@ test_that("sls_sim.decide_event", {
     test_not_shift == ifelse(delta_n > 0, "speciation", "extinction")
   )
 
-  t <- 4.5
+  ###
+  clade <- 1
   delta_n <- -1
   delta_t <- 1
-  clade <- 1
-  data <- sls_sim.initialize_LL_new_clade(
+  deltas <- list(
+    delta_n = unname(delta_n),
+    delta_t = unname(delta_t)
+  )
+  data <- sls_sim.initialize_data_new_clade(
     pars = pars,
     clade = clade,
     data = data,
     LS = LS
   )
   data$LL[[clade]][3, ] <- c(6, -2, -3, -1, 0)
+  data$t[[clade]] <- 4.5
   test_shift <- sls_sim.decide_event(
-    delta_n = delta_n,
-    delta_t = delta_t,
-    t = t,
+    deltas = deltas,
     data = data,
     clade = clade,
     LS = LS
@@ -261,21 +287,25 @@ test_that("sls_sim.use_event", {
   pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
   LS <- sls::sls_sim.get_standard_LS()
   suppressWarnings(rm(data))
-  data <- sls_sim.initialize_LL_new_clade(pars = pars, clade = 0)
+  data <- sls_sim.initialize_data_new_clade(pars = pars, clade = 0)
 
   ### event 1
   event <- "speciation"
+  n_species <- 40
+  data <- syntetic_data(LS = LS, n_species = n_species)
   clade <- 1
-  t <- 4.5
-  data <- syntetic_data(n_species = n_species <- 40, LS = LS)
+  deltas <- list(
+    delta_n = 1,
+    delta_t = 1
+  )
   L0 <- data$LL[[clade]]
   out <- sls_sim.use_event(
     data = data,
     clade = clade,
     event = event,
-    t = t,
-    LS = sls::sls_sim.get_standard_LS()
-  ); L <- out$data$LL[[clade]]
+    deltas = deltas,
+    LS = LS
+  ); L <- out$LL[[clade]]
 
   testthat::expect_true(
     all(
@@ -284,7 +314,7 @@ test_that("sls_sim.use_event", {
     )
   )
   testthat::expect_true(
-    L[n_species + 1, 1] == t
+    L[n_species + 1, 1] == out$t[[clade]]
   )
   testthat::expect_true(
     abs(L[n_species + 1, 3]) == n_species + 1
@@ -296,39 +326,47 @@ test_that("sls_sim.use_event", {
 
   ### event 2
   event <- "extinction"
+  n_species <- 40
+  data <- syntetic_data(LS = LS, n_species = n_species)
   clade <- 1
-  t <- 4.5
-  data <- syntetic_data(n_species = n_species <- 40, LS = LS)
+  deltas <- list(
+    delta_n = -1,
+    delta_t = 1
+  )
   L0 <- data$LL[[clade]]
   out <- sls_sim.use_event(
     data = data,
     clade = clade,
     event = event,
-    t = t,
-    LS = sls::sls_sim.get_standard_LS()
-  ); L <- out$data$LL[[clade]]
+    deltas = deltas,
+    LS = LS
+  ); L <- out$LL[[clade]]
 
   testthat::expect_true(
-    any(L[, 4] == t)
+    any(L[, 4] == out$t[[clade]])
   )
-  dead <- which(L[, 4] == t)
+  dead <- which(L[, 4] == out$t[[clade]])
   testthat::expect_true(
     L[dead, 2] %in% c(0, L0[1:n_species, 3])
   )
 
   ### event 3
   event <- "shift"
+  n_species <- 40
+  data <- syntetic_data(LS = LS, n_species = n_species)
   clade <- 1
-  t <- 4.5
-  data <- syntetic_data(n_species = n_species <- 40, LS = LS)
+  deltas <- list(
+    delta_n = -1,
+    delta_t = 1
+  )
   L0 <- data$LL[[clade]]
   out <- sls_sim.use_event(
     data = data,
     clade = clade,
     event = event,
-    t = t,
-    LS = sls::sls_sim.get_standard_LS()
-  ); L <- out$data$LL[[clade]]
+    deltas = deltas,
+    LS = LS
+  ); L <- out$LL[[clade]]
 
   newclade <- LS$clade_id[2]
   testthat::expect_true(
@@ -340,17 +378,21 @@ test_that("sls_sim.use_event", {
 
   ### event 4
   event <- "end"
+  n_species <- 40
+  data <- syntetic_data(LS = LS, n_species = n_species)
   clade <- 1
-  t <- 4.5
-  data <- syntetic_data(n_species = n_species <- 40, LS = LS)
+  deltas <- list(
+    delta_n = -1,
+    delta_t = 1
+  )
   L0 <- data$LL[[clade]]
   out <- sls_sim.use_event(
     data = data,
     clade = clade,
     event = event,
-    t = t,
-    LS = sls::sls_sim.get_standard_LS()
-  ); L <- out$data$LL[[clade]]
+    deltas = deltas,
+    LS = LS
+  ); L <- out$LL[[clade]]
 
   testthat::expect_true(
     out$t == 0
@@ -367,7 +409,7 @@ test_that("sls_sim.check_conditioning", {
   LS <- sls::sls_sim.get_standard_LS()
   suppressWarnings(rm(data));
   data <- syntetic_data(n_species = (n_species <- 5), shifted = TRUE, LS = LS);
-  data <- sls::sls_sim.initialize_LL_new_clade(
+  data <- sls::sls_sim.initialize_data_new_clade(
     pars = pars,
     clade = 2,
     data = data,
@@ -467,12 +509,20 @@ test_that("sls_sim", {
 
 test_that("sls_sim - pathological cases", {
   set.seed(1)
-  sls::sls_sim(
+  LS <- sls::sls_sim.get_standard_LS(crown_age = 10, shift_time = 2)
+  sim <- sls::sls_sim(
     lambdas = c(0.5399258, 0),
     mus = c(0.5400, 0),
     Ks = c(Inf, Inf),
     cond = 3,
-    LS = sls::sls_sim.get_standard_LS(crown_age = 10, shift_time = 2)
+    LS = LS
+  )
+  n_clades <- nrow(LS)
+  testthat::expect_true(
+    length(sim$l_tables) == n_clades
+  )
+  testthat::expect_true(
+    length(sim$brts) == n_clades
   )
 })
 

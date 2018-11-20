@@ -4,7 +4,7 @@
 \alias{loglik_bisse_shift2}
 \title{BISSE loglik shift}
 \usage{
-loglik_bisse_shift2(pars, brts, n_0 = 2, t0 = 0, td, LOG = TRUE,
+loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, td, LOG = TRUE,
   lambdaterms = TRUE)
 }
 \arguments{
@@ -20,7 +20,7 @@ loglik_bisse_shift2(pars, brts, n_0 = 2, t0 = 0, td, LOG = TRUE,
 
 \item{n_0}{starting number of lineages}
 
-\item{t0}{starting time}
+\item{t_0}{starting time}
 
 \item{td}{decoupling time}
 

@@ -30,11 +30,10 @@ P_transition_matrix <- function(
 #' @export
 cat2 <- function(
   message,
-  verbose,
-  ...
+  verbose
 ) {
  if (verbose == TRUE) {
-   cat(message, ...)
+   cat(message)
  } else {
    return()
  }

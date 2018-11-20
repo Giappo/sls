@@ -4,7 +4,7 @@
 \alias{combine_pns}
 \title{Combine pn}
 \usage{
-combine_pns(lambda, mu, ts, tbar, nmax = 100, fun = sls:::pn_bar)
+combine_pns(lambda, mu, ts, tbar, nmax = 100, fun = sls::pn_bar)
 }
 \arguments{
 \item{lambda}{speciation rate}

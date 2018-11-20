@@ -37,13 +37,13 @@ sls_ml <- function(
 
   initloglik <- fun(pars); pars; initloglik
   cat2(
-    "The loglikelihood for the initial parameter values is", initloglik, "\n",
+    message = paste0("The loglikelihood for the initial parameter values is", initloglik, "\n"), # nolint
     verbose = verbose
   )
-  flush.console()
+  utils::flush.console()
   if (initloglik == -Inf) {
     cat2(
-      "The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n", # nolint
+      message = paste0("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n"), # nolint
       verbose = verbose
     )
     out2 <- failout
@@ -175,7 +175,7 @@ sls_ml <- function(
   #'         }
   #'         cat("You are not shifting", noshiftstr, "\n")
   #'         cat("Optimizing the likelihood - this may take a while.", "\n")
-  #'         flush.console()
+  #'         utils::flush.console()
   #'
   #'         #Rampal's transformation
   #'         trparsopt = initparsopt/(1 + initparsopt)
@@ -195,7 +195,7 @@ sls_ml <- function(
   #'                                                pars2 = pars2, brts_m = brts_m, brts_s = brts_s,
   #'                                                missnumspec = missnumspec); initloglik
   #'         cat("The loglikelihood for the initial parameter values is", initloglik, "\n")
-  #'         flush.console()
+  #'         utils::flush.console()
   #'         if (initloglik == -Inf)
   #'         {
   #'           cat("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n")

@@ -16,6 +16,7 @@ Imports:
   expoRkit,
   ggplot2,
   MASS,
+  subplex,
   testit
 Suggests:
   knitr,

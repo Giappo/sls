@@ -1,11 +1,12 @@
-# rm(list = ls()); s = 1; simpars = c(0.3, 0.1, 0.6, 0.05); cond = 1; initparsopt = c(0.4, 0.15, 0.5, 0.12) # nolint test parameters
+# rm(list = ls()); seed = 1; simpars = c(0.3, 0.1, 0.6, 0.05); cond = 1; initparsopt = c(0.4, 0.15, 0.5, 0.12) # nolint test parameters
 
 #' @title Internal sls function
 #' @description Internal sls function.
+#' @inheritParams default_params_doc
 #' @details This is not to be called by the user.
 #' @export
 sls_ml_cluster <- function(
-  s,
+  seed,
   simpars = c(0.3, 0.1, 0.6, 0.05),
   t_d  = 4.8,
   cond = 1,
@@ -17,12 +18,12 @@ sls_ml_cluster <- function(
 ) {
   library(sls)
   fun <- eval(fun)
-  s <- as.numeric(s)
+  seed <- as.numeric(seed)
   simpars <- as.numeric(simpars)
   cond <- as.numeric(cond)
 
-  print(s)
-  set.seed(s)
+  print(seed)
+  set.seed(seed)
   # optimmethod <- 'subplex' or 'simplex' # nolint
   # pars <- c(0.3, 0.1, 0.6, 0.05) # nolint
 
@@ -76,7 +77,7 @@ sls_ml_cluster <- function(
   datapath <- file.path(simpath, "data")
   datafile_name <- file.path(
     datapath,
-    paste0("sim_", s, ".RData")
+    paste0("sim_", seed, ".RData")
   )
   if (.Platform$OS.type != "windows" & !file.exists(datafile_name)) {
     if (!file.exists(datapath)) {
@@ -85,7 +86,7 @@ sls_ml_cluster <- function(
     save(sim, file = datafile_name)
   }
 
-  file_name <- paste0(simpath, "/", model1, "_MLE", s, ".txt")
+  file_name <- paste0(simpath, "/", model1, "_MLE", seed, ".txt")
   if (!file.exists(file_name)) {
     MLE_1 <- unlist(
       sls::sls_ml(
@@ -105,10 +106,10 @@ sls_ml_cluster <- function(
     )
 
     names(MLE_1) <- outnames
-    out_1 <- c(MLE_1, NM, NS, s);
+    out_1 <- c(MLE_1, NM, NS, seed);
     names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
 
-    write.table(matrix(out_1, ncol = length(out_1)), file = file_name,
+    utils::write.table(matrix(out_1, ncol = length(out_1)), file = file_name,
                 append = TRUE, row.names = FALSE, col.names = FALSE, sep = ",")
   }
 
@@ -117,10 +118,11 @@ sls_ml_cluster <- function(
 
 #' @title Internal sls function
 #' @description Internal sls function.
+#' @inheritParams default_params_doc
 #' @details This is not to be called by the user.
 #' @export
 sls_ml_cluster2 <- function(
-  s,
+  seed,
   simpars = c(0.3, 0.1, 0.6, 0.05),
   t_d  = 4.8,
   cond = 1,
@@ -131,7 +133,7 @@ sls_ml_cluster2 <- function(
   fun1 = sls::loglik_slsP,
   fun2 = sls::loglik_DDD
 ) {
-  set.seed(s)
+  set.seed(seed)
   # optimmethod <- 'subplex' or 'simplex' #nolint
   # pars <- c(0.3, 0.1, 0.6, 0.05) # nolint
 
@@ -186,7 +188,7 @@ sls_ml_cluster2 <- function(
   if (.Platform$OS.type != "windows") {
     filename <- file.path(
       datapath,
-      paste0("sim_", s, ".RData")
+      paste0("sim_", seed, ".RData")
     )
     save(sim, file = filename)
   }
@@ -210,14 +212,14 @@ sls_ml_cluster2 <- function(
   )
 
   names(MLE_1) <- outnames
-  out_1 <- c(MLE_1, NM, NS, s);
+  out_1 <- c(MLE_1, NM, NS, seed);
   names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
-  write.table(
+  utils::write.table(
     matrix(
       out_1,
       ncol = length(out_1)
     ),
-    file = paste0(simpath, "/", model1, "_MLE", s, ".txt"),
+    file = paste0(simpath, "/", model1, "_MLE", seed, ".txt"),
     append = TRUE,
     row.names = FALSE,
     col.names = FALSE,
@@ -242,11 +244,11 @@ sls_ml_cluster2 <- function(
   )
 
   names(MLE_2) <- outnames
-  out_2 <- c(MLE_2, NM, NS, s);
+  out_2 <- c(MLE_2, NM, NS, seed);
   names(out_2) <- c(names(MLE_2), "tips_M", "tips_S", "tree_id")
-  write.table(
+  utils::write.table(
     matrix(out_2, ncol = length(out_2)),
-    file = paste0(simpath, "/", model2, "_MLE", s, ".txt"),
+    file = paste0(simpath, "/", model2, "_MLE", seed, ".txt"),
     append = TRUE,
     row.names = FALSE,
     col.names = FALSE,

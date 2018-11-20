@@ -4,7 +4,7 @@
 \alias{combine_pns_nodiv}
 \title{Combine pn in the old wrong way}
 \usage{
-combine_pns_nodiv(lambda, mu, ts, tbar, nmax = 100, fun = sls:::pn_bar)
+combine_pns_nodiv(lambda, mu, ts, tbar, nmax = 100, fun = sls::pn_bar)
 }
 \arguments{
 \item{lambda}{speciation rate}

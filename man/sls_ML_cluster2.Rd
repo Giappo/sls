@@ -4,10 +4,30 @@
 \alias{sls_ml_cluster2}
 \title{Internal sls function}
 \usage{
-sls_ml_cluster2(s, simpars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
+sls_ml_cluster2(seed, simpars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
   cond = 1, initparsopt = c(0.5, 0.3, 0.5, 0.3), age = 10,
   optimmethod = "simplex", tolerance = 0.01, fun1 = sls::loglik_slsP,
   fun2 = sls::loglik_DDD)
+}
+\arguments{
+\item{seed}{the seed}
+
+\item{cond}{type of conditioning:
+\itemize{
+  \item cond = 0 no conditiong;
+  \item cond = 1 conditions on the survival of crown descendents;
+  \item cond = 2 not available;
+  \item cond = 3 conditions on the survival of the subclade and
+  both crown descendents in the main clade;
+  \item cond = 4 conditions on the survival of subclade and
+  on the other crown descendents in the main clade;
+}}
+
+\item{age}{the age of the phylogeny}
+
+\item{fun1}{a function}
+
+\item{fun2}{another function}
 }
 \description{
 Internal sls function.

@@ -62,7 +62,7 @@ combine_pns <- function(
   ts,
   tbar,
   nmax = 1e2,
-  fun = sls:::pn_bar
+  fun = sls::pn_bar
 ) {
   nvec <- 1:nmax
   N <- length(ts)
@@ -101,16 +101,16 @@ combine_pns0 <- function(
   nvec <- 1:nmax
 
   ns      <- expand.grid(replicate(expr = nvec, n = N, simplify = FALSE))
-  colnames(ns) <- paste0("n", 1:N); head(ns)
+  colnames(ns) <- paste0("n", 1:N)
   LAMBDAS <- matrix(ls, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
-  colnames(LAMBDAS) <- paste0("lambda", 1:N); head(LAMBDAS)
+  colnames(LAMBDAS) <- paste0("lambda", 1:N)
   MUS     <- matrix(ms, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
-  colnames(MUS) <- paste0("mu", 1:N); head(MUS)
+  colnames(MUS) <- paste0("mu", 1:N)
   TS      <- matrix(ts, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
-  colnames(TS) <- paste0("t", 1:N); head(TS)
+  colnames(TS) <- paste0("t", 1:N)
 
   out <- sum(
-    apply(sls:::pn_bar(
+    apply(sls::pn_bar(
       n = ns,
       t = TS,
       tbar = tbar,
@@ -134,7 +134,7 @@ combine_pns_nodiv <- function(
   ts,
   tbar,
   nmax = 1e2,
-  fun = sls:::pn_bar
+  fun = sls::pn_bar
 ) {
   nvec <- 1:nmax
   N <- length(ts)
@@ -151,7 +151,7 @@ combine_pns_nodiv <- function(
 #' #' @inheritParams default_params_doc
 #' #' @return Convolution of the probabilities for all the processes
 #' #' @export
-#' combine_pns2 <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls:::pn_bar){
+#' combine_pns2 <- function(lambda, mu, ts, tbar, nmax = 1e2, fun = sls::pn_bar){
 #'   nvec <- 1:nmax
 #'   N <- length(ts)
 #'   X <- vector("list", N)

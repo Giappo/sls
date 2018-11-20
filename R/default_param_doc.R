@@ -12,6 +12,10 @@
 #' increased if necessary
 #' @param data contains all the information about the simulated process
 #' @param clade the id of the clade
+#' @param deltas in the Doob-Gillespie algorithm,
+#' the collection of delta_n and delta_t, which are, respectively,
+#' the change in number of species and
+#' the waiting time for the next event to occur
 #' @param delta_n in the Doob-Gillespie algorithm,
 #' the change in number of species
 #' @param delta_t in the Doob-Gillespie algorithm,
@@ -50,18 +54,22 @@
 #' @param tbar time left from shift time to the present
 #' @param n number of lineages
 #' @param fun a function
+#' @param fun1 a function
+#' @param fun2 another function
 #' @param k frequencies in the Discrete Fourier Transform (DFT)
 #' @param vec a vector or a matrix to be transformed
 #' @param E0 starting value for BiSSE's E function
 #' @param D0 starting value for BiSSE's D function
 #' @param D0s starting values for BiSSE's D functions
-#' @param t0 starting time
+#' @param t_0 starting time
 #' @param tf ending time
 #' @param td decoupling time
 #' @param tds decoupling times
+#' @param shift_time the time of the shift
 #' @param LOG set it to TRUE if you desire the output in log form
 #' @param lambdaterms set it to TRUE if you desire the powers of lambda
 #' in the likelihood
+#' @param message the message to print
 #' @param verbose set it to TRUE if you want to see the outputs on screen
 #' @param startpars parameters to start from for the search of the likelihood
 #' maximum
@@ -69,8 +77,17 @@
 #'
 #' @param matrix_size size of the matrix
 #' @param lx size of the matrix
-#' @param ddep specifies the kind of diversity-dependent model you want to use
-#' @param message the message to print
+#' @param missnumspec number of missing (unseen) species in the phylogeny
+#' @param ddep see DDD package
+#' @param trparsopt see DDD package
+#' @param trparsfix see DDD package
+#' @param idparsopt see DDD package
+#' @param idparsfix see DDD package
+#' @param idparsnoshift see DDD package
+#' @param pars2 see DDD package
+#' @param seed the seed
+#' @param age the age of the phylogeny
+#' @param crown_age the age of the phylogeny
 
 default_params_doc <- function(
   lambda,
@@ -85,6 +102,7 @@ default_params_doc <- function(
   clade,
   delta_n,
   delta_t,
+  deltas,
   event,
   final_time,
   L,
@@ -103,24 +121,37 @@ default_params_doc <- function(
   tbar,
   n,
   fun,
+  fun1,
+  fun2,
   k,
   vec,
   E0,
   D0,
   D0s,
-  t0,
+  t_0,
   tf,
   td,
   tds,
+  shift_time,
   LOG,
   lambdaterms,
+  message,
   verbose,
   startpars,
   loglik_function,
   matrix_size,
   lx,
   ddep,
-  message
+  trparsopt,
+  trparsfix,
+  idparsopt,
+  idparsfix,
+  idparsnoshift,
+  pars2,
+  seed,
+  age,
+  crown_age,
+  missnumspec
 ) {
   # Nothing
 }

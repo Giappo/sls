@@ -4,7 +4,7 @@
 \alias{Dt}
 \title{BISSE's D}
 \usage{
-Dt(pars, t0, tf, E0, D0)
+Dt(pars, t_0, tf, E0, D0)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
@@ -13,7 +13,7 @@ Dt(pars, t0, tf, E0, D0)
   \item pars[2] is mu, i.e. extinction rate;
 }}
 
-\item{t0}{starting time}
+\item{t_0}{starting time}
 
 \item{tf}{ending time}
 

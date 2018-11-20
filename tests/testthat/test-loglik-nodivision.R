@@ -108,18 +108,18 @@ test_that( "all the likelihoods with no division yield the same result", {
   cond <- 0; s <- 1
   for (s in 1:(2 + 4 * ribir::is_on_travis())) {
     set.seed(s)
-    t0s    <- c(4, 1.5)
+    t_0s    <- c(4, 1.5)
     brts_m  <- c(
-      t0s[1],
-      sort(runif(n = 20, min = 0.01, max = t0s[1] - 0.01), decreasing = TRUE)
+      t_0s[1],
+      sort(runif(n = 20, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
     )
     pars_m  <- c(
       x <- runif(n = 1, min = 0.1, max = 1),
       runif(n = 1, min = 0.05, max = x * 3 / 4)
     )
     brts_s  <- c(
-      t0s[2],
-      sort(runif(n = 10, min = 0.01, max = t0s[2] - 0.01), decreasing = TRUE)
+      t_0s[2],
+      sort(runif(n = 10, min = 0.01, max = t_0s[2] - 0.01), decreasing = TRUE)
     )
     pars_s  <- c(
       x <- runif(n = 1, min = 0.1, max = 1),

@@ -4,7 +4,7 @@
 \alias{Et}
 \title{BISSE's E}
 \usage{
-Et(pars, t0, tf, E0, D0)
+Et(pars, t_0, tf, E0, D0)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
@@ -13,7 +13,7 @@ Et(pars, t0, tf, E0, D0)
   \item pars[2] is mu, i.e. extinction rate;
 }}
 
-\item{t0}{starting time}
+\item{t_0}{starting time}
 
 \item{tf}{ending time}
 

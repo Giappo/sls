@@ -60,7 +60,7 @@ loglik_slsP_nodiv <- function(
       mu = mus[1],
       t = ts_m_post_shift
     )
-  ) * sls:::pn(
+  ) * sls::pn(
     n = 1,
     t = td,
     lambda = lambdas[1],
@@ -164,7 +164,7 @@ loglik_slsQ_nodiv <- function(
       if (lambda == 0 && mu == 0) {
         q_t[t, ] <- q_t[(t - 1), ]
       } else {
-        transition_matrix <- DDD:::dd_loglik_M_aux(
+        transition_matrix <- DDD::dd_loglik_M_aux(
           pars = c(lambda, mu, K),
           lx = nmax + 1,
           k = k,
@@ -334,7 +334,7 @@ loglik_bisse_shift2 <- function(
   pars,
   brts,
   n_0 = 2,
-  t0 = 0,
+  t_0 = 0,
   td,
   LOG = TRUE,
   lambdaterms = TRUE
@@ -346,10 +346,10 @@ loglik_bisse_shift2 <- function(
   DD1 <- sls::loglik_bisse2(
     pars, brts1,
     n_0 = n_0,
-    t0 = td,
+    t_0 = td,
     E0 = sls::Et(
       pars = pars,
-      t0 = t0,
+      t_0 = t_0,
       tf = td,
       E0 = 0,
       D0 = 1
@@ -361,7 +361,7 @@ loglik_bisse_shift2 <- function(
     pars,
     brts2,
     n_0 = (n_0 + length(brts1) - 1) - 1,
-    t0 = t0,
+    t_0 = t_0,
     LOG = FALSE,
     lambdaterms = FALSE
   )

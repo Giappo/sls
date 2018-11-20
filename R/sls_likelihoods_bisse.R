@@ -9,10 +9,10 @@
 #' }
 #' @return D(t)
 #' @export
-Dt <- function(pars, t0, tf, E0, D0) {
+Dt <- function(pars, t_0, tf, E0, D0) {
   lambda <- pars[1]
   mu     <- pars[2]
-  TT <- tf - t0
+  TT <- tf - t_0
   LL <- exp(
     (mu - lambda) * TT
   )
@@ -32,10 +32,10 @@ Dt <- function(pars, t0, tf, E0, D0) {
 #' }
 #' @return E(t)
 #' @export
-Et <- function(pars, t0, tf, E0, D0) {
+Et <- function(pars, t_0, tf, E0, D0) {
   lambda <- pars[1]
   mu     <- pars[2]
-  TT <- tf - t0
+  TT <- tf - t_0
   LL <- exp(
     (mu - lambda) * TT
   )
@@ -87,10 +87,10 @@ loglik_bisse <- function(
     pool <- 1:l_d
     DD   <- rep(NA, l_d)
     for (N in pool) {
-      t0 <- BRTS[t]; tf <- BRTS[t - 1]
-      DD[N] <- Dt(pars = pars, t0 = t0, tf = tf, E0 = E0, D0 = D0[N])
+      t_0 <- BRTS[t]; tf <- BRTS[t - 1]
+      DD[N] <- Dt(pars = pars, t_0 = t_0, tf = tf, E0 = E0, D0 = D0[N])
     }
-    EE    <- Et(pars = pars, t0 = t0, tf = tf, E0 = E0, D0 = D0)
+    EE    <- Et(pars = pars, t_0 = t_0, tf = tf, E0 = E0, D0 = D0)
     left  <- lefts[t - 1]; right <- rights[t - 1]
 
     if (tf %in% tds) {
@@ -124,7 +124,7 @@ loglik_bisse2 <- function(
   pars,
   brts,
   n_0 = 2,
-  t0 = 0,
+  t_0 = 0,
   E0 = 0,
   D0 = 1,
   LOG = TRUE,
@@ -132,7 +132,7 @@ loglik_bisse2 <- function(
 ) {
   lambda <- pars[1]
   BRTS <- c(rep(brts[1], n_0 - 1), brts)
-  DD <- prod(Dt(pars = pars, tf = BRTS, t0 = t0, E0 = E0, D0 = D0))
+  DD <- prod(Dt(pars = pars, tf = BRTS, t_0 = t_0, E0 = E0, D0 = D0))
   DD <- DD * lambda ^ (length(brts[-1]) * lambdaterms)
   out <- (LOG) * log(DD) + (1 - LOG) * DD
   return(out)

@@ -9,9 +9,23 @@ sls_loglik_choosepar(trparsopt, trparsfix, idparsopt, idparsfix,
   loglik_function = sls::loglik_slsP)
 }
 \arguments{
+\item{trparsopt}{see DDD package}
+
+\item{trparsfix}{see DDD package}
+
+\item{idparsopt}{see DDD package}
+
+\item{idparsfix}{see DDD package}
+
+\item{idparsnoshift}{see DDD package}
+
+\item{pars2}{see DDD package}
+
 \item{brts_m}{branching times for the Main-clade}
 
 \item{brts_s}{branching times for the Sub-clade}
+
+\item{missnumspec}{number of missing (unseen) species in the phylogeny}
 
 \item{loglik_function}{the loglik function you want to use}
 }

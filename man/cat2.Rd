@@ -4,7 +4,7 @@
 \alias{cat2}
 \title{cat2}
 \usage{
-cat2(message, verbose, ...)
+cat2(message, verbose)
 }
 \arguments{
 \item{message}{the message to print}

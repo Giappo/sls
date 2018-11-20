@@ -4,7 +4,7 @@
 \alias{loglik_bisse2}
 \title{BISSE loglik}
 \usage{
-loglik_bisse2(pars, brts, n_0 = 2, t0 = 0, E0 = 0, D0 = 1,
+loglik_bisse2(pars, brts, n_0 = 2, t_0 = 0, E0 = 0, D0 = 1,
   LOG = TRUE, lambdaterms = TRUE)
 }
 \arguments{
@@ -20,7 +20,7 @@ loglik_bisse2(pars, brts, n_0 = 2, t0 = 0, E0 = 0, D0 = 1,
 
 \item{n_0}{starting number of lineages}
 
-\item{t0}{starting time}
+\item{t_0}{starting time}
 
 \item{E0}{starting value for BiSSE's E function}
 

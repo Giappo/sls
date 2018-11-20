@@ -1,5 +1,10 @@
 # MAIN COMPONENTS ----
 
+#' @title Get sls parameters
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return sls parameters
 #' @export
 sls_sim.get_pars <- function(
   lambdas,
@@ -32,12 +37,17 @@ sls_sim.get_pars <- function(
   pars
 }
 
+#' @title Initialize data for a new clade
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return data for the clade
 #' @export
-sls_sim.initialize_LL_new_clade <- function(
+sls_sim.initialize_data_new_clade <- function(
   data,
   clade,
   pars,
-  LS = sls:::sls_sim.get_standard_LS(),
+  LS = sls::sls_sim.get_standard_LS(),
   l_matrix_size = 1e4
 ) {
   if (clade == 0) {
@@ -45,7 +55,8 @@ sls_sim.initialize_LL_new_clade <- function(
       list(
         LL = vector("list", length(LS$clade_id)),
         pools = vector("list", length(LS$clade_id)),
-        Nmax = vector("list", length(LS$clade_id))
+        Nmax = vector("list", length(LS$clade_id)),
+        t = vector("list", length(LS$clade_id))
       )
     )
   }
@@ -56,7 +67,7 @@ sls_sim.initialize_LL_new_clade <- function(
 
   LL <- data$LL
   n_0 <- sls_sim.get_n_0(LS = LS, clade = clade)
-  t0 <- sls_sim.get_t0(LS = LS, clade = clade)
+  t_0 <- sls_sim.get_t_0(LS = LS, clade = clade)
   motherclade <- sls_sim.get_motherclade(LS = LS, clade = clade)
   Nmax <- n_0
 
@@ -68,7 +79,7 @@ sls_sim.initialize_LL_new_clade <- function(
   }
 
   if (cladeborn) {
-    t <- t0
+    t <- t_0
     L <- matrix(0, nrow = l_matrix_size, 5)
     L[, 5] <- 0
     L[, 4] <- -1
@@ -97,26 +108,17 @@ sls_sim.initialize_LL_new_clade <- function(
     data$Nmax[clade] <- list(NULL)
   }
 
+  data$t[[clade]] <- t_0
   return(
     data
   )
 }
 
-#' @export
-sls_sim.initialize_t_new_clade <- function(
-  data,
-  clade
-) {
-  LL <- data$LL
-
-  if (!is.null(LL[[clade]])) {
-    t <- unname(LL[[clade]][1, 1]); t
-  } else {
-    t <- 0
-  }
-  return(t)
-}
-
+#' @title Sample deltas for Doob-Gillespie
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return delta_n and delta_t
 #' @export
 sls_sim.sample_deltas <- function(
   data,
@@ -136,11 +138,11 @@ sls_sim.sample_deltas <- function(
   testit::assert(total_rate >= 0)
   if (total_rate > 0) {
   delta_t <- (total_rate > 0) *
-    rexp(1, rate = total_rate + (total_rate == 0)) +
+    stats::rexp(1, rate = total_rate + (total_rate == 0)) +
     (total_rate == 0) * LL[[1]][1, 1]
   delta_n <- sample(c(-1, 1), size = 1, prob = c(mu, lambda))
   } else {
-    delta_t <- 1000
+    delta_t <- 1e5
     delta_n <- 0
   }
   return(list(
@@ -149,20 +151,25 @@ sls_sim.sample_deltas <- function(
   ))
 }
 
+#' @title Determines the event
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return the event
 #' @export
 sls_sim.decide_event <- function(
   data,
   clade,
-  delta_n,
-  delta_t,
-  t,
+  deltas,
   LS
 ) {
+  delta_n <- deltas$delta_n
+  delta_t <- deltas$delta_t
+  t <- data$t[[clade]]
   LL <- data$LL
   L <- LL[[clade]]
-  Nmax <- data$Nmax[[clade]]; L[1:(3 + 1), ]
-  already_shifted <- any(L[1:Nmax, 5] > 0)
-  tshifts <- sls:::sls_sim.get_shifts_info(LS = LS, clade = clade)
+  already_shifted <- any(L[, 5] > 0)
+  tshifts <- sls::sls_sim.get_shifts_info(LS = LS, clade = clade)
   if (nrow(tshifts) > 1) {
     stop("Check the function if you want to implement more than 1 shift!")
   }
@@ -194,17 +201,22 @@ sls_sim.decide_event <- function(
   return("end")
 }
 
+#' @title Update data and time given the event
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return data and time
 #' @export
 sls_sim.use_event <- function(
   data,
   clade,
   LS,
   event,
-  t
+  deltas
 ) {
 
   shifts <- sls_sim.get_shifts_info(LS = LS, clade = clade)
-
+  t <- data$t[[clade]] - deltas$delta_t
   L <- data$LL[[clade]]
   pool <- data$pools[[clade]]; pool
   N <- length(pool)
@@ -264,21 +276,40 @@ sls_sim.use_event <- function(
 
   if (event == "end" | length(pool) == 0) {
     t <- 0
-    L2 <- L[1:Nmax, ]
+    L2 <- sls_sim.cut_l_matrix(L)
     L <- L2
   }
 
+  # store output
+  t <- unname(t)
   data2 <- data
-  data2$LL[[clade]] <- L
-  data2$pools[[clade]] <- pool
-  data2$Nmax[[clade]] <- Nmax
+  if (is.null(L)) {
+    data2$LL[clade] <- list(L)
+  } else {
+    data2$LL[[clade]] <- L
+  }
+  if (is.null(pool)) {
+    data2$pools[clade] <- list(pool)
+  } else {
+    data2$pools[[clade]] <- pool
+  }
+  if (is.null(pool)) {
+    data2$Nmax[clade] <- list(Nmax)
+  } else {
+    data2$Nmax[[clade]] <- Nmax
+  }
+  data2$t[[clade]] <- t
 
-  return(list(
-    t = unname(t),
+  return(
     data = data2
-  ))
+  )
 }
 
+#' @title Check if a clade survives untile final_time
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return a boolean
 #' @export
 sls_sim.check_survival <- function(
   L,
@@ -292,6 +323,11 @@ sls_sim.check_survival <- function(
   return(cond)
 }
 
+#' @title Check if the conditioning is fulfilled
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return a boolean
 #' @export
 sls_sim.conditioning <- function(
   data,
@@ -343,19 +379,19 @@ sls_sim.conditioning <- function(
       L_right_cs <- L_right[coords_right_cs, ]
       dim(L_right_cs) <- c(sum(coords_right_cs), 5)
 
-      surv_left_cp  <- sls:::sls_sim.check_survival(
+      surv_left_cp  <- sls::sls_sim.check_survival(
         L = L_left,
         final_time = tp
       ) #M1 survives from c to p
-      surv_right_cp <- sls:::sls_sim.check_survival(
+      surv_right_cp <- sls::sls_sim.check_survival(
         L = L_right,
         final_time = tp
       ) #M2 survives from c to p
-      surv_left_cs  <- sls:::sls_sim.check_survival(
+      surv_left_cs  <- sls::sls_sim.check_survival(
         L = L_left_cs,
         final_time = ts
       ) #M1 survives from c to s
-      surv_right_cs <- sls:::sls_sim.check_survival(
+      surv_right_cs <- sls::sls_sim.check_survival(
         L = L_right_cs,
         final_time = ts
       ) #M2 survives from c to s
@@ -364,7 +400,7 @@ sls_sim.conditioning <- function(
       testit::assert(surv_right_cs >= surv_right_cp)
     } else {
       L <- LL[[clade]]
-      surv_s <- sls:::sls_sim.check_survival(
+      surv_s <- sls::sls_sim.check_survival(
         L = L,
         final_time = tp
       ) #S survives from s to p
@@ -385,11 +421,19 @@ sls_sim.conditioning <- function(
     (cond == 4) * cond4
 }
 
+#' @title Extract the branching times from data
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return the branching times
 #' @export
 sls_sim.get_brts <- function(
   data,
   LS
 ) {
+  if (!all(data$t == 0)) {
+    stop("times in all clades need to reach 0 before you call this function")
+  }
   brts <- vector("list", length(data$LL))
 
   for (clade in seq_along(data$LL)) {
@@ -431,6 +475,11 @@ sls_sim.get_brts <- function(
 
 # UTILITIES ----
 
+#' @title Reads LL
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return LL
 #' @export
 sls_sim.read_LL <- function(
   LL
@@ -446,6 +495,11 @@ sls_sim.read_LL <- function(
   LL2
 }
 
+#' @title Creates the standard LS
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return LS
 #' @export
 sls_sim.get_standard_LS <- function(
   crown_age = 10,
@@ -461,7 +515,7 @@ sls_sim.get_standard_LS <- function(
   LS[1, 1] <- crown_age
   colnames(LS) <- c("birth_time", "motherclade", "clade_id", "n_0")
 
-  t0s <- LS[, 1]
+  t_0s <- LS[, 1]
   motherclades <- LS[, 2]
   n_0s <- LS[, 4]
   testit::assert(
@@ -471,14 +525,19 @@ sls_sim.get_standard_LS <- function(
   if (any(n_0s[-1] != 1)) {
     stop("Every subclade should start with 1 species!")
   }
-  testit::assert(all(t0s > 0))
+  testit::assert(all(t_0s > 0))
 
   LS
 }
 
+#' @title Get shifts' information
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return when and where the shifts occurs
 #' @export
 sls_sim.get_shifts_info <- function(
-  LS = sls:::sls_sim.get_standard_LS(),
+  LS = sls::sls_sim.get_standard_LS(),
   clade
 ) {
   when  <- LS[LS[, 2] == clade, 1]
@@ -488,33 +547,53 @@ sls_sim.get_shifts_info <- function(
   info
 }
 
+#' @title Initialize t for a new clade
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return t_0 for the clade
 #' @export
-sls_sim.get_t0 <- function(
-  LS = sls:::sls_sim.get_standard_LS(),
+sls_sim.get_t_0 <- function(
+  LS = sls::sls_sim.get_standard_LS(),
   clade
 ) {
-  t0 <- LS[LS[, 3] == clade, 1]
-  t0
+  t_0 <- LS[LS[, 3] == clade, 1]
+  t_0
 }
 
+#' @title Initialize n for a new clade
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return n0 for the clade
 #' @export
 sls_sim.get_n_0 <- function(
-  LS = sls:::sls_sim.get_standard_LS(),
+  LS = sls::sls_sim.get_standard_LS(),
   clade
 ) {
   n_0 <- LS[LS[, 3] == clade, 4]
   n_0
 }
 
+#' @title Get the motherclade of a given clade
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return the motherclade
 #' @export
 sls_sim.get_motherclade <- function(
-  LS = sls:::sls_sim.get_standard_LS(),
+  LS = sls::sls_sim.get_standard_LS(),
   clade
 ) {
   motherclade <- LS[LS[, 3] == clade, 2]
   motherclade
 }
 
+#' @title Get the pool from the L table
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return the pool of species
 #' @export
 sls_sim.get_pool <- function(
   L
@@ -524,10 +603,18 @@ sls_sim.get_pool <- function(
   pool
 }
 
+#' @title Cuts the L table only to the useful rows
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return a clean L table
 #' @export
 sls_sim.cut_l_matrix <- function(
   L
 ) {
+  if (is.null(L)) {
+    return(NULL)
+  }
   if (is.matrix(L)) {
     Nmax <- max(abs(L[, 3]))
     L2 <- L[1:Nmax, ]
@@ -541,6 +628,11 @@ sls_sim.cut_l_matrix <- function(
   return(L2)
 }
 
+#' @title Increase the size of the L table if needed
+#' @description sls_sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return a bigger L table
 #' @export
 sls_sim.adapt_l_matrix_size <- function(
   data,

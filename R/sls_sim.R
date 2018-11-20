@@ -11,6 +11,8 @@ sls_sim <- function(
   LS = sls::sls_sim.get_standard_LS(),
   l_matrix_size = 1e4
 ) {
+
+  # create the parameters
   pars <- sls_sim.get_pars(
     lambdas = lambdas,
     mus = mus,
@@ -18,44 +20,49 @@ sls_sim <- function(
   )
   good_sim <- 0
   while (!good_sim) {
-    data <- sls_sim.initialize_LL_new_clade(clade = 0); clade <- 1;
+
+    # initialize data
+    data <- sls_sim.initialize_data_new_clade(clade = 0, LS = LS); clade <- 1;
     for (clade in LS$clade_id) {
-      data <- sls_sim.initialize_LL_new_clade(
+
+      # initialize data for the clade
+      data <- sls_sim.initialize_data_new_clade(
         data = data,
         clade = clade,
         pars = pars,
         LS = LS,
         l_matrix_size = l_matrix_size
       )
-      t <- sls_sim.initialize_t_new_clade(
-        data = data,
-        clade = clade
-      )
-      while (t > 0) {
+      while (data$t[[clade]] > 0) {
+
+        # sample delta_n and delta_t
         deltas <- sls_sim.sample_deltas(
           data = data,
           clade = clade,
           pars = pars
-        ); delta_n <- deltas$delta_n; delta_t <- deltas$delta_t; deltas
+        ); deltas
+
+        # decide the event
         event <- sls_sim.decide_event(
           data = data,
           clade = clade,
           LS = LS,
-          delta_n = delta_n,
-          delta_t = delta_t,
-          t = t
-        )
+          deltas = deltas
+        ); event
+
+        # modify data accordingly
         output <- sls_sim.use_event(
           data = data,
           clade = clade,
           LS = LS,
           event = event,
-          t = t - deltas$delta_t
-        )
-        t <- output$t
-        data <- output$data
+          deltas = deltas
+        ); output
+        data <- output
       }
     }
+
+    # is the simulation in agreement with the conditioning?
     good_sim <- sls_sim.conditioning(
       data = data,
       LS = LS,
@@ -63,6 +70,7 @@ sls_sim <- function(
     ); good_sim
   }
 
+  # retrieve branching times info
   brts <- sls_sim.get_brts(
     data = data,
     LS = LS

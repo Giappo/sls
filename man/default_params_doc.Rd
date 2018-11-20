@@ -6,10 +6,12 @@
 documentation.}
 \usage{
 default_params_doc(lambda, mu, lambdas, mus, Ks, LS, LL, l_matrix_size,
-  data, clade, delta_n, delta_t, event, final_time, L, l_matrix, pars,
-  pars_m, pars_s, brts, brts_m, brts_s, n_0, nmax, cond, t, ts, tbar, n,
-  fun, k, vec, E0, D0, D0s, t0, tf, td, tds, LOG, lambdaterms, verbose,
-  startpars, loglik_function, matrix_size, lx, ddep, message)
+  data, clade, delta_n, delta_t, deltas, event, final_time, L, l_matrix,
+  pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, nmax, cond, t, ts, tbar,
+  n, fun, fun1, fun2, k, vec, E0, D0, D0s, t_0, tf, td, tds, shift_time,
+  LOG, lambdaterms, message, verbose, startpars, loglik_function,
+  matrix_size, lx, ddep, trparsopt, trparsfix, idparsopt, idparsfix,
+  idparsnoshift, pars2, seed, age, crown_age, missnumspec)
 }
 \arguments{
 \item{lambda}{speciation rate}
@@ -38,6 +40,11 @@ increased if necessary}
 the change in number of species}
 
 \item{delta_t}{in the Doob-Gillespie algorithm,
+the waiting time for the next event to occur}
+
+\item{deltas}{in the Doob-Gillespie algorithm,
+the collection of delta_n and delta_t, which are, respectively,
+the change in number of species and
 the waiting time for the next event to occur}
 
 \item{event}{the event occurring in the simulated process at a given time}
@@ -92,6 +99,10 @@ of the species considered in the l table}
 
 \item{fun}{a function}
 
+\item{fun1}{a function}
+
+\item{fun2}{another function}
+
 \item{k}{frequencies in the Discrete Fourier Transform (DFT)}
 
 \item{vec}{a vector or a matrix to be transformed}
@@ -102,7 +113,7 @@ of the species considered in the l table}
 
 \item{D0s}{starting values for BiSSE's D functions}
 
-\item{t0}{starting time}
+\item{t_0}{starting time}
 
 \item{tf}{ending time}
 
@@ -110,10 +121,14 @@ of the species considered in the l table}
 
 \item{tds}{decoupling times}
 
+\item{shift_time}{the time of the shift}
+
 \item{LOG}{set it to TRUE if you desire the output in log form}
 
 \item{lambdaterms}{set it to TRUE if you desire the powers of lambda
 in the likelihood}
+
+\item{message}{the message to print}
 
 \item{verbose}{set it to TRUE if you want to see the outputs on screen}
 
@@ -126,9 +141,27 @@ maximum}
 
 \item{lx}{size of the matrix}
 
-\item{ddep}{specifies the kind of diversity-dependent model you want to use}
+\item{ddep}{see DDD package}
 
-\item{message}{the message to print}
+\item{trparsopt}{see DDD package}
+
+\item{trparsfix}{see DDD package}
+
+\item{idparsopt}{see DDD package}
+
+\item{idparsfix}{see DDD package}
+
+\item{idparsnoshift}{see DDD package}
+
+\item{pars2}{see DDD package}
+
+\item{seed}{the seed}
+
+\item{age}{the age of the phylogeny}
+
+\item{crown_age}{the age of the phylogeny}
+
+\item{missnumspec}{number of missing (unseen) species in the phylogeny}
 }
 \description{
 This function does nothing. It is intended to inherit is parameters'

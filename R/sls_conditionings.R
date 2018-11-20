@@ -49,7 +49,7 @@ pc_1shift <- function(
   colnames(p_ns2) <- paste0("ns2=", nvec)
   aux1 <- p_ns1 * p_ns2 * (ns1 / (ns1 + ns2)) * (1 - (1 - p_b1) ^ ns2)
   P1   <- sum(aux1) #branch 2 survives till the present
-  aux2 <- aux1 * (1 - (1 - p_b1) ^ (ns1 - 1)); head(aux2)
+  aux2 <- aux1 * (1 - (1 - p_b1) ^ (ns1 - 1))
   P2   <- sum(aux2) #both branches 1 and 2 survive till the present
 
   pc_1  <- 2 * PS * P1 + 2 * (1 - PS) * P2

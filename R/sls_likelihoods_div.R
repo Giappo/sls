@@ -76,7 +76,7 @@ loglik_slsP <- function(
       mu = mus[1],
       t = ts_m_post_shift
     )
-  ) * sls:::pn(
+  ) * sls::pn(
     n = 1,
     t = td,
     lambda = lambdas[1],
@@ -185,7 +185,7 @@ loglik_slsQ <- function(
       if (lambda == 0 && mu == 0) {
         q_t[t, ] <- q_t[(t - 1), ]
       } else {
-        transition_matrix <- DDD:::dd_loglik_M_aux(
+        transition_matrix <- DDD::dd_loglik_M_aux(
           pars = c(lambda, mu, K),
           lx = nmax + 1,
           k = k,
@@ -250,29 +250,29 @@ loglik_slsQ <- function(
   return(total_loglik)
 }
 
-#' @title P-likelihood
-#' @author Giovanni Laudanno
-#' @description Calculates the likelihood convoluting Nee's functions
-#' @inheritParams default_params_doc
-#' @return The likelihood
-#' @export
-loglik_slsPbeta <- function(
-  pars_m,
-  pars_s,
-  brts_m,
-  brts_s,
-  cond,
-  n_0 = 2,
-  nmax = 1e2
-) {
-  alpha <- function(lambda, mu, brts_m, brts_s) {
-    A <- brts_m[1] - brts_s[1]
-    out <- sls::pt(lambda = lambda, mu = mu, t = A) *
-      (1 - sls::ut(lambda = lambda, mu = mu, t = A))
-  }
-  beta <- function(lambda, mu, brts_m, brts_s) {
-    A <- brts_m[1] - brts_s[1]
-    out <- sls::ut(lambda = lambda, mu = mu, t = A) *
-      (1 - sls::pt(lambda = lambda, mu = mu, t = B))
-  }
-}
+#' #' @title P-likelihood
+#' #' @author Giovanni Laudanno
+#' #' @description Calculates the likelihood convoluting Nee's functions
+#' #' @inheritParams default_params_doc
+#' #' @return The likelihood
+#' #' @export
+#' loglik_slsPbeta <- function(
+#'   pars_m,
+#'   pars_s,
+#'   brts_m,
+#'   brts_s,
+#'   cond,
+#'   n_0 = 2,
+#'   nmax = 1e2
+#' ) {
+#'   alpha <- function(lambda, mu, brts_m, brts_s) {
+#'     A <- brts_m[1] - brts_s[1]
+#'     out <- sls::pt(lambda = lambda, mu = mu, t = A) *
+#'       (1 - sls::ut(lambda = lambda, mu = mu, t = A))
+#'   }
+#'   beta <- function(lambda, mu, brts_m, brts_s) {
+#'     A <- brts_m[1] - brts_s[1]
+#'     out <- sls::ut(lambda = lambda, mu = mu, t = A) *
+#'       (1 - sls::pt(lambda = lambda, mu = mu, t = B))
+#'   }
+#' }
