@@ -99,8 +99,8 @@ test_that( "all the likelihoods with division yield the same result", {
   }
 
   models <- c(
-    sls::loglik_slsP,
-    sls::loglik_slsQ
+    sls::loglik_sls_p,
+    sls::loglik_sls_q
   )
   threshold <- (!ribir::is_on_travis()) * 1e-2 +
                (ribir::is_on_travis())  * (1 / 2) * 1e-3

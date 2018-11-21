@@ -9,15 +9,15 @@
 #' }
 #' @return D(t)
 #' @export
-Dt <- function(pars, t_0, t_f, E_0, D_0) {
+d_t <- function(pars, t_0, t_f, e_0, d_0) {
   lambda <- pars[1]
   mu     <- pars[2]
-  TT <- t_f - t_0
-  LL <- exp(
-    (mu - lambda) * TT
+  delta_t <- t_f - t_0
+  exp_factor <- exp(
+    (mu - lambda) * delta_t
   )
-  FF <- lambda * (1 - E_0) - LL * (mu - E_0 * lambda)
-  DD <- (LL * D_0 * (lambda - mu) ^ 2) / FF ^ 2
+  denominator <- lambda * (1 - e_0) - exp_factor * (mu - e_0 * lambda)
+  DD <- (exp_factor * d_0 * (lambda - mu) ^ 2) / denominator ^ 2
   return(DD)
 }
 
@@ -32,16 +32,16 @@ Dt <- function(pars, t_0, t_f, E_0, D_0) {
 #' }
 #' @return E(t)
 #' @export
-Et <- function(pars, t_0, t_f, E_0, D_0) {
+e_t <- function(pars, t_0, t_f, e_0, d_0) {
   lambda <- pars[1]
   mu     <- pars[2]
-  TT <- t_f - t_0
-  LL <- exp(
-    (mu - lambda) * TT
+  delta_t <- t_f - t_0
+  exp_factor <- exp(
+    (mu - lambda) * delta_t
   )
-  FF <- lambda * (1 - E_0) - LL * (mu - E_0 * lambda)
-  EE <- 1 - (1 - E_0) * (lambda - mu) / FF
-  return(EE)
+  denominator <- lambda * (1 - e_0) - exp_factor * (mu - e_0 * lambda)
+  es_t <- 1 - (1 - e_0) * (lambda - mu) / denominator
+  return(es_t)
 }
 
 #' @title BISSE loglik
@@ -60,11 +60,11 @@ loglik_bisse <- function(
   brts,
   n_0 = 2,
   t_ds = NULL,
-  D_0s = NULL,
+  d_0s = NULL,
   t_p = 0
 ) {
 
-  testit::assert(length(t_ds) == length(D_0s))
+  testit::assert(length(t_ds) == length(d_0s))
   testit::assert(all(brts > t_p))
 
   lambda <- pars[1]
@@ -77,41 +77,41 @@ loglik_bisse <- function(
   rights <- rep(2, length(times))
   for (t in times) {
     if (t == maxt) {
-      D_0 <- rep(1, tips)
-      E_0 <- 0
+      d_0 <- rep(1, tips)
+      e_0 <- 0
     } else {
-      D_0 <- DD
-      E_0 <- EE
+      d_0 <- ds_t
+      e_0 <- es_t
     }
-    l_d   <- length(D_0)
+    l_d   <- length(d_0)
     pool <- 1:l_d
-    DD   <- rep(NA, l_d)
+    ds_t   <- rep(NA, l_d)
     for (N in pool) {
       t_0 <- BRTS[t]; t_f <- BRTS[t - 1]
-      DD[N] <- Dt(pars = pars, t_0 = t_0, t_f = t_f, E_0 = E_0, D_0 = D_0[N])
+      ds_t[N] <- d_t(pars = pars, t_0 = t_0, t_f = t_f, e_0 = e_0, d_0 = d_0[N])
     }
-    EE    <- Et(pars = pars, t_0 = t_0, t_f = t_f, E_0 = E_0, D_0 = D_0)
+    es_t    <- e_t(pars = pars, t_0 = t_0, t_f = t_f, e_0 = e_0, d_0 = d_0)
     left  <- lefts[t - 1]; right <- rights[t - 1]
 
     if (t_f %in% t_ds) {
       if (length(t_ds) == 1) {
-        DS0 <- D_0s
+        DS0 <- d_0s
       } else {
-        DS0 <- D_0s[which[t_ds == t_f]]
+        DS0 <- d_0s[which[t_ds == t_f]]
       }
-      DD <- c(DD, DS0)
+      ds_t <- c(ds_t, DS0)
     } else {
-      if (length(DD) > 1) {
-        DD <- c(
-          lambda ^ (t != mint) * DD[left] * DD[right],
-          DD[-c(left, right)]
+      if (length(ds_t) > 1) {
+        ds_t <- c(
+          lambda ^ (t != mint) * ds_t[left] * ds_t[right],
+          ds_t[-c(left, right)]
         )
       }
     }
 
   }
-  DDf <- prod(DD)
-  return(log(DDf))
+  prod_d <- prod(ds_t)
+  return(log(prod_d))
 }
 
 #' @title BISSE loglik
@@ -125,15 +125,15 @@ loglik_bisse2 <- function(
   brts,
   n_0 = 2,
   t_0 = 0,
-  E_0 = 0,
-  D_0 = 1,
-  LOG = TRUE,
+  e_0 = 0,
+  d_0 = 1,
+  log_scale = TRUE,
   lambdaterms = TRUE
 ) {
   lambda <- pars[1]
   BRTS <- c(rep(brts[1], n_0 - 1), brts)
-  DD <- prod(Dt(pars = pars, t_f = BRTS, t_0 = t_0, E_0 = E_0, D_0 = D_0))
-  DD <- DD * lambda ^ (length(brts[-1]) * lambdaterms)
-  out <- (LOG) * log(DD) + (1 - LOG) * DD
+  prod_d <- prod(d_t(pars = pars, t_f = BRTS, t_0 = t_0, e_0 = e_0, d_0 = d_0))
+  prod_d <- prod_d * lambda ^ (length(brts[-1]) * lambdaterms)
+  out <- (log_scale) * log(prod_d) + (1 - log_scale) * prod_d
   return(out)
 }

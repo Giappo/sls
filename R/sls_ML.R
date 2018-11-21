@@ -4,7 +4,7 @@
 #' @return  best parameters
 #' @export
 sls_ml <- function(
-  loglik_function = sls::loglik_slsP,
+  loglik_function = sls::loglik_sls_p,
   brts_m,
   brts_s,
   startpars = c(0.5, 0.3, 0.5, 0.3),
@@ -88,7 +88,7 @@ sls_ml <- function(
   #' #' @description Calculates ML.
   #' #' @details best parameters
   #' #' @export
-  #' sls_ML <- function(loglik_function = sls::loglik_slsP,
+  #' sls_ML <- function(loglik_function = sls::loglik_sls_p,
   #'                     brts_m, brts_s, tsplit,
   #'                     initparsopt = c(0.5, 0.1, 2 * (1 + length(brts_m) + missnumspec[1]), 2 * (1 + length(brts_s) +
   #'                     missnumspec[length(missnumspec)]), (tsplit + max(brts_s))/2),

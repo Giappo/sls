@@ -6,7 +6,7 @@
 \usage{
 sls_loglik_choosepar(trparsopt, trparsfix, idparsopt, idparsfix,
   idparsnoshift, pars2, brts_m, brts_s, missnumspec = c(0, 0),
-  loglik_function = sls::loglik_slsP)
+  loglik_function = sls::loglik_sls_p)
 }
 \arguments{
 \item{trparsopt}{see DDD package}

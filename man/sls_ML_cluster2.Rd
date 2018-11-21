@@ -6,8 +6,8 @@
 \usage{
 sls_ml_cluster2(seed, sim_pars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
   cond = 1, initparsopt = c(0.5, 0.3, 0.5, 0.3), age = 10,
-  optimmethod = "simplex", tolerance = 0.01, fun1 = sls::loglik_slsP,
-  fun2 = sls::loglik_DDD)
+  optimmethod = "simplex", tolerance = 0.01,
+  fun1 = sls::loglik_sls_p, fun2 = sls::loglik_ddd)
 }
 \arguments{
 \item{seed}{the seed}

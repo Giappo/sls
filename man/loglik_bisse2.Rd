@@ -4,8 +4,8 @@
 \alias{loglik_bisse2}
 \title{BISSE loglik}
 \usage{
-loglik_bisse2(pars, brts, n_0 = 2, t_0 = 0, E_0 = 0, D_0 = 1,
-  LOG = TRUE, lambdaterms = TRUE)
+loglik_bisse2(pars, brts, n_0 = 2, t_0 = 0, e_0 = 0, d_0 = 1,
+  log_scale = TRUE, lambdaterms = TRUE)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
@@ -22,11 +22,11 @@ loglik_bisse2(pars, brts, n_0 = 2, t_0 = 0, E_0 = 0, D_0 = 1,
 
 \item{t_0}{starting time}
 
-\item{E_0}{starting value for BiSSE's E function}
+\item{e_0}{starting value for BiSSE's E function}
 
-\item{D_0}{starting value for BiSSE's D function}
+\item{d_0}{starting value for BiSSE's D function}
 
-\item{LOG}{set it to TRUE if you desire the output in log form}
+\item{log_scale}{set it to TRUE if you desire the output in log form}
 
 \item{lambdaterms}{set it to TRUE if you desire the powers of lambda
 in the likelihood}

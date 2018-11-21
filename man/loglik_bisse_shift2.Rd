@@ -4,8 +4,8 @@
 \alias{loglik_bisse_shift2}
 \title{BISSE loglik shift}
 \usage{
-loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, t_d, LOG = TRUE,
-  lambdaterms = TRUE)
+loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, t_d,
+  log_scale = TRUE, lambdaterms = TRUE)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
@@ -24,7 +24,7 @@ loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, t_d, LOG = TRUE,
 
 \item{t_d}{decoupling time}
 
-\item{LOG}{set it to TRUE if you desire the output in log form}
+\item{log_scale}{set it to TRUE if you desire the output in log form}
 
 \item{lambdaterms}{set it to TRUE if you desire the powers of lambda
 in the likelihood}

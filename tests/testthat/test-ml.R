@@ -9,7 +9,7 @@ test_that("use", {
   n_0 <- 2
 
   test <- sls_ml(
-    loglik_function = sls::loglik_slsP,
+    loglik_function = sls::loglik_sls_p,
     brts_m = brts_m,
     brts_s = brts_s,
     startpars = startpars,
@@ -51,7 +51,7 @@ test_that("abuse", {
 
   testthat::expect_error(
     test <- sls_ml(
-      loglik_function = sls::loglik_slsP,
+      loglik_function = sls::loglik_sls_p,
       brts_m = c(),
       brts_s = brts_s,
       startpars = startpars,
@@ -63,7 +63,7 @@ test_that("abuse", {
   )
   testthat::expect_error(
     test <- sls_ml(
-      loglik_function = sls::loglik_slsP,
+      loglik_function = sls::loglik_sls_p,
       brts_m = brts_m,
       brts_s = c(),
       startpars = startpars,
@@ -75,7 +75,7 @@ test_that("abuse", {
   )
   testthat::expect_error(
     test <- sls_ml(
-      loglik_function = sls::loglik_slsP,
+      loglik_function = sls::loglik_sls_p,
       brts_m = brts_m,
       brts_s = brts_s,
       startpars = c(-1, startpars[2:4]),
@@ -87,7 +87,7 @@ test_that("abuse", {
   )
   testthat::expect_error(
     test <- sls_ml(
-      loglik_function = sls::loglik_slsP,
+      loglik_function = sls::loglik_sls_p,
       brts_m = brts_m,
       brts_s = brts_s,
       startpars = startpars,
@@ -99,7 +99,7 @@ test_that("abuse", {
   )
   testthat::expect_error(
     test <- sls_ml(
-      loglik_function = sls::loglik_slsP,
+      loglik_function = sls::loglik_sls_p,
       brts_m = brts_m,
       brts_s = brts_s,
       startpars = startpars,

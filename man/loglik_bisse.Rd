@@ -4,7 +4,7 @@
 \alias{loglik_bisse}
 \title{BISSE loglik}
 \usage{
-loglik_bisse(pars, brts, n_0 = 2, t_ds = NULL, D_0s = NULL,
+loglik_bisse(pars, brts, n_0 = 2, t_ds = NULL, d_0s = NULL,
   t_p = 0)
 }
 \arguments{
@@ -20,7 +20,7 @@ loglik_bisse(pars, brts, n_0 = 2, t_ds = NULL, D_0s = NULL,
 
 \item{t_ds}{decoupling times}
 
-\item{D_0s}{starting values for BiSSE's D functions}
+\item{d_0s}{starting values for BiSSE's D functions}
 
 \item{t_p}{present time}
 }

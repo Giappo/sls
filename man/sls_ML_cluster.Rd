@@ -6,7 +6,7 @@
 \usage{
 sls_ml_cluster(seed, sim_pars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
   cond = 1, initparsopt = c(0.5, 0.3, 0.5, 0.3), age = 10,
-  optimmethod = "simplex", tolerance = 0.01, fun = sls::loglik_slsP)
+  optimmethod = "simplex", tolerance = 0.01, fun = sls::loglik_sls_p)
 }
 \arguments{
 \item{seed}{the seed}

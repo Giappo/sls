@@ -14,7 +14,7 @@ sls_ml_cluster <- function(
   age = 10,
   optimmethod = "simplex",
   tolerance = 1E-2,
-  fun = sls::loglik_slsP
+  fun = sls::loglik_sls_p
 ) {
   library(sls)
   fun <- eval(fun)
@@ -130,8 +130,8 @@ sls_ml_cluster2 <- function(
   age = 10,
   optimmethod = "simplex",
   tolerance = 1E-2,
-  fun1 = sls::loglik_slsP,
-  fun2 = sls::loglik_DDD
+  fun1 = sls::loglik_sls_p,
+  fun2 = sls::loglik_ddd
 ) {
   set.seed(seed)
   # optimmethod <- 'subplex' or 'simplex' #nolint

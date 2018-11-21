@@ -4,7 +4,7 @@
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP_nodiv <- function(
+loglik_sls_p_nodiv <- function(
   pars_m,
   pars_s,
   brts_m,
@@ -105,7 +105,7 @@ loglik_slsP_nodiv <- function(
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsQ_nodiv <- function(
+loglik_sls_q_nodiv <- function(
   pars_m,
   pars_s,
   brts_m,
@@ -235,7 +235,7 @@ loglik_slsQ_nodiv <- function(
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_DDD <- function(
+loglik_ddd <- function(
   pars_m,
   pars_s,
   brts_m,
@@ -307,7 +307,7 @@ loglik_bisse_shift <- function(
     brts = brts_m,
     n_0 = n_0,
     t_ds = brts_s[1],
-    D_0s = exp(loglik_s)
+    d_0s = exp(loglik_s)
   )
 
   pc <- sls::pc_1shift(
@@ -336,37 +336,37 @@ loglik_bisse_shift2 <- function(
   n_0 = 2,
   t_0 = 0,
   t_d,
-  LOG = TRUE,
+  log_scale = TRUE,
   lambdaterms = TRUE
 ) {
   testit::assert(all(t_d != brts))
   lambda <- pars[1]
   brts1 <- brts[brts > t_d]
   brts2 <- sort(c(t_d, brts[brts < t_d]), decreasing = TRUE)
-  DD1 <- sls::loglik_bisse2(
+  dd_1 <- sls::loglik_bisse2(
     pars, brts1,
     n_0 = n_0,
     t_0 = t_d,
-    E_0 = sls::Et(
+    e_0 = sls::e_t(
       pars = pars,
       t_0 = t_0,
       t_f = t_d,
-      E_0 = 0,
-      D_0 = 1
+      e_0 = 0,
+      d_0 = 1
     ),
-    LOG = FALSE,
+    log_scale = FALSE,
     lambdaterms = FALSE
   )
-  DD2 <- sls::loglik_bisse2(
+  dd_2 <- sls::loglik_bisse2(
     pars,
     brts2,
     n_0 = (n_0 + length(brts1) - 1) - 1,
     t_0 = t_0,
-    LOG = FALSE,
+    log_scale = FALSE,
     lambdaterms = FALSE
   )
 
-  DD <- DD1 * DD2 * lambda ^ (length(brts[-1]) * lambdaterms)
-  out <- (LOG) * log(DD) + (1 - LOG) * DD
+  dd <- dd_1 * dd_2 * lambda ^ (length(brts[-1]) * lambdaterms)
+  out <- (log_scale) * log(dd) + (1 - log_scale) * dd
   return(out)
 }

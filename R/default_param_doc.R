@@ -27,10 +27,13 @@
 #' the waiting time for the next event to occur
 #' @param D0 starting value for BiSSE's D function
 #' @param D_0 starting value for BiSSE's D function
+#' @param d_0 starting value for BiSSE's D function
 #' @param D0s starting values for BiSSE's D functions
 #' @param D_0s starting values for BiSSE's D functions
+#' @param d_0s starting values for BiSSE's D functions
 #' @param E0 starting value for BiSSE's E function
 #' @param E_0 starting value for BiSSE's E function
+#' @param e_0 starting value for BiSSE's E function
 #' @param event the event occurring in the simulated process at a given time
 #' @param final_time the final time that you want to consider for the survival
 #' of the species considered in the l table
@@ -40,6 +43,7 @@
 #' @param k frequencies in the Discrete Fourier Transform (DFT)
 #' @param ks carrying capacities, for all the clades
 #' @param L the l table
+#' @param l_0 the l table, for a single clade
 #' @param l_1 the collection of all the l tables, for all the clades
 #' @param l_2 the matrix containing the information about how the subclades are
 #' nested into the main clade. See sls_sim.get_standard_l_2() for more info.
@@ -50,7 +54,7 @@
 #' @param lambdas speciation rates, for all the clades
 #' @param lambdaterms set it to TRUE if you desire the powers of lambda
 #' in the likelihood
-#' @param LOG set it to TRUE if you desire the output in log form
+#' @param log_scale set it to TRUE if you desire the output in log form
 #' @param loglik_function the loglik function you want to use
 #' @param lx size of the matrix
 #' @param matrix_size size of the matrix
@@ -107,8 +111,9 @@ default_params_doc <- function(
   lambdas,
   mus,
   ks,
-  l_2,
+  l_0,
   l_1,
+  l_2,
   l_matrix_size,
   data,
   clade,
@@ -142,10 +147,13 @@ default_params_doc <- function(
   vec,
   D0,
   D_0,
+  d_0,
   D0s,
   D_0s,
+  d_0s,
   E0,
   E_0,
+  e_0,
   t_0,
   tf,
   t_f,
@@ -154,7 +162,7 @@ default_params_doc <- function(
   tds,
   t_ds,
   shift_time,
-  LOG,
+  log_scale,
   lambdaterms,
   message,
   verbose,

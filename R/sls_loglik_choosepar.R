@@ -13,7 +13,7 @@ sls_loglik_choosepar <- function(
   brts_m,
   brts_s,
   missnumspec = c(0, 0),
-  loglik_function = sls::loglik_slsP
+  loglik_function = sls::loglik_sls_p
 ) {
   if (length(missnumspec) != length(c(0, 0))) {
     cat(

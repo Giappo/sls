@@ -9,25 +9,25 @@ syntetic_data <- function(
   age <- l_2[1, 1]
   tshift <- l_2[2, 1]
   Nsup <- n_species * 2
-  L <- matrix(0, ncol = 5, nrow = Nsup)
-  L[, 5] <- 0
-  L[, 4] <- -1
-  L[, 3] <- c(
+  l_0 <- matrix(0, ncol = 5, nrow = Nsup)
+  l_0[, 5] <- 0
+  l_0[, 4] <- -1
+  l_0[, 3] <- c(
     (1:n_species) * rep(c(1, -1), n_species)[1:n_species],
     rep(0, (Nsup - n_species))
   )
-  L[, 2] <- c(0, head(L[, 3], Nsup - 1))
-  L[, 1] <- sort(c(
+  l_0[, 2] <- c(0, head(l_0[, 3], Nsup - 1))
+  l_0[, 1] <- sort(c(
     age,
     age,
     runif(min = tshift, max = 10, n = n_species - 2),
     rep(0, (Nsup - n_species))
   ), decreasing = TRUE)
-  L[(n_species + 1):Nsup, 1:3] <- 0
+  l_0[(n_species + 1):Nsup, 1:3] <- 0
 
   data <- list()
-  data$l_1[[clade]] <- L
-  data$pools[[clade]] <- sls_sim.get_pool(L)
+  data$l_1[[clade]] <- l_0
+  data$pools[[clade]] <- sls_sim.get_pool(l_0)
   data$Nmax <- length(
     unique(data$l_1[[clade]][, 3])[unique(data$l_1[[clade]][, 3]) != 0]
   )
@@ -215,7 +215,7 @@ test_that("sls_sim.decide_event", {
     test_extinction == "extinction"
   )
 
-  # it should not shift if the shift is already saved in L
+  # it should not shift if the shift is already saved in l_0
   clade <- 1
   delta_n <- -1
   delta_t <- 1
@@ -298,30 +298,30 @@ test_that("sls_sim.use_event", {
     delta_n = 1,
     delta_t = 1
   )
-  L0 <- data$l_1[[clade]]
+  l_0_before <- data$l_1[[clade]]
   out <- sls_sim.use_event(
     data = data,
     clade = clade,
     event = event,
     deltas = deltas,
     l_2 = l_2
-  ); L <- out$l_1[[clade]]
+  ); l_0_after <- out$l_1[[clade]]
 
   testthat::expect_true(
     all(
-      L0[1:n_species, ] ==
-      L[1:n_species, ]
+      l_0_before[1:n_species, ] ==
+      l_0_after[1:n_species, ]
     )
   )
   testthat::expect_true(
-    L[n_species + 1, 1] == out$t[[clade]]
+    l_0_after[n_species + 1, 1] == out$t[[clade]]
   )
   testthat::expect_true(
-    abs(L[n_species + 1, 3]) == n_species + 1
+    abs(l_0_after[n_species + 1, 3]) == n_species + 1
   )
   testthat::expect_true(
-    abs(L[n_species + 1, 2]) %in%
-      abs(L0[1:n_species, 3])
+    abs(l_0_after[n_species + 1, 2]) %in%
+      abs(l_0_before[1:n_species, 3])
   )
 
   ### event 2
@@ -333,21 +333,21 @@ test_that("sls_sim.use_event", {
     delta_n = -1,
     delta_t = 1
   )
-  L0 <- data$l_1[[clade]]
+  l_0_before <- data$l_1[[clade]]
   out <- sls_sim.use_event(
     data = data,
     clade = clade,
     event = event,
     deltas = deltas,
     l_2 = l_2
-  ); L <- out$l_1[[clade]]
+  ); l_0_after <- out$l_1[[clade]]
 
   testthat::expect_true(
-    any(L[, 4] == out$t[[clade]])
+    any(l_0_after[, 4] == out$t[[clade]])
   )
-  dead <- which(L[, 4] == out$t[[clade]])
+  dead <- which(l_0_after[, 4] == out$t[[clade]])
   testthat::expect_true(
-    L[dead, 2] %in% c(0, L0[1:n_species, 3])
+    l_0_after[dead, 2] %in% c(0, l_0_before[1:n_species, 3])
   )
 
   ### event 3
@@ -359,18 +359,18 @@ test_that("sls_sim.use_event", {
     delta_n = -1,
     delta_t = 1
   )
-  L0 <- data$l_1[[clade]]
+  l_0_before <- data$l_1[[clade]]
   out <- sls_sim.use_event(
     data = data,
     clade = clade,
     event = event,
     deltas = deltas,
     l_2 = l_2
-  ); L <- out$l_1[[clade]]
+  ); l_0_after <- out$l_1[[clade]]
 
   newclade <- l_2$clade_id[2]
   testthat::expect_true(
-    any(L[1:(n_species + 1), 5] == newclade)
+    any(l_0_after[1:(n_species + 1), 5] == newclade)
   )
   testthat::expect_true(
     out$t == l_2[l_2[, 3] == newclade, 1]
@@ -385,14 +385,14 @@ test_that("sls_sim.use_event", {
     delta_n = -1,
     delta_t = 1
   )
-  L0 <- data$l_1[[clade]]
+  l_0_before <- data$l_1[[clade]]
   out <- sls_sim.use_event(
     data = data,
     clade = clade,
     event = event,
     deltas = deltas,
     l_2 = l_2
-  ); L <- out$l_1[[clade]]
+  ); l_0_after <- out$l_1[[clade]]
 
   testthat::expect_true(
     out$t == 0
@@ -529,7 +529,7 @@ test_that("sls_sim - pathological cases", {
   )
 })
 
-test_that("shift is always recorded in main clade L and
+test_that("shift is always recorded in main clade l_0_after and
           sub clade ids always have the same sign", {
 
   for (s in 23:25) {
@@ -559,7 +559,7 @@ test_that("shift is always recorded in main clade L and
 
 })
 
-test_that("L matrix size check is working", {
+test_that("l_0 matrix size check is working", {
 
   lambdas <- c(0.3, 0.6)
   mus <- c(0.2, 0.1)

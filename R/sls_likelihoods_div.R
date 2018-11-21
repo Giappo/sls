@@ -4,7 +4,7 @@
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP <- function(
+loglik_sls_p <- function(
   pars_m,
   pars_s,
   brts_m,
@@ -121,7 +121,7 @@ loglik_slsP <- function(
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsQ <- function(
+loglik_sls_q <- function(
   pars_m,
   pars_s,
   brts_m,
@@ -256,7 +256,7 @@ loglik_slsQ <- function(
 #' #' @inheritParams default_params_doc
 #' #' @return The likelihood
 #' #' @export
-#' loglik_slsPbeta <- function(
+#' loglik_sls_pbeta <- function(
 #'   pars_m,
 #'   pars_s,
 #'   brts_m,

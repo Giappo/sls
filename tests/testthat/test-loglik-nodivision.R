@@ -98,9 +98,9 @@ test_that( "all the likelihoods with no division yield the same result", {
 
   models <- c(
     sls::loglik_bisse_shift,
-    sls::loglik_DDD,
-    sls::loglik_slsP_nodiv,
-    sls::loglik_slsQ_nodiv
+    sls::loglik_ddd,
+    sls::loglik_sls_p_nodiv,
+    sls::loglik_sls_q_nodiv
   )
   threshold <- (!ribir::is_on_travis()) * 1e-2 +
                (ribir::is_on_travis())  * 1e-3

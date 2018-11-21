@@ -5,15 +5,15 @@
 \title{This function does nothing. It is intended to inherit is parameters'
 documentation.}
 \usage{
-default_params_doc(lambda, mu, lambdas, mus, ks, l_2, l_1, l_matrix_size,
-  data, clade, delta_n, delta_t, deltas, event, final_time, L, l_matrix,
-  pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, n_max, cond, t, t_c,
-  t_d, ts, times, tbar, n, fun, fun1, fun2, k, vec, D0, D_0, D0s, D_0s, E0,
-  E_0, t_0, tf, t_f, td, t_p, tds, t_ds, shift_time, LOG, lambdaterms,
-  message, verbose, startpars, loglik_function, matrix_size, sim_pars, lx,
-  ddep, trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
-  initparsopt, optimmethod, tolerance, pars2, seed, age, crown_age,
-  missnumspec)
+default_params_doc(lambda, mu, lambdas, mus, ks, l_0, l_1, l_2,
+  l_matrix_size, data, clade, delta_n, delta_t, deltas, event, final_time,
+  L, l_matrix, pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, n_max,
+  cond, t, t_c, t_d, ts, times, tbar, n, fun, fun1, fun2, k, vec, D0, D_0,
+  d_0, D0s, D_0s, d_0s, E0, E_0, e_0, t_0, tf, t_f, td, t_p, tds, t_ds,
+  shift_time, log_scale, lambdaterms, message, verbose, startpars,
+  loglik_function, matrix_size, sim_pars, lx, ddep, trparsopt, trparsfix,
+  idparsopt, idparsfix, idparsnoshift, initparsopt, optimmethod, tolerance,
+  pars2, seed, age, crown_age, missnumspec)
 }
 \arguments{
 \item{lambda}{speciation rate}
@@ -26,10 +26,12 @@ default_params_doc(lambda, mu, lambdas, mus, ks, l_2, l_1, l_matrix_size,
 
 \item{ks}{carrying capacities, for all the clades}
 
-\item{l_2}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
+\item{l_0}{the l table, for a single clade}
 
 \item{l_1}{the collection of all the l tables, for all the clades}
+
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
 \item{l_matrix_size}{the initial length of the l matrix. It will be
 increased if necessary}
@@ -119,13 +121,19 @@ of the species considered in the l table}
 
 \item{D_0}{starting value for BiSSE's D function}
 
+\item{d_0}{starting value for BiSSE's D function}
+
 \item{D0s}{starting values for BiSSE's D functions}
 
 \item{D_0s}{starting values for BiSSE's D functions}
 
+\item{d_0s}{starting values for BiSSE's D functions}
+
 \item{E0}{starting value for BiSSE's E function}
 
 \item{E_0}{starting value for BiSSE's E function}
+
+\item{e_0}{starting value for BiSSE's E function}
 
 \item{t_0}{starting time}
 
@@ -143,7 +151,7 @@ of the species considered in the l table}
 
 \item{shift_time}{the time of the shift}
 
-\item{LOG}{set it to TRUE if you desire the output in log form}
+\item{log_scale}{set it to TRUE if you desire the output in log form}
 
 \item{lambdaterms}{set it to TRUE if you desire the powers of lambda
 in the likelihood}
