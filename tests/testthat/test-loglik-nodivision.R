@@ -49,8 +49,7 @@ test_that( "all the likelihoods with no division yield the same result", {
         cond = cond,
         n_max = precision
       ); res_1_2
-      res_2_2 <- fun2
-      (
+      res_2_2 <- fun2(
         pars_m = pars_m2,
         pars_s = pars_s2,
         brts_m = brts_m,
