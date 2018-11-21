@@ -8,27 +8,27 @@ syntetic_data <- function(
 ) {
   age <- l_2[1, 1]
   tshift <- l_2[2, 1]
-  Nsup <- n_species * 2
-  l_0 <- matrix(0, ncol = 5, nrow = Nsup)
+  n_sup <- n_species * 2
+  l_0 <- matrix(0, ncol = 5, nrow = n_sup)
   l_0[, 5] <- 0
   l_0[, 4] <- -1
   l_0[, 3] <- c(
     (1:n_species) * rep(c(1, -1), n_species)[1:n_species],
-    rep(0, (Nsup - n_species))
+    rep(0, (n_sup - n_species))
   )
-  l_0[, 2] <- c(0, head(l_0[, 3], Nsup - 1))
+  l_0[, 2] <- c(0, head(l_0[, 3], n_sup - 1))
   l_0[, 1] <- sort(c(
     age,
     age,
     runif(min = tshift, max = 10, n = n_species - 2),
-    rep(0, (Nsup - n_species))
+    rep(0, (n_sup - n_species))
   ), decreasing = TRUE)
-  l_0[(n_species + 1):Nsup, 1:3] <- 0
+  l_0[(n_species + 1):n_sup, 1:3] <- 0
 
   data <- list()
   data$l_1[[clade]] <- l_0
   data$pools[[clade]] <- sls_sim.get_pool(l_0)
-  data$Nmax <- length(
+  data$n_max <- length(
     unique(data$l_1[[clade]][, 3])[unique(data$l_1[[clade]][, 3]) != 0]
   )
 
@@ -231,7 +231,7 @@ test_that("sls_sim.decide_event", {
     l_2 = l_2
   )
   data$l_1[[clade]][3, ] <- c(6, -2, -3, tshift, 2) # register the shift
-  data$Nmax[[clade]] <- length(
+  data$n_max[[clade]] <- length(
     unique(data$l_1[[clade]][, 3])[unique(data$l_1[[clade]][, 3]) != 0]
   )
   data$t[[clade]] <- 4.5

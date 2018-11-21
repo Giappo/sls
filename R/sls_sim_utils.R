@@ -55,7 +55,7 @@ sls_sim.initialize_data_new_clade <- function(
       list(
         l_1 = vector("list", length(l_2$clade_id)),
         pools = vector("list", length(l_2$clade_id)),
-        Nmax = vector("list", length(l_2$clade_id)),
+        n_max = vector("list", length(l_2$clade_id)),
         t = vector("list", length(l_2$clade_id))
       )
     )
@@ -69,7 +69,7 @@ sls_sim.initialize_data_new_clade <- function(
   n_0 <- sls_sim.get_n_0(l_2 = l_2, clade = clade)
   t_0 <- sls_sim.get_t_0(l_2 = l_2, clade = clade)
   motherclade <- sls_sim.get_motherclade(l_2 = l_2, clade = clade)
-  Nmax <- n_0
+  n_max <- n_0
 
   cladeborn <- 1
   if (clade > 1) {
@@ -101,11 +101,11 @@ sls_sim.initialize_data_new_clade <- function(
     pool <- L[1:n_0, 3]
     data$l_1[[clade]] <- L
     data$pools[[clade]] <- pool
-    data$Nmax[[clade]] <- Nmax
+    data$n_max[[clade]] <- n_max
   } else {
     data$l_1[clade] <- list(NULL)
     data$pools[clade] <- list(NULL)
-    data$Nmax[clade] <- list(NULL)
+    data$n_max[clade] <- list(NULL)
   }
 
   data$t[[clade]] <- t_0
@@ -220,7 +220,7 @@ sls_sim.use_event <- function(
   L <- data$l_1[[clade]]
   pool <- data$pools[[clade]]; pool
   N <- length(pool)
-  Nmax <- data$Nmax[[clade]]
+  n_max <- data$n_max[[clade]]
   shifted <- 0
 
   if (event == "shift") {
@@ -250,18 +250,18 @@ sls_sim.use_event <- function(
     } else {
       parents <- pool
     }
-    Nmax <- Nmax + 1
+    n_max <- n_max + 1
 
     new_line <- c(
       t,
       parents,
-      abs(Nmax) * sign(parents),
+      abs(n_max) * sign(parents),
       -1,
       0
     )
     dim(new_line) <- c(1, 5)
-    L[Nmax, ] <- new_line
-    pool <- c(pool, abs(Nmax) * sign(parents))
+    L[n_max, ] <- new_line
+    pool <- c(pool, abs(n_max) * sign(parents))
   }
 
   if (event == "extinction") {
@@ -294,9 +294,9 @@ sls_sim.use_event <- function(
     data2$pools[[clade]] <- pool
   }
   if (is.null(pool)) {
-    data2$Nmax[clade] <- list(Nmax)
+    data2$n_max[clade] <- list(n_max)
   } else {
-    data2$Nmax[[clade]] <- Nmax
+    data2$n_max[[clade]] <- n_max
   }
   data2$t[[clade]] <- t
 
@@ -616,15 +616,15 @@ sls_sim.cut_l_matrix <- function(
     return(NULL)
   }
   if (is.matrix(L)) {
-    Nmax <- max(abs(L[, 3]))
-    L2 <- L[1:Nmax, ]
+    n_max <- max(abs(L[, 3]))
+    L2 <- L[1:n_max, ]
     cols_L <- ncol(L)
   } else {
-    Nmax <- max(abs(L[3]))
+    n_max <- max(abs(L[3]))
     L2 <- L
     cols_L <- length(L)
   }
-  dim(L2) <- c(Nmax, cols_L)
+  dim(L2) <- c(n_max, cols_L)
   return(L2)
 }
 
@@ -638,9 +638,9 @@ sls_sim.adapt_l_matrix_size <- function(
   data,
   clade
 ) {
-  Nmax <- data$Nmax[[clade]]
+  n_max <- data$n_max[[clade]]
   L <- data$l_1[[clade]]
-  if (Nmax >= nrow(L) - 2) {
+  if (n_max >= nrow(L) - 2) {
     append_L <- matrix(0, nrow = nrow(L), ncol = ncol(L))
     append_L[, 4] <- -1
     L2 <- rbind(L, append_L)
