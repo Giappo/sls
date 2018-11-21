@@ -476,29 +476,31 @@ test_that("sls_sim", {
       )
 
       test <- out[[i]]
-      L1   <- test$l_tables[[1]]
-      L2   <- test$l_tables[[2]]
+      l_0_1   <- test$l_tables[[1]]
+      l_0_2   <- test$l_tables[[2]]
       testthat::expect_true(
-        ncol(L1) == ncol(L2),
-        ncol(L1) == 5
+        ncol(l_0_1) == ncol(l_0_2),
+        ncol(l_0_1) == 5
       )
       testthat::expect_true(
-        all(L1[-1, 2] %in% L1[, 3]),
-        all(L2[-1, 2] %in% L2[, 3])
+        all(l_0_1[-1, 2] %in% l_0_1[, 3]),
+        all(l_0_2[-1, 2] %in% l_0_2[, 3])
       )
       if (cond == 3) {
         testthat::expect_true(
-          surv_m <- length(L1[L1[, 4] == -1, 3]) > 0,
-          length(L2[L2[, 4] == -1, 3]) > 0
+          surv_m <- length(l_0_1[l_0_1[, 4] == -1, 3]) > 0,
+          length(l_0_2[l_0_2[, 4] == -1, 3]) > 0
         )
         if (surv_m) {
-          testthat::expect_true(sum(unique(sign(L1[L1[, 4] == -1, 3]))) == 0)
+          testthat::expect_true(
+            sum(unique(sign(l_0_1[l_0_1[, 4] == -1, 3]))) == 0
+          )
         }
       }
       if (cond == 4) {
         testthat::expect_true(
-          length(L1[L1[, 4] == -1, 3]) > 0,
-          length(L2[L2[, 4] == -1, 3]) > 0
+          length(l_0_1[l_0_1[, 4] == -1, 3]) > 0,
+          length(l_0_2[l_0_2[, 4] == -1, 3]) > 0
         )
       }
 
