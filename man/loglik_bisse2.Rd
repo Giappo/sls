@@ -4,7 +4,7 @@
 \alias{loglik_bisse2}
 \title{BISSE loglik}
 \usage{
-loglik_bisse2(pars, brts, n_0 = 2, t_0 = 0, E0 = 0, D0 = 1,
+loglik_bisse2(pars, brts, n_0 = 2, t_0 = 0, E_0 = 0, D_0 = 1,
   LOG = TRUE, lambdaterms = TRUE)
 }
 \arguments{
@@ -22,9 +22,9 @@ loglik_bisse2(pars, brts, n_0 = 2, t_0 = 0, E0 = 0, D0 = 1,
 
 \item{t_0}{starting time}
 
-\item{E0}{starting value for BiSSE's E function}
+\item{E_0}{starting value for BiSSE's E function}
 
-\item{D0}{starting value for BiSSE's D function}
+\item{D_0}{starting value for BiSSE's D function}
 
 \item{LOG}{set it to TRUE if you desire the output in log form}
 

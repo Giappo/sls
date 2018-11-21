@@ -4,7 +4,7 @@
 \alias{sls_sim}
 \title{Simulate an sls process}
 \usage{
-sls_sim(lambdas, mus, Ks = c(Inf, Inf), cond = 3,
+sls_sim(lambdas, mus, ks = c(Inf, Inf), cond = 3,
   l_2 = sls::sls_sim.get_standard_l_2(), l_matrix_size = 10000)
 }
 \arguments{
@@ -12,7 +12,7 @@ sls_sim(lambdas, mus, Ks = c(Inf, Inf), cond = 3,
 
 \item{mus}{extinction rate, for all the clades}
 
-\item{Ks}{carrying capacities, for all the clades}
+\item{ks}{carrying capacities, for all the clades}
 
 \item{cond}{type of conditioning:
 \itemize{

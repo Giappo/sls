@@ -59,8 +59,8 @@ syntetic_data <- function(
 
 test_that("sls_sim.get_pars", {
 
-  lambdas <- c(0.2, 0.4); mus <- c(0.1, 0.05); Ks <- c(Inf, Inf)
-  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
+  lambdas <- c(0.2, 0.4); mus <- c(0.1, 0.05); ks <- c(Inf, Inf)
+  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, ks = ks)
   testthat::expect_true(
     length(pars) == length(lambdas)
   )
@@ -69,8 +69,8 @@ test_that("sls_sim.get_pars", {
 test_that("sls_sim.initialize_data_new_clade", {
 
   l_2 <- sls::sls_sim.get_standard_l_2()
-  lambdas <- c(0.2, 0.4); mus <- c(0.1, 0.05); Ks <- c(Inf, Inf)
-  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
+  lambdas <- c(0.2, 0.4); mus <- c(0.1, 0.05); ks <- c(Inf, Inf)
+  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, ks = ks)
   n_clades <- length(lambdas)
 
   suppressWarnings(rm(data))
@@ -115,10 +115,10 @@ test_that("sls_sim.sample_deltas", {
 
   lambdas <- c(0.2, 0.4)
   mus <- c(0.1, 0.05)
-  Ks <- c(Inf, Inf)
+  ks <- c(Inf, Inf)
   n_clades <- length(lambdas)
   l_2 <- sls::sls_sim.get_standard_l_2()
-  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
+  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, ks = ks)
 
   suppressWarnings(rm(data))
   clade <- 1; data <- sls_sim.initialize_data_new_clade(pars = pars, clade = 0)
@@ -142,10 +142,10 @@ test_that("sls_sim.decide_event", {
 
   lambdas <- c(0.2, 0.4)
   mus <- c(0.1, 0.05)
-  Ks <- c(Inf, Inf)
+  ks <- c(Inf, Inf)
   n_clades <- length(lambdas)
   l_2 <- sls::sls_sim.get_standard_l_2()
-  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
+  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, ks = ks)
   suppressWarnings(rm(l_1))
   clade <- 1; data <- sls_sim.initialize_data_new_clade(pars = pars, clade = 0)
   data <- sls_sim.initialize_data_new_clade(
@@ -282,9 +282,9 @@ test_that("sls_sim.use_event", {
 
   lambdas <- c(0.2, 0.4)
   mus <- c(0.1, 0.05)
-  Ks <- c(Inf, Inf)
+  ks <- c(Inf, Inf)
   n_clades <- length(lambdas)
-  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
+  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, ks = ks)
   l_2 <- sls::sls_sim.get_standard_l_2()
   suppressWarnings(rm(data))
   data <- sls_sim.initialize_data_new_clade(pars = pars, clade = 0)
@@ -403,9 +403,9 @@ test_that("sls_sim.check_conditioning", {
 
   lambdas <- c(0.2, 0.4)
   mus <- c(0.1, 0.05)
-  Ks <- c(Inf, Inf)
+  ks <- c(Inf, Inf)
   n_clades <- length(lambdas)
-  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, Ks = Ks)
+  pars <- sls_sim.get_pars(lambdas = lambdas, mus = mus, ks = ks)
   l_2 <- sls::sls_sim.get_standard_l_2()
   suppressWarnings(rm(data));
   n_species <- 5
@@ -450,7 +450,7 @@ test_that("sls_sim", {
 
   lambdas <- c(0.2, 0.4)
   mus <- c(0.1, 0.05)
-  Ks <- c(Inf, Inf)
+  ks <- c(Inf, Inf)
   n_clades <- length(lambdas)
   l_2 <- sls::sls_sim.get_standard_l_2(crown_age = 5, shift_time = 2)
 
@@ -470,7 +470,7 @@ test_that("sls_sim", {
       out[[i]] <- sls_sim(
         lambdas = lambdas,
         mus = mus,
-        Ks = Ks,
+        ks = ks,
         cond = cond,
         l_2 = l_2
       )
@@ -516,7 +516,7 @@ test_that("sls_sim - pathological cases", {
   sim <- sls::sls_sim(
     lambdas = c(0.5399258, 0),
     mus = c(0.5400, 0),
-    Ks = c(Inf, Inf),
+    ks = c(Inf, Inf),
     cond = 3,
     l_2 = l_2
   )

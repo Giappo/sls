@@ -2,7 +2,7 @@
 title: "sls pipeline"
 author: "Giovanni Laudanno"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{sls pipeline}
   %\VignetteEngine{knitr::rmarkdown}

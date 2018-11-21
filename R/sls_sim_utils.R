@@ -9,24 +9,24 @@
 sls_sim.get_pars <- function(
   lambdas,
   mus,
-  Ks = c(Inf, Inf)
+  ks = c(Inf, Inf)
 ) {
   n_clades <- length(lambdas)
   testit::assert(n_clades > 0)
   testit::assert(length(lambdas) == n_clades)
   testit::assert(length(mus) == n_clades)
-  testit::assert(length(Ks) == n_clades)
+  testit::assert(length(ks) == n_clades)
 
   testit::assert(all(lambdas >= 0))
   testit::assert(all(mus >= 0))
-  testit::assert(all(Ks > 0))
+  testit::assert(all(ks > 0))
 
   pars <- vector("list", n_clades)
   for (clade in 1:n_clades) {
     pars[[clade]] <- c(
       lambda = lambdas[clade],
       mu = mus[clade],
-      K = Ks[clade]
+      K = ks[clade]
     )
     names(pars[[clade]]) <- c(
       "lambda",

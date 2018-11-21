@@ -6,7 +6,7 @@
 sls_sim <- function(
   lambdas,
   mus,
-  Ks = c(Inf, Inf),
+  ks = c(Inf, Inf),
   cond = 3,
   l_2 = sls::sls_sim.get_standard_l_2(),
   l_matrix_size = 1e4
@@ -16,7 +16,7 @@ sls_sim <- function(
   pars <- sls_sim.get_pars(
     lambdas = lambdas,
     mus = mus,
-    Ks = Ks
+    ks = ks
   )
   good_sim <- 0
   while (!good_sim) {

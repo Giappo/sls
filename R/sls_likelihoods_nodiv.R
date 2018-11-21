@@ -117,7 +117,7 @@ loglik_slsQ_nodiv <- function(
 
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
-  Ks      <- c(Inf, Inf)
+  ks      <- c(Inf, Inf)
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
@@ -144,7 +144,7 @@ loglik_slsQ_nodiv <- function(
     #SETTING CLADE CONDITIONS
     lambda <- lambdas[clade]
     mu     <- mus[clade]
-    K      <- Ks[clade]
+    K      <- ks[clade]
     soc    <- n_0s[clade]
     max_t  <- length(brts_list[[clade]])
     brts   <- brts_list[[clade]]
@@ -307,7 +307,7 @@ loglik_bisse_shift <- function(
     brts = brts_m,
     n_0 = n_0,
     t_ds = brts_s[1],
-    D0s = exp(loglik_s)
+    D_0s = exp(loglik_s)
   )
 
   pc <- sls::pc_1shift(
@@ -347,12 +347,12 @@ loglik_bisse_shift2 <- function(
     pars, brts1,
     n_0 = n_0,
     t_0 = t_d,
-    E0 = sls::Et(
+    E_0 = sls::Et(
       pars = pars,
       t_0 = t_0,
       t_f = t_d,
-      E0 = 0,
-      D0 = 1
+      E_0 = 0,
+      D_0 = 1
     ),
     LOG = FALSE,
     lambdaterms = FALSE

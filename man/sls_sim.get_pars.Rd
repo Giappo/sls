@@ -4,14 +4,14 @@
 \alias{sls_sim.get_pars}
 \title{Get sls parameters}
 \usage{
-sls_sim.get_pars(lambdas, mus, Ks = c(Inf, Inf))
+sls_sim.get_pars(lambdas, mus, ks = c(Inf, Inf))
 }
 \arguments{
 \item{lambdas}{speciation rates, for all the clades}
 
 \item{mus}{extinction rate, for all the clades}
 
-\item{Ks}{carrying capacities, for all the clades}
+\item{ks}{carrying capacities, for all the clades}
 }
 \value{
 sls parameters

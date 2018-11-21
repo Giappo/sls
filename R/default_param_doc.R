@@ -26,8 +26,11 @@
 #' @param delta_t in the Doob-Gillespie algorithm,
 #' the waiting time for the next event to occur
 #' @param D0 starting value for BiSSE's D function
+#' @param D_0 starting value for BiSSE's D function
 #' @param D0s starting values for BiSSE's D functions
+#' @param D_0s starting values for BiSSE's D functions
 #' @param E0 starting value for BiSSE's E function
+#' @param E_0 starting value for BiSSE's E function
 #' @param event the event occurring in the simulated process at a given time
 #' @param final_time the final time that you want to consider for the survival
 #' of the species considered in the l table
@@ -35,16 +38,23 @@
 #' @param fun1 a function
 #' @param fun2 another function
 #' @param k frequencies in the Discrete Fourier Transform (DFT)
-#' @param lambda speciation rate
-#' @param lambdas speciation rates, for all the clades
-#' @param Ks carrying capacities, for all the clades
+#' @param ks carrying capacities, for all the clades
+#' @param L the l table
+#' @param l_1 the collection of all the l tables, for all the clades
 #' @param l_2 the matrix containing the information about how the subclades are
 #' nested into the main clade. See sls_sim.get_standard_l_2() for more info.
-#' @param L the l table
 #' @param l_matrix the l table
-#' @param l_1 the collection of all the l tables, for all the clades
 #' @param l_matrix_size the initial length of the l matrix. It will be
 #' increased if necessary
+#' @param lambda speciation rate
+#' @param lambdas speciation rates, for all the clades
+#' @param lambdaterms set it to TRUE if you desire the powers of lambda
+#' in the likelihood
+#' @param LOG set it to TRUE if you desire the output in log form
+#' @param loglik_function the loglik function you want to use
+#' @param lx size of the matrix
+#' @param matrix_size size of the matrix
+#' @param message the message to print
 #' @param mu extinction rate
 #' @param mus extinction rate, for all the clades
 #' @param n number of lineages
@@ -61,9 +71,6 @@
 #' @param pars_s parameters for the sub clade (lambda, mu)
 #' @param seed the seed
 #' @param t time
-#' @param ts times
-#' @param times times
-#' @param tbar time left from shift time to the present
 #' @param t_0 starting time
 #' @param tf ending time
 #' @param t_f ending time
@@ -73,19 +80,14 @@
 #' @param tds decoupling times
 #' @param t_ds decoupling times
 #' @param t_p present time
+#' @param ts times
+#' @param times times
+#' @param tbar time left from shift time to the present
 #' @param shift_time the time of the shift
 #' @param sim_pars parameters of the simulation
-#' @param LOG set it to TRUE if you desire the output in log form
-#' @param lambdaterms set it to TRUE if you desire the powers of lambda
-#' in the likelihood
-#' @param message the message to print
 #' @param verbose set it to TRUE if you want to see the outputs on screen
 #' @param startpars parameters to start from for the search of the likelihood
 #' maximum
-#' @param loglik_function the loglik function you want to use
-#'
-#' @param matrix_size size of the matrix
-#' @param lx size of the matrix
 #' @param vec a vector or a matrix to be transformed
 #' @param missnumspec number of missing (unseen) species in the phylogeny
 #' @param ddep see DDD package
@@ -99,13 +101,12 @@
 #' @param tolerance see DDD package
 #' @param pars2 see DDD package
 
-
 default_params_doc <- function(
   lambda,
   mu,
   lambdas,
   mus,
-  Ks,
+  ks,
   l_2,
   l_1,
   l_matrix_size,
@@ -139,9 +140,12 @@ default_params_doc <- function(
   fun2,
   k,
   vec,
-  E0,
   D0,
+  D_0,
   D0s,
+  D_0s,
+  E0,
+  E_0,
   t_0,
   tf,
   t_f,
