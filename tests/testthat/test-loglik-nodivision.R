@@ -60,14 +60,14 @@ test_that( "all the likelihoods with no division yield the same result", {
       ); res2.2
     }
 
-    Delta1 <- res1.1 - res1.2; Delta1
-    Delta2 <- res2.1 - res2.2; Delta2
+    delta_1 <- res1.1 - res1.2; delta_1
+    delta_2 <- res2.1 - res2.2; delta_2
 
-    diff <- abs(Delta1 - Delta2)
+    diff <- abs(delta_1 - delta_2)
 
     return(diff)
   }
-  test.diff <- function(
+  test_diff <- function(
     pars_m,
     pars_s,
     brts_m,
@@ -131,7 +131,7 @@ test_that( "all the likelihoods with no division yield the same result", {
     for (i in 1:(length(models) - 1)) {
       for (j in (i + 1):length(models)) {
         testthat::expect_true(
-          test.diff(
+          test_diff(
             pars_m = pars_m,
             pars_s = pars_s,
             brts_m = brts_m,

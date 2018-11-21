@@ -62,10 +62,10 @@ test_that( "all the likelihoods with division yield the same result", {
       ); res2.2
     }
 
-    Delta1 <- res1.1 - res1.2; Delta1
-    Delta2 <- res2.1 - res2.2; Delta2
+    delta_1 <- res1.1 - res1.2; delta_1
+    delta_2 <- res2.1 - res2.2; delta_2
 
-    diff <- abs(Delta1 - Delta2)
+    diff <- abs(delta_1 - delta_2)
 
     return(diff)
   }
