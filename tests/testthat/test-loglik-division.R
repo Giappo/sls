@@ -69,7 +69,7 @@ test_that( "all the likelihoods with division yield the same result", {
 
     return(diff)
   }
-  test.diff <- function(
+  test_diff <- function(
     pars_m,
     pars_s,
     brts_m,
@@ -130,7 +130,7 @@ test_that( "all the likelihoods with division yield the same result", {
     for (i in 1:(length(models) - 1)) {
       for (j in (i + 1):length(models)) {
         testthat::expect_true(
-          test.diff(
+          test_diff(
             pars_m = pars_m,
             pars_s = pars_s,
             brts_m = brts_m,
