@@ -4,7 +4,7 @@
 \alias{loglik_bisse}
 \title{BISSE loglik}
 \usage{
-loglik_bisse(pars, brts, n_0 = 2, tds = NULL, D0s = NULL, tp = 0)
+loglik_bisse(pars, brts, n_0 = 2, t_ds = NULL, D0s = NULL, t_p = 0)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
@@ -17,9 +17,11 @@ loglik_bisse(pars, brts, n_0 = 2, tds = NULL, D0s = NULL, tp = 0)
 
 \item{n_0}{starting number of lineages}
 
-\item{tds}{decoupling times}
+\item{t_ds}{decoupling times}
 
 \item{D0s}{starting values for BiSSE's D functions}
+
+\item{t_p}{present time}
 }
 \value{
 loglik

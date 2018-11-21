@@ -4,13 +4,13 @@
 \alias{sls_sim.get_brts}
 \title{Extract the branching times from data}
 \usage{
-sls_sim.get_brts(data, LS)
+sls_sim.get_brts(data, l_2)
 }
 \arguments{
 \item{data}{contains all the information about the simulated process}
 
-\item{LS}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_LS() for more info.}
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 }
 \value{
 the branching times

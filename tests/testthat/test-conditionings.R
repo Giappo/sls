@@ -5,19 +5,19 @@ test_that("Analytical equivalence for conditional probability 1", {
   lambdas    <- c(0.5, 0.4)
   mus        <- c(0.4, 0.2)
   pars       <- c(lambdas[1], mus[1], lambdas[2], mus[2])
-  tp <- 0; tc <- -10; ts <- -6
+  t_p <- 0; t_c <- -10; t_d <- -6
 
   ns <- 2:1e5
-  p_ns_cs <- sls::pn(n = ns, t = ts - tc, lambda = lambdas[1], mu = mus[1])
-  p_0_sp <- sls::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
+  p_ns_cs <- sls::pn(n = ns, t = t_d - t_c, lambda = lambdas[1], mu = mus[1])
+  p_0_sp <- sls::pn(n = 0, t = t_p - t_d, lambda = lambdas[1], mu = mus[1])
   test1 <- sum(
     p_ns_cs * (1 - (p_0_sp) ^ (ns - 1) )
   )
 
-  p_1_cs <- sls::pn(n = 1, t = ts - tc, lambda = lambdas[1], mu = mus[1])
-  p_0_sp <- sls::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
-  u_cs <- sls::ut(t = ts - tc, lambda = lambdas[1], mu = mus[1])
-  p_0_sp <- sls::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
+  p_1_cs <- sls::pn(n = 1, t = t_d - t_c, lambda = lambdas[1], mu = mus[1])
+  p_0_sp <- sls::pn(n = 0, t = t_p - t_d, lambda = lambdas[1], mu = mus[1])
+  u_cs <- sls::ut(t = t_d - t_c, lambda = lambdas[1], mu = mus[1])
+  p_0_sp <- sls::pn(n = 0, t = t_p - t_d, lambda = lambdas[1], mu = mus[1])
   test2 <- p_1_cs *
     (1 - p_0_sp) *
     u_cs *

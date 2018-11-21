@@ -13,22 +13,22 @@ test_that("DFT is a unitary operator", {
 test_that("DFT yields the same result as the standard convolution", {
   lambda <- 0.3
   mu <- 0.1
-  ts <- c(10, 8, 7, 3)
+  times <- c(10, 8, 7, 3)
   tbar <- 2
-  nmax <- 15
+  n_max <- 15
   res_conv <- sls::combine_pns0(
     lambda = lambda,
     mu = mu,
-    ts = ts,
+    times = times,
     tbar = tbar,
-    nmax = nmax
+    n_max = n_max
   )
   res_dft  <- sls::combine_pns(
     lambda = lambda,
     mu = mu,
-    ts = ts,
+    times = times,
     tbar = tbar,
-    nmax = nmax
+    n_max = n_max
   )
   testthat::expect_equal(res_conv, res_dft)
 })

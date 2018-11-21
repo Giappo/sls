@@ -4,7 +4,7 @@
 \alias{sls_check_input}
 \title{Check input}
 \usage{
-sls_check_input(brts_m, brts_s, cond, n_0, nmax)
+sls_check_input(brts_m, brts_s, cond, n_0, n_max)
 }
 \arguments{
 \item{brts_m}{branching times for the Main-clade}
@@ -24,7 +24,7 @@ sls_check_input(brts_m, brts_s, cond, n_0, nmax)
 
 \item{n_0}{starting number of lineages}
 
-\item{nmax}{maximum number of lineages to consider}
+\item{n_max}{maximum number of lineages to consider}
 }
 \value{
 nothing

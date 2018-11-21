@@ -4,15 +4,15 @@
 \alias{sls_sim.use_event}
 \title{Update data and time given the event}
 \usage{
-sls_sim.use_event(data, clade, LS, event, deltas)
+sls_sim.use_event(data, clade, l_2, event, deltas)
 }
 \arguments{
 \item{data}{contains all the information about the simulated process}
 
 \item{clade}{the id of the clade}
 
-\item{LS}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_LS() for more info.}
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
 \item{event}{the event occurring in the simulated process at a given time}
 

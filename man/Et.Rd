@@ -4,7 +4,7 @@
 \alias{Et}
 \title{BISSE's E}
 \usage{
-Et(pars, t_0, tf, E0, D0)
+Et(pars, t_0, t_f, E0, D0)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
@@ -15,7 +15,7 @@ Et(pars, t_0, tf, E0, D0)
 
 \item{t_0}{starting time}
 
-\item{tf}{ending time}
+\item{t_f}{ending time}
 
 \item{E0}{starting value for BiSSE's E function}
 

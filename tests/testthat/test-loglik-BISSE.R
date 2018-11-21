@@ -115,7 +115,7 @@ test_that("test bisse alternative functions for the version with shift", {
       brts_m = brts_m,
       brts_s = brts_s,
       cond = cond,
-      nmax = precision
+      n_max = precision
     ); bisse_a1
     bisse_a2 <- sls::loglik_bisse_shift(
       pars_m = pars_m2,
@@ -123,12 +123,12 @@ test_that("test bisse alternative functions for the version with shift", {
       brts_m = brts_m,
       brts_s = brts_s,
       cond = cond,
-      nmax = precision
+      n_max = precision
     ); bisse_a2
     bisse_b1 <- sls::loglik_bisse_shift2(
       pars = pars_m1,
       brts = brts_m,
-      td = brts_s[1]
+      t_d = brts_s[1]
     ) +
       sls::loglik_bisse2(
         pars = pars_s1,
@@ -138,7 +138,7 @@ test_that("test bisse alternative functions for the version with shift", {
     bisse_b2 <- sls::loglik_bisse_shift2(
       pars = pars_m2,
       brts = brts_m,
-      td = brts_s[1]
+      t_d = brts_s[1]
     ) +
       sls::loglik_bisse2(
         pars = pars_s2,
@@ -153,10 +153,10 @@ test_that("test bisse alternative functions for the version with shift", {
   }
 
 #test1
-brts_m  <- c(10, 4, 2)
-pars_m  <- c(0.3, 0.1)
-brts_s  <- c(3, 1, 0.5)
-pars_s  <- c(0.5, 0.05)
+brts_m <- c(10, 4, 2)
+pars_m <- c(0.3, 0.1)
+brts_s <- c(3, 1, 0.5)
+pars_s <- c(0.5, 0.05)
 cond   <- 0
 
 testthat::expect_true(
@@ -192,9 +192,9 @@ for (s in 1:maxs) {
     x = brts_m[-c(1:floor(l_m / 6), (l_m - floor(l_m / 6)):l_m)],
     size = 1
   )
-  td      <- tsplit - 0.1
+  t_d      <- tsplit - 0.1
   brts_s  <- sort(
-    runif(n = floor(l_m / 2), min = 0, max = td - 0.1),
+    runif(n = floor(l_m / 2), min = 0, max = t_d - 0.1),
     decreasing = TRUE
   )
   cond <- 0

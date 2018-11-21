@@ -10,7 +10,7 @@ pc_1shift <- function(
   brts_m,
   brts_s,
   cond,
-  nmax = 1e2,
+  n_max = 1e2,
   n_0 = 2
 ) {
   lambdas <- c(pars_m[1], pars_s[1])
@@ -18,11 +18,10 @@ pc_1shift <- function(
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
-  td <- brts_s1[1]
-
-  tc <- brts_m1[1]
-  tp <- 0
-  A <- abs(td - tc); B <- abs(tp - td)
+  t_d <- brts_s1[1]
+  t_c <- brts_m1[1]
+  t_p <- 0
+  A <- abs(t_d - t_c); B <- abs(t_p - t_d)
 
   if (n_0 != 2) {
     stop("Pc can be calculated only if phylogeny starts with a crown!")
@@ -34,9 +33,9 @@ pc_1shift <- function(
     lambda = lambdas[2],
     mu = mus[2]
   )
-  nvec <- 1:nmax
-  ns1  <- row(matrix(NA, nrow = nmax, ncol = nmax))
-  ns2  <- col(matrix(NA, nrow = nmax, ncol = nmax))
+  nvec <- 1:n_max
+  ns1  <- row(matrix(NA, nrow = n_max, ncol = n_max))
+  ns2  <- col(matrix(NA, nrow = n_max, ncol = n_max))
   p_a   <- sls::pt(t = A, lambda = lambdas[1], mu = mus[1]); p_a
   u_a   <- sls::ut(t = A, lambda = lambdas[1], mu = mus[1]); u_a
   p_b1  <- sls::pt(t = B, lambda = lambdas[1], mu = mus[1]); p_b1

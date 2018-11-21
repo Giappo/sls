@@ -11,7 +11,7 @@ loglik_slsP_nodiv <- function(
   brts_s,
   cond,
   n_0 = 2,
-  nmax = 1e2
+  n_max = 1e2
 ) {
 
   lambdas <- c(pars_m[1], pars_s[1])
@@ -19,26 +19,26 @@ loglik_slsP_nodiv <- function(
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
-  td <- brts_s1[1]
+  t_d <- brts_s1[1]
 
   testit::assert(all(sign(brts_m1) == sign(brts_s1[1])))
   testit::assert(
-    all(sign(brts_s1 * !is.null(brts_s1)) == sign(td * !is.null(brts_s1)))
+    all(sign(brts_s1 * !is.null(brts_s1)) == sign(t_d * !is.null(brts_s1)))
   )
 
   BRTSM <- rbind(
     brts_m1,
     rep(1, length(brts_m1))
   ); dim(BRTSM) <- c(2, length(brts_m1))
-  TD <- c(td, -1); dim(TD) <- c(2, 1)
+  TD <- c(t_d, -1); dim(TD) <- c(2, 1)
 
   if (n_0 == 2) {
     brts_m2 <- c(brts_m1[1], brts_m1)
   } else {
     brts_m2 <- brts_m1
   }
-  ts_m_pre_shift  <- brts_m2[brts_m2 > td] - td; ts_m_pre_shift
-  ts_m_post_shift <- brts_m2[brts_m2 < td]     ; ts_m_post_shift
+  ts_m_pre_shift  <- brts_m2[brts_m2 > t_d] - t_d; ts_m_pre_shift
+  ts_m_post_shift <- brts_m2[brts_m2 < t_d]     ; ts_m_post_shift
   if (length(ts_m_post_shift) == 0) {
     ts_m_post_shift <- 0
   }
@@ -49,9 +49,9 @@ loglik_slsP_nodiv <- function(
   lik_m_pre_shift  <- sls::combine_pns_nodiv(
     lambda = lambdas[1],
     mu = mus[1],
-    ts = ts_m_pre_shift,
-    tbar = td,
-    nmax = nmax
+    times = ts_m_pre_shift,
+    tbar = t_d,
+    n_max = n_max
   ); log(lik_m_pre_shift)
   lik_m_post_shift <- prod(
     sls::pn(
@@ -62,7 +62,7 @@ loglik_slsP_nodiv <- function(
     )
   ) * sls::pn(
     n = 1,
-    t = td,
+    t = t_d,
     lambda = lambdas[1],
     mu = mus[1]
   ) ^ (length(ts_m_pre_shift) - 1); log(lik_m_post_shift)
@@ -91,7 +91,7 @@ loglik_slsP_nodiv <- function(
     brts_m = brts_m,
     brts_s = brts_s,
     cond = cond,
-    nmax = nmax,
+    n_max = n_max,
     n_0 = n_0
   )
 
@@ -112,7 +112,7 @@ loglik_slsQ_nodiv <- function(
   brts_s,
   cond,
   n_0 = 2,
-  nmax = 1e2
+  n_max = 1e2
 ) {
 
   lambdas <- c(pars_m[1], pars_s[1])
@@ -121,19 +121,19 @@ loglik_slsQ_nodiv <- function(
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
-  td <- brts_s1[1]
+  t_d <- brts_s1[1]
 
   missnumspec <- c(0, 0)
   n_0s <- c(n_0, 1)
 
-  testit::assert(all(sign(brts_m) == sign(td)))
+  testit::assert(all(sign(brts_m) == sign(t_d)))
   testit::assert(
-    all(sign(brts_s * !is.null(brts_s)) == sign(td * !is.null(brts_s)))
+    all(sign(brts_s * !is.null(brts_s)) == sign(t_d * !is.null(brts_s)))
   )
 
   #BASIC SETTINGS AND CHECKS
   n_clades <- length(lambdas)
-  brts_m1 <- sort(c(0, abs(c(brts_m, td))), decreasing = TRUE)
+  brts_m1 <- sort(c(0, abs(c(brts_m, t_d))), decreasing = TRUE)
   brts_s1 <- sort(c(0, abs(c(brts_s))), decreasing = TRUE)
   brts_list <- list(brts_m = brts_m1, brts_s = brts_s1)
   logliks <- rep(NA, n_clades)
@@ -150,10 +150,10 @@ loglik_slsQ_nodiv <- function(
     brts   <- brts_list[[clade]]
 
     #SETTING INITIAL CONDITIONS (there's always a +1 because of Q0)
-    q_i <- c(1, rep(0, nmax))
-    q_t <- matrix(0, ncol = (nmax + 1), nrow = max_t)
+    q_i <- c(1, rep(0, n_max))
+    q_t <- matrix(0, ncol = (n_max + 1), nrow = max_t)
     q_t[1, ] <- q_i
-    dimnames(q_t)[[2]] <- paste0("Q", 0:nmax)
+    dimnames(q_t)[[2]] <- paste0("Q", 0:n_max)
     k <- soc
     t <- 2
     D <- C <- rep(1, max_t)
@@ -166,7 +166,7 @@ loglik_slsQ_nodiv <- function(
       } else {
         transition_matrix <- DDD::dd_loglik_M_aux(
           pars = c(lambda, mu, K),
-          lx = nmax + 1,
+          lx = n_max + 1,
           k = k,
           ddep = 1
         )
@@ -182,7 +182,7 @@ loglik_slsQ_nodiv <- function(
 
       #Applying B operator
       if (t < max_t) {
-        if (brts[t] != td) {
+        if (brts[t] != t_d) {
           q_t[t, ] <- q_t[t, ] * lambda
           k <- k + 1
         } else {
@@ -221,7 +221,7 @@ loglik_slsQ_nodiv <- function(
     brts_m = brts_m,
     brts_s = brts_s,
     cond = cond,
-    nmax = nmax,
+    n_max = n_max,
     n_0 = n_0
   )
 
@@ -242,11 +242,11 @@ loglik_DDD <- function(
   brts_s,
   cond,
   n_0 = 2,
-  nmax = 1e2
+  n_max = 1e2
 ) {
   pars1 <- c(pars_m[1], pars_m[2], Inf, pars_s[1], pars_s[2], Inf, brts_s[1])
   pars2 <- c(
-    nmax,  #maximum number of species involved in the computation
+    n_max,  #maximum number of species involved in the computation
     1,  #ddmodel: not actually used by this function
     0,  #conditioning
     min(abs(brts_m[abs(brts_m) > pars1[7]])), # tshift
@@ -273,7 +273,7 @@ loglik_DDD <- function(
     brts_m = brts_m,
     brts_s = brts_s,
     cond = cond,
-    nmax = nmax,
+    n_max = n_max,
     n_0 = n_0
   ); pc
 
@@ -294,7 +294,7 @@ loglik_bisse_shift <- function(
   brts_s,
   cond,
   n_0 = 2,
-  nmax = 1e2
+  n_max = 1e2
 ) {
 
   loglik_s <- sls::loglik_bisse(
@@ -306,7 +306,7 @@ loglik_bisse_shift <- function(
     pars = pars_m,
     brts = brts_m,
     n_0 = n_0,
-    tds = brts_s[1],
+    t_ds = brts_s[1],
     D0s = exp(loglik_s)
   )
 
@@ -316,7 +316,7 @@ loglik_bisse_shift <- function(
     brts_m = brts_m,
     brts_s = brts_s,
     cond = cond,
-    nmax = nmax,
+    n_max = n_max,
     n_0 = n_0
   ); pc
 
@@ -335,22 +335,22 @@ loglik_bisse_shift2 <- function(
   brts,
   n_0 = 2,
   t_0 = 0,
-  td,
+  t_d,
   LOG = TRUE,
   lambdaterms = TRUE
 ) {
-  testit::assert(all(td != brts))
+  testit::assert(all(t_d != brts))
   lambda <- pars[1]
-  brts1 <- brts[brts > td]
-  brts2 <- sort(c(td, brts[brts < td]), decreasing = TRUE)
+  brts1 <- brts[brts > t_d]
+  brts2 <- sort(c(t_d, brts[brts < t_d]), decreasing = TRUE)
   DD1 <- sls::loglik_bisse2(
     pars, brts1,
     n_0 = n_0,
-    t_0 = td,
+    t_0 = t_d,
     E0 = sls::Et(
       pars = pars,
       t_0 = t_0,
-      tf = td,
+      t_f = t_d,
       E0 = 0,
       D0 = 1
     ),

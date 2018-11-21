@@ -5,13 +5,14 @@
 \title{This function does nothing. It is intended to inherit is parameters'
 documentation.}
 \usage{
-default_params_doc(lambda, mu, lambdas, mus, Ks, LS, LL, l_matrix_size,
+default_params_doc(lambda, mu, lambdas, mus, Ks, l_2, l_1, l_matrix_size,
   data, clade, delta_n, delta_t, deltas, event, final_time, L, l_matrix,
-  pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, nmax, cond, t, ts, tbar,
-  n, fun, fun1, fun2, k, vec, E0, D0, D0s, t_0, tf, td, tds, shift_time,
-  LOG, lambdaterms, message, verbose, startpars, loglik_function,
-  matrix_size, lx, ddep, trparsopt, trparsfix, idparsopt, idparsfix,
-  idparsnoshift, pars2, seed, age, crown_age, missnumspec)
+  pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, n_max, cond, t, t_c,
+  t_d, ts, times, tbar, n, fun, fun1, fun2, k, vec, E0, D0, D0s, t_0, tf,
+  t_f, td, t_p, tds, t_ds, shift_time, LOG, lambdaterms, message, verbose,
+  startpars, loglik_function, matrix_size, sim_pars, lx, ddep, trparsopt,
+  trparsfix, idparsopt, idparsfix, idparsnoshift, initparsopt, optimmethod,
+  tolerance, pars2, seed, age, crown_age, missnumspec)
 }
 \arguments{
 \item{lambda}{speciation rate}
@@ -24,10 +25,10 @@ default_params_doc(lambda, mu, lambdas, mus, Ks, LS, LL, l_matrix_size,
 
 \item{Ks}{carrying capacities, for all the clades}
 
-\item{LS}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_LS() for more info.}
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
-\item{LL}{the collection of all the l tables, for all the clades}
+\item{l_1}{the collection of all the l tables, for all the clades}
 
 \item{l_matrix_size}{the initial length of the l matrix. It will be
 increased if necessary}
@@ -76,7 +77,7 @@ of the species considered in the l table}
 
 \item{n_0}{starting number of lineages}
 
-\item{nmax}{maximum number of lineages to consider}
+\item{n_max}{maximum number of lineages to consider}
 
 \item{cond}{type of conditioning:
 \itemize{
@@ -91,7 +92,13 @@ of the species considered in the l table}
 
 \item{t}{time}
 
+\item{t_c}{crown time}
+
+\item{t_d}{decoupling time}
+
 \item{ts}{times}
+
+\item{times}{times}
 
 \item{tbar}{time left from shift time to the present}
 
@@ -117,9 +124,15 @@ of the species considered in the l table}
 
 \item{tf}{ending time}
 
+\item{t_f}{ending time}
+
 \item{td}{decoupling time}
 
+\item{t_p}{present time}
+
 \item{tds}{decoupling times}
+
+\item{t_ds}{decoupling times}
 
 \item{shift_time}{the time of the shift}
 
@@ -139,6 +152,8 @@ maximum}
 
 \item{matrix_size}{size of the matrix}
 
+\item{sim_pars}{parameters of the simulation}
+
 \item{lx}{size of the matrix}
 
 \item{ddep}{see DDD package}
@@ -152,6 +167,12 @@ maximum}
 \item{idparsfix}{see DDD package}
 
 \item{idparsnoshift}{see DDD package}
+
+\item{initparsopt}{see DDD package}
+
+\item{optimmethod}{see DDD package}
+
+\item{tolerance}{see DDD package}
 
 \item{pars2}{see DDD package}
 

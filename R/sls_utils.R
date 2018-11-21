@@ -50,7 +50,7 @@ sls_check_input <- function(
   brts_s,
   cond,
   n_0,
-  nmax
+  n_max
 ) {
   if (length(brts_m) <= 0) {
     stop("main clade branching times cannot be an empty vector")
@@ -70,7 +70,7 @@ sls_check_input <- function(
   if (!(n_0 %in% sls_n_0s())) {
    stop("this n_0 is not implemented")
   }
-  if (nmax <= 0) {
+  if (n_max <= 0) {
    stop("it's not going to work with maximum species set to 0 or less")
   }
 }

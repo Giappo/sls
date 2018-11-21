@@ -4,11 +4,11 @@
 \alias{sls_sim.get_shifts_info}
 \title{Get shifts' information}
 \usage{
-sls_sim.get_shifts_info(LS = sls::sls_sim.get_standard_LS(), clade)
+sls_sim.get_shifts_info(l_2 = sls::sls_sim.get_standard_l_2(), clade)
 }
 \arguments{
-\item{LS}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_LS() for more info.}
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
 \item{clade}{the id of the clade}
 }

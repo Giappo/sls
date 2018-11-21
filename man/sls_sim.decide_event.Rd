@@ -4,7 +4,7 @@
 \alias{sls_sim.decide_event}
 \title{Determines the event}
 \usage{
-sls_sim.decide_event(data, clade, deltas, LS)
+sls_sim.decide_event(data, clade, deltas, l_2)
 }
 \arguments{
 \item{data}{contains all the information about the simulated process}
@@ -16,8 +16,8 @@ the collection of delta_n and delta_t, which are, respectively,
 the change in number of species and
 the waiting time for the next event to occur}
 
-\item{LS}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_LS() for more info.}
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 }
 \value{
 the event

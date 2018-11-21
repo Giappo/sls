@@ -5,7 +5,7 @@
 \title{P-likelihood (with no division)}
 \usage{
 loglik_slsP_nodiv(pars_m, pars_s, brts_m, brts_s, cond, n_0 = 2,
-  nmax = 100)
+  n_max = 100)
 }
 \arguments{
 \item{pars_m}{parameters for the main clade (lambda, mu)}
@@ -29,7 +29,7 @@ loglik_slsP_nodiv(pars_m, pars_s, brts_m, brts_s, cond, n_0 = 2,
 
 \item{n_0}{starting number of lineages}
 
-\item{nmax}{maximum number of lineages to consider}
+\item{n_max}{maximum number of lineages to consider}
 }
 \value{
 The likelihood

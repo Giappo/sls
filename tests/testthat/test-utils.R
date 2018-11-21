@@ -35,14 +35,14 @@ test_that("sls_check_input", {
   startpars <- c(0.5, 0.3, 0.5, 0.3)
   cond <- 3
   n_0 <- 2
-  nmax <- 1e2
+  n_max <- 1e2
   testthat::expect_silent(
     sls_check_input(
       brts_m = brts_m,
       brts_s = brts_s,
       cond = cond,
       n_0 = n_0,
-      nmax = nmax
+      n_max = n_max
     )
   )
   testthat::expect_error(
@@ -51,7 +51,7 @@ test_that("sls_check_input", {
       brts_s = brts_s,
       cond = cond,
       n_0 = n_0,
-      nmax = nmax
+      n_max = n_max
     ),
     "main clade branching times cannot be an empty vector"
   )
@@ -61,7 +61,7 @@ test_that("sls_check_input", {
       brts_s = c(),
       cond = cond,
       n_0 = n_0,
-      nmax = nmax
+      n_max = n_max
     ),
     "sub clade branching times cannot be an empty vector"
   )
@@ -71,7 +71,7 @@ test_that("sls_check_input", {
       brts_s = brts_s,
       cond = cond,
       n_0 = n_0,
-      nmax = -1
+      n_max = -1
     ),
     "it's not going to work with maximum species set to 0 or less"
   )
@@ -81,7 +81,7 @@ test_that("sls_check_input", {
       brts_s = brts_s,
       cond = 17,
       n_0 = n_0,
-      nmax = nmax
+      n_max = n_max
     ),
     "this conditioning is not implemented"
   )
@@ -91,7 +91,7 @@ test_that("sls_check_input", {
       brts_s = brts_s,
       cond = cond,
       n_0 = 10,
-      nmax = nmax
+      n_max = n_max
     ),
     "this n_0 is not implemented"
   )

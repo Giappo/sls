@@ -4,7 +4,7 @@
 \alias{loglik_bisse_shift2}
 \title{BISSE loglik shift}
 \usage{
-loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, td, LOG = TRUE,
+loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, t_d, LOG = TRUE,
   lambdaterms = TRUE)
 }
 \arguments{
@@ -22,7 +22,7 @@ loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, td, LOG = TRUE,
 
 \item{t_0}{starting time}
 
-\item{td}{decoupling time}
+\item{t_d}{decoupling time}
 
 \item{LOG}{set it to TRUE if you desire the output in log form}
 

@@ -4,13 +4,17 @@
 \alias{sls_ml_cluster2}
 \title{Internal sls function}
 \usage{
-sls_ml_cluster2(seed, simpars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
+sls_ml_cluster2(seed, sim_pars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
   cond = 1, initparsopt = c(0.5, 0.3, 0.5, 0.3), age = 10,
   optimmethod = "simplex", tolerance = 0.01, fun1 = sls::loglik_slsP,
   fun2 = sls::loglik_DDD)
 }
 \arguments{
 \item{seed}{the seed}
+
+\item{sim_pars}{parameters of the simulation}
+
+\item{t_d}{decoupling time}
 
 \item{cond}{type of conditioning:
 \itemize{
@@ -23,7 +27,13 @@ sls_ml_cluster2(seed, simpars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
   on the other crown descendents in the main clade;
 }}
 
+\item{initparsopt}{see DDD package}
+
 \item{age}{the age of the phylogeny}
+
+\item{optimmethod}{see DDD package}
+
+\item{tolerance}{see DDD package}
 
 \item{fun1}{a function}
 

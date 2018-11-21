@@ -4,7 +4,7 @@
 \alias{pc_1shift}
 \title{sls-conditioning}
 \usage{
-pc_1shift(pars_m, pars_s, brts_m, brts_s, cond, nmax = 100, n_0 = 2)
+pc_1shift(pars_m, pars_s, brts_m, brts_s, cond, n_max = 100, n_0 = 2)
 }
 \arguments{
 \item{pars_m}{parameters for the main clade (lambda, mu)}
@@ -26,7 +26,7 @@ pc_1shift(pars_m, pars_s, brts_m, brts_s, cond, nmax = 100, n_0 = 2)
   on the other crown descendents in the main clade;
 }}
 
-\item{nmax}{maximum number of lineages to consider}
+\item{n_max}{maximum number of lineages to consider}
 
 \item{n_0}{starting number of lineages}
 }

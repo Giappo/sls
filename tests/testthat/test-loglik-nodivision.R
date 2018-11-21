@@ -26,7 +26,7 @@ test_that( "all the likelihoods with no division yield the same result", {
       brts_m = brts_m,
       brts_s = brts_s,
       cond = cond,
-      nmax = precision
+      n_max = precision
     ); res1.1
 
     res2.1 <- fun2(
@@ -35,7 +35,7 @@ test_that( "all the likelihoods with no division yield the same result", {
       brts_m = brts_m,
       brts_s = brts_s,
       cond = cond,
-      nmax = precision
+      n_max = precision
     ); res2.1
 
     res1.2 <- res2.2 <- 0
@@ -47,7 +47,7 @@ test_that( "all the likelihoods with no division yield the same result", {
                      brts_m = brts_m,
                      brts_s = brts_s,
                      cond = cond,
-                     nmax = precision
+                     n_max = precision
       ); res1.2
 
       res2.2 <- fun2(
@@ -56,7 +56,7 @@ test_that( "all the likelihoods with no division yield the same result", {
         brts_m = brts_m,
         brts_s = brts_s,
         cond = cond,
-        nmax = precision
+        n_max = precision
       ); res2.2
     }
 

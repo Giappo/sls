@@ -4,18 +4,18 @@
 \alias{combine_pns0}
 \title{Combine pn (basic)}
 \usage{
-combine_pns0(lambda, mu, ts, tbar, nmax = 100)
+combine_pns0(lambda, mu, times, tbar, n_max = 100)
 }
 \arguments{
 \item{lambda}{speciation rate}
 
 \item{mu}{extinction rate}
 
-\item{ts}{times}
+\item{times}{times}
 
 \item{tbar}{time left from shift time to the present}
 
-\item{nmax}{maximum number of lineages to consider}
+\item{n_max}{maximum number of lineages to consider}
 }
 \value{
 Convolution of the probabilities for all the processes

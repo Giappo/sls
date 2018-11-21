@@ -5,7 +5,7 @@
 \title{Simulate an sls process}
 \usage{
 sls_sim(lambdas, mus, Ks = c(Inf, Inf), cond = 3,
-  LS = sls::sls_sim.get_standard_LS(), l_matrix_size = 10000)
+  l_2 = sls::sls_sim.get_standard_l_2(), l_matrix_size = 10000)
 }
 \arguments{
 \item{lambdas}{speciation rates, for all the clades}
@@ -25,8 +25,8 @@ sls_sim(lambdas, mus, Ks = c(Inf, Inf), cond = 3,
   on the other crown descendents in the main clade;
 }}
 
-\item{LS}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_LS() for more info.}
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
 \item{l_matrix_size}{the initial length of the l matrix. It will be
 increased if necessary}

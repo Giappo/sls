@@ -7,6 +7,8 @@
 phase.factor(n_max, n, k)
 }
 \arguments{
+\item{n_max}{maximum number of lineages to consider}
+
 \item{n}{number of lineages}
 
 \item{k}{frequencies in the Discrete Fourier Transform (DFT)}

@@ -1,4 +1,4 @@
-# rm(list = ls()); seed = 1; simpars = c(0.3, 0.1, 0.6, 0.05); cond = 1; initparsopt = c(0.4, 0.15, 0.5, 0.12) # nolint test parameters
+# rm(list = ls()); seed = 1; sim_pars = c(0.3, 0.1, 0.6, 0.05); cond = 1; initparsopt = c(0.4, 0.15, 0.5, 0.12) # nolint test parameters
 
 #' @title Internal sls function
 #' @description Internal sls function.
@@ -7,7 +7,7 @@
 #' @export
 sls_ml_cluster <- function(
   seed,
-  simpars = c(0.3, 0.1, 0.6, 0.05),
+  sim_pars = c(0.3, 0.1, 0.6, 0.05),
   t_d  = 4.8,
   cond = 1,
   initparsopt = c(0.5, 0.3, 0.5, 0.3),
@@ -19,7 +19,7 @@ sls_ml_cluster <- function(
   library(sls)
   fun <- eval(fun)
   seed <- as.numeric(seed)
-  simpars <- as.numeric(simpars)
+  sim_pars <- as.numeric(sim_pars)
   cond <- as.numeric(cond)
 
   print(seed)
@@ -50,7 +50,7 @@ sls_ml_cluster <- function(
   parsfix   <- c(Inf, Inf, t_d)
   idparsnoshift <- NULL
 
-  pars1 <- c(simpars[1], simpars[2], Inf, simpars[3], simpars[4], Inf, t_d)
+  pars1 <- c(sim_pars[1], sim_pars[2], Inf, sim_pars[3], sim_pars[4], Inf, t_d)
   sim   <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
   brts_m <- sim$brts[[1]]; brts_s <- sim$brts[[2]]; brts_m; brts_s
   NM <- (soc - 1) + length(brts_m)
@@ -123,7 +123,7 @@ sls_ml_cluster <- function(
 #' @export
 sls_ml_cluster2 <- function(
   seed,
-  simpars = c(0.3, 0.1, 0.6, 0.05),
+  sim_pars = c(0.3, 0.1, 0.6, 0.05),
   t_d  = 4.8,
   cond = 1,
   initparsopt = c(0.5, 0.3, 0.5, 0.3),
@@ -160,7 +160,7 @@ sls_ml_cluster2 <- function(
   parsfix <- c(Inf, Inf, t_d)
   idparsnoshift <- NULL
 
-  pars1 <- c(simpars[1], simpars[2], Inf, simpars[3], simpars[4], Inf, t_d)
+  pars1 <- c(sim_pars[1], sim_pars[2], Inf, sim_pars[3], sim_pars[4], Inf, t_d)
   sim   <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
   brts_m <- sim$brts[[1]]; brts_s <- sim$brts[[2]]; brts_m; brts_s
   NM <- (soc - 1) + length(brts_m)
