@@ -20,48 +20,48 @@ test_that( "all the likelihoods with no division yield the same result", {
 
     pars_m1 <- pars_m  ; pars_s1 <- pars_s
 
-    res1.1 <- fun1(
+    res_1_1 <- fun1(
       pars_m = pars_m1,
       pars_s = pars_s1,
       brts_m = brts_m,
       brts_s = brts_s,
       cond = cond,
       n_max = precision
-    ); res1.1
-
-    res2.1 <- fun2(
+    ); res_1_1
+    res_2_1 <- fun2(
       pars_m = pars_m1,
       pars_s = pars_s1,
       brts_m = brts_m,
       brts_s = brts_s,
       cond = cond,
       n_max = precision
-    ); res2.1
+    ); res_2_1
 
-    res1.2 <- res2.2 <- 0
+    res_1_2 <- res_2_2 <- 0
     if (ratios == TRUE) {
       pars_m2 <- pars_m / 2; pars_s2 <- pars_s * 3 / 4;
 
-      res1.2 <- fun1(pars_m = pars_m2,
-                     pars_s = pars_s2,
-                     brts_m = brts_m,
-                     brts_s = brts_s,
-                     cond = cond,
-                     n_max = precision
-      ); res1.2
-
-      res2.2 <- fun2(
+      res_1_2 <- fun1(
         pars_m = pars_m2,
         pars_s = pars_s2,
         brts_m = brts_m,
         brts_s = brts_s,
         cond = cond,
         n_max = precision
-      ); res2.2
+      ); res_1_2
+      res_2_2 <- fun2
+      (
+        pars_m = pars_m2,
+        pars_s = pars_s2,
+        brts_m = brts_m,
+        brts_s = brts_s,
+        cond = cond,
+        n_max = precision
+      ); res_2_2
     }
 
-    delta_1 <- res1.1 - res1.2; delta_1
-    delta_2 <- res2.1 - res2.2; delta_2
+    delta_1 <- res_1_1 - res_1_2; delta_1
+    delta_2 <- res_2_1 - res_2_2; delta_2
 
     diff <- abs(delta_1 - delta_2)
 
