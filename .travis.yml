@@ -9,7 +9,6 @@ r_github_packages:
   - jimhester/covr
   - jimhester/lintr
   - ropensci/spelling
-  - richelbilderbeek/ribir
   - MangoTheCat/goodpractice
   - KlausVigo/phangorn
 

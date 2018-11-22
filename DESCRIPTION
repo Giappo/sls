@@ -22,7 +22,6 @@ Suggests:
   knitr,
   lintr,
   rmarkdown,
-  ribir,
   testthat,
 	xlsx
 VignetteBuilder: knitr

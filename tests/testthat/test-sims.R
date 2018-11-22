@@ -1,5 +1,9 @@
 context("simulations")
 
+is_on_travis <- function() {
+  Sys.getenv("TRAVIS") != ""
+}
+
 syntetic_data <- function(
   n_species = 30,
   shifted = FALSE,
@@ -455,7 +459,7 @@ test_that("sls_sim", {
   l_2 <- sls::sls_sim_get_standard_l_2(crown_age = 5, shift_time = 2)
 
   maxsims <- 2
-  maxtravis <- (13 * ribir::is_on_travis())
+  maxtravis <- (13 * is_on_travis())
   conds <- c(3, 4)
   i <- 1
   out <- vector(

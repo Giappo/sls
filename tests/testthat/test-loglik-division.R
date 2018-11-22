@@ -1,5 +1,9 @@
 context("likelihoods - division")
 
+is_on_travis <- function() {
+  Sys.getenv("TRAVIS") != ""
+}
+
 test_that("all the likelihoods with division yield the same result", {
 
   # testthat::skip('I skip it because it is slow. It works, though.') # nolint
@@ -98,11 +102,11 @@ test_that("all the likelihoods with division yield the same result", {
     sls::loglik_sls_p,
     sls::loglik_sls_q
   )
-  threshold <- (!ribir::is_on_travis()) * 1e-2 +
-               (ribir::is_on_travis())  * (1 / 2) * 1e-3
+  threshold <- (!is_on_travis()) * 1e-2 +
+               (is_on_travis())  * (1 / 2) * 1e-3
 
   cond <- sls_conds()[1]
-  for (s in 1:(4 + 4 * ribir::is_on_travis())) {
+  for (s in 1:(4 + 4 * is_on_travis())) {
     set.seed(s)
     t_0s    <- c(6, 2)
     brts_m  <- c(
