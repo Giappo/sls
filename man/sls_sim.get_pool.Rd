@@ -2,12 +2,12 @@
 % Please edit documentation in R/sls_sim_utils.R
 \name{sls_sim.get_pool}
 \alias{sls_sim.get_pool}
-\title{Get the pool from the L table}
+\title{Get the pool from the l_0 table}
 \usage{
-sls_sim.get_pool(L)
+sls_sim.get_pool(l_0)
 }
 \arguments{
-\item{L}{the l table}
+\item{l_0}{the l table, for a single clade}
 }
 \value{
 the pool of species

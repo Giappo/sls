@@ -32,8 +32,11 @@ nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 increased if necessary}
 }
 \value{
-best parameters
+l_0 table and brts
 }
 \description{
 Simulate an sls process
+}
+\author{
+Giovanni Laudanno
 }

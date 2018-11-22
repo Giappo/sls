@@ -1,7 +1,8 @@
 #' @title Simulate an sls process
 #' @description Simulate an sls process
 #' @inheritParams default_params_doc
-#' @return  best parameters
+#' @return  l_0 table and brts
+#' @author Giovanni Laudanno
 #' @export
 sls_sim <- function(
   lambdas,

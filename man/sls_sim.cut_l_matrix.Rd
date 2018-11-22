@@ -2,15 +2,15 @@
 % Please edit documentation in R/sls_sim_utils.R
 \name{sls_sim.cut_l_matrix}
 \alias{sls_sim.cut_l_matrix}
-\title{Cuts the L table only to the useful rows}
+\title{Cuts the l_0 table only to the useful rows}
 \usage{
-sls_sim.cut_l_matrix(L)
+sls_sim.cut_l_matrix(l_0)
 }
 \arguments{
-\item{L}{the l table}
+\item{l_0}{the l table, for a single clade}
 }
 \value{
-a clean L table
+a clean l_0 table
 }
 \description{
 sls_sim module

@@ -1,10 +1,10 @@
 context("sls_utils")
 
-test_that("P_transition_matrix", {
+test_that("p_transition_matrix", {
   lambda <- 0.5
   mu <- 0.1
   matrix_size <- 20
-  test <- P_transition_matrix(
+  test <- p_transition_matrix(
     lambda = lambda,
     mu = mu,
     matrix_size = matrix_size

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sls_sim_utils.R
 \name{sls_sim.adapt_l_matrix_size}
 \alias{sls_sim.adapt_l_matrix_size}
-\title{Increase the size of the L table if needed}
+\title{Increase the size of the l_0 table if needed}
 \usage{
 sls_sim.adapt_l_matrix_size(data, clade)
 }
@@ -12,7 +12,7 @@ sls_sim.adapt_l_matrix_size(data, clade)
 \item{clade}{the id of the clade}
 }
 \value{
-a bigger L table
+a bigger l_0 table
 }
 \description{
 sls_sim module

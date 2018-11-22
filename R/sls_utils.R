@@ -4,7 +4,7 @@
 #' @inheritParams default_params_doc
 #' @return The transition matrix
 #' @export
-P_transition_matrix <- function(
+p_transition_matrix <- function(
   lambda,
   mu,
   matrix_size

@@ -4,10 +4,10 @@
 \alias{sls_sim.check_survival}
 \title{Check if a clade survives untile final_time}
 \usage{
-sls_sim.check_survival(L, final_time = 0)
+sls_sim.check_survival(l_0, final_time = 0)
 }
 \arguments{
-\item{L}{the l table}
+\item{l_0}{the l table, for a single clade}
 
 \item{final_time}{the final time that you want to consider for the survival
 of the species considered in the l table}

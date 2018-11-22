@@ -73,33 +73,33 @@ sls_sim.initialize_data_new_clade <- function(
 
   cladeborn <- 1
   if (clade > 1) {
-    Lmother <- l_1[[motherclade]]
-    motherspecies <- Lmother[Lmother[, 5] == clade, 3]
+    l_mother <- l_1[[motherclade]]
+    motherspecies <- l_mother[l_mother[, 5] == clade, 3]
     cladeborn <- length(motherspecies) != 0
   }
 
   if (cladeborn) {
     t <- t_0
-    L <- matrix(0, nrow = l_matrix_size, 5)
-    L[, 5] <- 0
-    L[, 4] <- -1
-    L[, 3] <- 0
-    L[1, 1:4] <- c(t, 0,  1, -1)
+    l_0 <- matrix(0, nrow = l_matrix_size, 5)
+    l_0[, 5] <- 0
+    l_0[, 4] <- -1
+    l_0[, 3] <- 0
+    l_0[1, 1:4] <- c(t, 0,  1, -1)
     if (n_0 == 2) {
-      L[2, 1:4] <- c(t, 1, -2, -1)
+      l_0[2, 1:4] <- c(t, 1, -2, -1)
     }
     if (clade > 1) {
-      L[1, 3] <- sign(motherspecies)
+      l_0[1, 3] <- sign(motherspecies)
     }
-    colnames(L) <- c(
+    colnames(l_0) <- c(
       "birth_time",
       "parent",
       "id",
       "death_time",
       "shifted_to"
     )
-    pool <- L[1:n_0, 3]
-    data$l_1[[clade]] <- L
+    pool <- l_0[1:n_0, 3]
+    data$l_1[[clade]] <- l_0
     data$pools[[clade]] <- pool
     data$n_max[[clade]] <- n_max
   } else {
@@ -167,8 +167,8 @@ sls_sim.decide_event <- function(
   delta_t <- deltas$delta_t
   t <- data$t[[clade]]
   l_1 <- data$l_1
-  L <- l_1[[clade]]
-  already_shifted <- any(L[, 5] > 0)
+  l_0 <- l_1[[clade]]
+  already_shifted <- any(l_0[, 5] > 0)
   tshifts <- sls::sls_sim.get_shifts_info(l_2 = l_2, clade = clade)
   if (nrow(tshifts) > 1) {
     stop("Check the function if you want to implement more than 1 shift!")
@@ -217,7 +217,7 @@ sls_sim.use_event <- function(
 
   shifts <- sls_sim.get_shifts_info(l_2 = l_2, clade = clade)
   t <- data$t[[clade]] - deltas$delta_t
-  L <- data$l_1[[clade]]
+  l_0 <- data$l_1[[clade]]
   pool <- data$pools[[clade]]; pool
   N <- length(pool)
   n_max <- data$n_max[[clade]]
@@ -231,9 +231,9 @@ sls_sim.use_event <- function(
     } else {
       shifted <- pool
     }
-    L[abs(shifted), 4] <- t #remove the shifted from the L table
+    l_0[abs(shifted), 4] <- t #remove the shifted from the l_0 table
     pool <- pool[pool != shifted]
-    L[abs(L[, 3]) == abs(shifted), 5] <- where #register that the shift occurred
+    l_0[abs(l_0[, 3]) == abs(shifted), 5] <- where #register if shift occurs
   }
 
   if (event == "speciation") {
@@ -241,7 +241,7 @@ sls_sim.use_event <- function(
       data = data,
       clade = clade
     )
-    L <- data$l_1[[clade]]
+    l_0 <- data$l_1[[clade]]
     pool <- data$pools[[clade]]; pool
     N <- length(pool)
 
@@ -260,7 +260,7 @@ sls_sim.use_event <- function(
       0
     )
     dim(new_line) <- c(1, 5)
-    L[n_max, ] <- new_line
+    l_0[n_max, ] <- new_line
     pool <- c(pool, abs(n_max) * sign(parents))
   }
 
@@ -270,23 +270,23 @@ sls_sim.use_event <- function(
     } else {
       dead <- pool
     }
-    L[abs(dead), 4] <- t
+    l_0[abs(dead), 4] <- t
     pool <- pool[pool != dead]
   }
 
   if (event == "end" | length(pool) == 0) {
     t <- 0
-    L2 <- sls_sim.cut_l_matrix(L)
-    L <- L2
+    l_02 <- sls_sim.cut_l_matrix(l_0)
+    l_0 <- l_02
   }
 
   # store output
   t <- unname(t)
   data2 <- data
-  if (is.null(L)) {
-    data2$l_1[clade] <- list(L)
+  if (is.null(l_0)) {
+    data2$l_1[clade] <- list(l_0)
   } else {
-    data2$l_1[[clade]] <- L
+    data2$l_1[[clade]] <- l_0
   }
   if (is.null(pool)) {
     data2$pools[clade] <- list(pool)
@@ -312,13 +312,13 @@ sls_sim.use_event <- function(
 #' @return a boolean
 #' @export
 sls_sim.check_survival <- function(
-  L,
+  l_0,
   final_time = 0
 ) {
-  if (is.matrix(L)) {
-    cond <- any(L[, 4] < final_time)
+  if (is.matrix(l_0)) {
+    cond <- any(l_0[, 4] < final_time)
   } else {
-    cond <- L[4] < final_time
+    cond <- l_0[4] < final_time
   }
   return(cond)
 }
@@ -344,64 +344,66 @@ sls_sim.conditioning <- function(
 
   l_1 <- data$l_1; clade <- 1
   for (clade in l_2$clade_id) {
-    L <- l_1[[clade]]
-    if (!is.matrix(L) && !is.null(L)) {
-      dim(L) <- c(1, 5)
+    l_0 <- l_1[[clade]]
+    if (!is.matrix(l_0) && !is.null(l_0)) {
+      dim(l_0) <- c(1, 5)
     }
     shifts <- sls_sim.get_shifts_info(l_2 = l_2, clade = clade)
     shifts_times <- shifts$when
-    shifted_id <- L[(L[, 5] != 0), 3]
+    shifted_id <- l_0[(l_0[, 5] != 0), 3]
 
     t_p <- 0; ts <- shifts_times[1]
     if (clade == 1) {
       # subclade does NOT start from here (M1)
-      coords_left  <- sign(L[, 3]) == -sign(shifted_id)
+      coords_left  <- sign(l_0[, 3]) == -sign(shifted_id)
 
       #subclade does start from here!!! (M2)
-      coords_right <- sign(L[, 3]) ==  sign(shifted_id)
+      coords_right <- sign(l_0[, 3]) ==  sign(shifted_id)
 
-      L_left  <- L[coords_left, ]; dim(L_left)  <- c(sum(coords_left), 5)
-      L_right <- L[coords_right, ]; dim(L_right) <- c(sum(coords_right), 5)
-      if (nrow(L_right) > 0) {
+      l_0_left  <- l_0[coords_left, ]
+      dim(l_0_left)  <- c(sum(coords_left), 5)
+      l_0_right <- l_0[coords_right, ]
+      dim(l_0_right) <- c(sum(coords_right), 5)
+      if (nrow(l_0_right) > 0) {
         testit::assert(
-          any(L_right[, 5] > 0)
+          any(l_0_right[, 5] > 0)
         )
       }
-      colnames(L_left) <- colnames(L_right) <- colnames(L)
+      colnames(l_0_left) <- colnames(l_0_right) <- colnames(l_0)
 
       # lineages in M1 born before tshift
-      coords_left_cs  <- (L_left[, 1]  > shifts_times[1])
-      L_left_cs  <- L_left[coords_left_cs, ]
-      dim(L_left_cs)  <- c(sum(coords_left_cs), 5)
+      coords_left_cs  <- (l_0_left[, 1]  > shifts_times[1])
+      l_0_left_cs  <- l_0_left[coords_left_cs, ]
+      dim(l_0_left_cs)  <- c(sum(coords_left_cs), 5)
 
       # lineages in M2 born before tshift
-      coords_right_cs <- (L_right[, 1] > shifts_times[1])
-      L_right_cs <- L_right[coords_right_cs, ]
-      dim(L_right_cs) <- c(sum(coords_right_cs), 5)
+      coords_right_cs <- (l_0_right[, 1] > shifts_times[1])
+      l_0_right_cs <- l_0_right[coords_right_cs, ]
+      dim(l_0_right_cs) <- c(sum(coords_right_cs), 5)
 
       surv_left_cp  <- sls::sls_sim.check_survival(
-        L = L_left,
+        l_0 = l_0_left,
         final_time = t_p
       ) #M1 survives from c to p
       surv_right_cp <- sls::sls_sim.check_survival(
-        L = L_right,
+        l_0 = l_0_right,
         final_time = t_p
       ) #M2 survives from c to p
       surv_left_cs  <- sls::sls_sim.check_survival(
-        L = L_left_cs,
+        l_0 = l_0_left_cs,
         final_time = ts
       ) #M1 survives from c to s
       surv_right_cs <- sls::sls_sim.check_survival(
-        L = L_right_cs,
+        l_0 = l_0_right_cs,
         final_time = ts
       ) #M2 survives from c to s
 
       testit::assert(surv_left_cs  >= surv_left_cp)
       testit::assert(surv_right_cs >= surv_right_cp)
     } else {
-      L <- l_1[[clade]]
+      l_0 <- l_1[[clade]]
       surv_s <- sls::sls_sim.check_survival(
-        L = L,
+        l_0 = l_0,
         final_time = t_p
       ) #S survives from s to p
     }
@@ -443,28 +445,28 @@ sls_sim.get_brts <- function(
       done <- 1
     }
     if (done == 0) {
-      L <- sls_sim.cut_l_matrix(
+      l_0 <- sls_sim.cut_l_matrix(
         unname(data$l_1[[clade]])
       )
     }
-    if (!any(L[, 4] == -1) && done == 0) {
+    if (!any(l_0[, 4] == -1) && done == 0) {
       brts[clade] <- NULL
       done <- 1
     }
     if (l_2$n_0[clade] == 1 && done == 0) {
-      if (sum(L[, 4] == -1) == 1 | nrow(L) == 1) {
-        brts[[clade]] <- L[1, 1]
+      if (sum(l_0[, 4] == -1) == 1 | nrow(l_0) == 1) {
+        brts[[clade]] <- l_0[1, 1]
       } else {
-        phylo <- DDD::L2phylo(L, dropextinct = TRUE)
+        phylo <- DDD::L2phylo(l_0, dropextinct = TRUE)
         brts[[clade]] <- c(
-          L[1, 1],
+          l_0[1, 1],
           ape::branching.times(phylo)
         )
       }
     }
     if (l_2$n_0[clade] == 2 && done == 0) {
       brts[[clade]] <- DDD::L2brts(
-        L,
+        l_0,
         dropextinct = TRUE
       )
     }
@@ -489,8 +491,8 @@ sls_sim.read_l_1 <- function(
   }
   l_12 <- l_1
   for (i in seq_along(l_1)) {
-    L <- l_1[[i]]
-    l_12[[i]] <- L[L[, 3] != 0, ]
+    l_0 <- l_1[[i]]
+    l_12[[i]] <- l_0[l_0[, 3] != 0, ]
   }
   l_12
 }
@@ -589,62 +591,62 @@ sls_sim.get_motherclade <- function(
   motherclade
 }
 
-#' @title Get the pool from the L table
+#' @title Get the pool from the l_0 table
 #' @description sls_sim module
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
 #' @return the pool of species
 #' @export
 sls_sim.get_pool <- function(
-  L
+  l_0
 ) {
-  right_rows <- L[, 3] != 0 & L[, 4] == -1
-  pool <- L[right_rows, 3]
+  right_rows <- l_0[, 3] != 0 & l_0[, 4] == -1
+  pool <- l_0[right_rows, 3]
   pool
 }
 
-#' @title Cuts the L table only to the useful rows
+#' @title Cuts the l_0 table only to the useful rows
 #' @description sls_sim module
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
-#' @return a clean L table
+#' @return a clean l_0 table
 #' @export
 sls_sim.cut_l_matrix <- function(
-  L
+  l_0
 ) {
-  if (is.null(L)) {
+  if (is.null(l_0)) {
     return(NULL)
   }
-  if (is.matrix(L)) {
-    n_max <- max(abs(L[, 3]))
-    L2 <- L[1:n_max, ]
-    cols_L <- ncol(L)
+  if (is.matrix(l_0)) {
+    n_max <- max(abs(l_0[, 3]))
+    l_02 <- l_0[1:n_max, ]
+    cols_l_0 <- ncol(l_0)
   } else {
-    n_max <- max(abs(L[3]))
-    L2 <- L
-    cols_L <- length(L)
+    n_max <- max(abs(l_0[3]))
+    l_02 <- l_0
+    cols_l_0 <- length(l_0)
   }
-  dim(L2) <- c(n_max, cols_L)
-  return(L2)
+  dim(l_02) <- c(n_max, cols_l_0)
+  return(l_02)
 }
 
-#' @title Increase the size of the L table if needed
+#' @title Increase the size of the l_0 table if needed
 #' @description sls_sim module
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
-#' @return a bigger L table
+#' @return a bigger l_0 table
 #' @export
 sls_sim.adapt_l_matrix_size <- function(
   data,
   clade
 ) {
   n_max <- data$n_max[[clade]]
-  L <- data$l_1[[clade]]
-  if (n_max >= nrow(L) - 2) {
-    append_L <- matrix(0, nrow = nrow(L), ncol = ncol(L))
-    append_L[, 4] <- -1
-    L2 <- rbind(L, append_L)
-    data$l_1[[clade]] <- L2
+  l_0 <- data$l_1[[clade]]
+  if (n_max >= nrow(l_0) - 2) {
+    append_l_0 <- matrix(0, nrow = nrow(l_0), ncol = ncol(l_0))
+    append_l_0[, 4] <- -1
+    l_02 <- rbind(l_0, append_l_0)
+    data$l_1[[clade]] <- l_02
   }
   return(data)
 }
