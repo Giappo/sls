@@ -185,18 +185,6 @@ maximum}
 
 \item{missnumspec}{number of missing (unseen) species in the phylogeny}
 
-\item{D0}{starting value for BiSSE's D function}
-
-\item{D_0}{starting value for BiSSE's D function}
-
-\item{D0s}{starting values for BiSSE's D functions}
-
-\item{D_0s}{starting values for BiSSE's D functions}
-
-\item{E0}{starting value for BiSSE's E function}
-
-\item{E_0}{starting value for BiSSE's E function}
-
 \item{L}{the l table}
 }
 \description{
