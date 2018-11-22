@@ -4,12 +4,14 @@
 \alias{phase.factor}
 \title{Fourier term}
 \usage{
-phase.factor(N, n, k)
+phase.factor(n_max, n, k)
 }
 \arguments{
+\item{n_max}{maximum number of lineages to consider}
+
 \item{n}{number of lineages}
 
-\item{k}{frequencies in discrete fourier transform}
+\item{k}{frequencies in the Discrete Fourier Transform (DFT)}
 }
 \value{
 Fourier term

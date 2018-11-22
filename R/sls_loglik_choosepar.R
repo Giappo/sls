@@ -1,5 +1,6 @@
 #' @title Calculates the likelihood for a subset of parameters
 #' @description Calculates the likelihood for a subset of parameters
+#' @inheritParams default_params_doc
 #' @details This is not to be called by the user.
 #' @export
 sls_loglik_choosepar <- function(
@@ -12,7 +13,7 @@ sls_loglik_choosepar <- function(
   brts_m,
   brts_s,
   missnumspec = c(0, 0),
-  loglik_function = sls::loglik_slsP
+  loglik_function = sls::loglik_sls_p
 ) {
   if (length(missnumspec) != length(c(0, 0))) {
     cat(

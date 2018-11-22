@@ -4,3 +4,4 @@
 ^appveyor\.yml$
 ^scripts$
 ^results$
+^cluster_scripts$

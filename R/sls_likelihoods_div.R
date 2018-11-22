@@ -4,36 +4,44 @@
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsP <- function(
+loglik_sls_p <- function(
   pars_m,
   pars_s,
   brts_m,
   brts_s,
   cond,
   n_0 = 2,
-  nmax = 1e2
+  n_max = 1e2
 ) {
   if (any(c(pars_m, pars_s) < 0)) {
     return(-Inf)
   }
 
+  sls_check_input(
+    brts_m = brts_m,
+    brts_s = brts_s,
+    cond = cond,
+    n_0 = n_0,
+    n_max = n_max
+  )
+
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
 
-  brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
-  brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
-  td <- brts_s1[1]
+  brts_m1 <- sort(brts_m, decreasing = TRUE)
+  brts_s1 <- sort(brts_s, decreasing = TRUE)
+  t_d <- brts_s1[1]
 
   testit::assert(all(sign(brts_m1) == sign(brts_s1[1])))
   testit::assert(
-    all(sign(brts_s1 * !is.null(brts_s1)) == sign(td * !is.null(brts_s1)))
+    all(sign(brts_s1 * !is.null(brts_s1)) == sign(t_d * !is.null(brts_s1)))
   )
 
   BRTSM <- rbind(
     brts_m1,
     rep(1, length(brts_m1))
   ); dim(BRTSM) <- c(2, length(brts_m1))
-  TD <- c(td, -1); dim(TD) <- c(2, 1)
+  TD <- c(t_d, -1); dim(TD) <- c(2, 1)
   EVENTSM <- (M <- cbind(BRTSM, TD))[, order(-M[1, ])]
   kvec_m_after <- (n_0 - 1) + cumsum(EVENTSM[2, ])
   kvec_m_before <- c(n_0 - 1, kvec_m_after[-length(kvec_m_after)])
@@ -44,8 +52,8 @@ loglik_slsP <- function(
   } else {
     brts_m2 <- brts_m1
   }
-  ts_m_pre_shift  <- brts_m2[brts_m2 > td] - td; ts_m_pre_shift
-  ts_m_post_shift <- brts_m2[brts_m2 < td]     ; ts_m_post_shift
+  ts_m_pre_shift  <- brts_m2[brts_m2 > t_d] - t_d; ts_m_pre_shift
+  ts_m_post_shift <- brts_m2[brts_m2 < t_d]     ; ts_m_post_shift
   if (length(ts_m_post_shift) == 0) {
     ts_m_post_shift <- 0
   }
@@ -57,9 +65,9 @@ loglik_slsP <- function(
     sls::combine_pns(
       lambda = lambdas[1],
       mu = mus[1],
-      ts = ts_m_pre_shift,
-      tbar = td,
-      nmax = nmax
+      times = ts_m_pre_shift,
+      tbar = t_d,
+      n_max = n_max
     ); log(lik_m_pre_shift)
   lik_m_post_shift <- prod(
     sls::pn(
@@ -68,9 +76,9 @@ loglik_slsP <- function(
       mu = mus[1],
       t = ts_m_post_shift
     )
-  ) * sls:::pn(
+  ) * sls::pn(
     n = 1,
-    t = td,
+    t = t_d,
     lambda = lambdas[1],
     mu = mus[1]
   ) ^ (length(ts_m_pre_shift) - 1); log(lik_m_post_shift)
@@ -99,7 +107,7 @@ loglik_slsP <- function(
     brts_m = brts_m,
     brts_s = brts_s,
     cond = cond,
-    nmax = nmax,
+    n_max = n_max,
     n_0 = n_0
   )
 
@@ -113,14 +121,14 @@ loglik_slsP <- function(
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
-loglik_slsQ <- function(
+loglik_sls_q <- function(
   pars_m,
   pars_s,
   brts_m,
   brts_s,
   cond,
   n_0 = 2,
-  nmax = 1e2
+  n_max = 1e2
 ) {
 
   if (any(c(pars_m, pars_s) < 0)) {
@@ -129,26 +137,26 @@ loglik_slsQ <- function(
 
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
-  Ks      <- c(Inf, Inf)
+  ks      <- c(Inf, Inf)
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
-  td <- brts_s1[1]
+  t_d <- brts_s1[1]
 
   missnumspec <- c(0, 0)
   n_0s <- c(n_0, 1)
 
-  testit::assert(all(sign(brts_m) == sign(td)))
+  testit::assert(all(sign(brts_m) == sign(t_d)))
   testit::assert(
-    all(sign(brts_s * !is.null(brts_s)) == sign(td * !is.null(brts_s)))
+    all(sign(brts_s * !is.null(brts_s)) == sign(t_d * !is.null(brts_s)))
   )
 
   #BASIC SETTINGS AND CHECKS
   n_clades <- length(lambdas)
-  brts_m1 <- sort(c(0, abs(c(brts_m, td))), decreasing = TRUE)
+  brts_m1 <- sort(c(0, abs(c(brts_m, t_d))), decreasing = TRUE)
   brts_s1 <- sort(c(0, abs(c(brts_s))), decreasing = TRUE)
   brts_list <- list(brts_m = brts_m1, brts_s = brts_s1)
-  nvec <- 0:nmax
+  nvec <- 0:n_max
   logliks <- rep(NA, n_clades)
 
   #LIKELIHOOD INTEGRATION
@@ -157,16 +165,16 @@ loglik_slsQ <- function(
     #SETTING CLADE CONDITIONS
     lambda <- lambdas[clade]
     mu     <- mus[clade]
-    K      <- Ks[clade]
+    K      <- ks[clade]
     soc    <- n_0s[clade]
     max_t  <- length(brts_list[[clade]])
     brts   <- brts_list[[clade]]
 
     #SETTING INITIAL CONDITIONS (there's always a +1 because of Q0)
-    q_i <- c(1, rep(0, nmax))
-    q_t <- matrix(0, ncol = (nmax + 1), nrow = max_t)
+    q_i <- c(1, rep(0, n_max))
+    q_t <- matrix(0, ncol = (n_max + 1), nrow = max_t)
     q_t[1, ] <- q_i
-    dimnames(q_t)[[2]] <- paste0("Q", 0:nmax)
+    dimnames(q_t)[[2]] <- paste0("Q", 0:n_max)
     k <- soc
     t <- 2
     D <- C <- rep(1, max_t)
@@ -177,9 +185,9 @@ loglik_slsQ <- function(
       if (lambda == 0 && mu == 0) {
         q_t[t, ] <- q_t[(t - 1), ]
       } else {
-        transition_matrix <- DDD:::dd_loglik_M_aux(
+        transition_matrix <- DDD::dd_loglik_M_aux(
           pars = c(lambda, mu, K),
-          lx = nmax + 1,
+          lx = n_max + 1,
           k = k,
           ddep = 1
         )
@@ -195,7 +203,7 @@ loglik_slsQ <- function(
 
       #Applying B operator
       if (t < max_t) {
-        if (brts[t] != td) {
+        if (brts[t] != t_d) {
           q_t[t, ] <- q_t[t, ] * lambda
           k <- k + 1
         } else {
@@ -234,7 +242,7 @@ loglik_slsQ <- function(
     brts_m = brts_m,
     brts_s = brts_s,
     cond = cond,
-    nmax = nmax,
+    n_max = n_max,
     n_0 = n_0
   )
 
@@ -242,29 +250,29 @@ loglik_slsQ <- function(
   return(total_loglik)
 }
 
-#' @title P-likelihood
-#' @author Giovanni Laudanno
-#' @description Calculates the likelihood convoluting Nee's functions
-#' @inheritParams default_params_doc
-#' @return The likelihood
-#' @export
-loglik_slsPbeta <- function(
-  pars_m,
-  pars_s,
-  brts_m,
-  brts_s,
-  cond,
-  n_0 = 2,
-  nmax = 1e2
-) {
-  alpha <- function(lambda, mu, brts_m, brts_s) {
-    A <- brts_m[1] - brts_s[1]
-    out <- sls::pt(lambda = lambda, mu = mu, t = A) *
-      (1 - sls::ut(lambda = lambda, mu = mu, t = A))
-  }
-  beta <- function(lambda, mu, brts_m, brts_s) {
-    A <- brts_m[1] - brts_s[1]
-    out <- sls::ut(lambda = lambda, mu = mu, t = A) *
-      (1 - sls::pt(lambda = lambda, mu = mu, t = B))
-  }
-}
+#' #' @title P-likelihood
+#' #' @author Giovanni Laudanno
+#' #' @description Calculates the likelihood convoluting Nee's functions
+#' #' @inheritParams default_params_doc
+#' #' @return The likelihood
+#' #' @export
+#' loglik_sls_pbeta <- function(
+#'   pars_m,
+#'   pars_s,
+#'   brts_m,
+#'   brts_s,
+#'   cond,
+#'   n_0 = 2,
+#'   n_max = 1e2
+#' ) {
+#'   alpha <- function(lambda, mu, brts_m, brts_s) {
+#'     A <- brts_m[1] - brts_s[1]
+#'     out <- sls::pt(lambda = lambda, mu = mu, t = A) *
+#'       (1 - sls::ut(lambda = lambda, mu = mu, t = A))
+#'   }
+#'   beta <- function(lambda, mu, brts_m, brts_s) {
+#'     A <- brts_m[1] - brts_s[1]
+#'     out <- sls::ut(lambda = lambda, mu = mu, t = A) *
+#'       (1 - sls::pt(lambda = lambda, mu = mu, t = B))
+#'   }
+#' }

@@ -2,22 +2,22 @@ context("conditional probabilities")
 
 test_that("Analytical equivalence for conditional probability 1", {
 
-  lambdas    <- c(0.5, 0.4)
-  mus        <- c(0.4, 0.2)
-  pars       <- c(lambdas[1], mus[1], lambdas[2], mus[2])
-  tp <- 0; tc <- -10; ts <- -6
+  lambdas <- c(0.5, 0.4)
+  mus     <- c(0.4, 0.2)
+  pars    <- c(lambdas[1], mus[1], lambdas[2], mus[2])
+  t_p <- 0; t_c <- -10; t_d <- -6
 
   ns <- 2:1e5
-  p_ns_cs <- sls::pn(n = ns, t = ts - tc, lambda = lambdas[1], mu = mus[1])
-  p_0_sp <- sls::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
+  p_ns_cs <- sls::pn(n = ns, t = t_d - t_c, lambda = lambdas[1], mu = mus[1])
+  p_0_sp <- sls::pn(n = 0, t = t_p - t_d, lambda = lambdas[1], mu = mus[1])
   test1 <- sum(
-    p_ns_cs * (1 - (p_0_sp) ^ (ns - 1) )
+    p_ns_cs * (1 - (p_0_sp) ^ (ns - 1))
   )
 
-  p_1_cs <- sls::pn(n = 1, t = ts - tc, lambda = lambdas[1], mu = mus[1])
-  p_0_sp <- sls::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
-  u_cs <- sls::ut(t = ts - tc, lambda = lambdas[1], mu = mus[1])
-  p_0_sp <- sls:::pn(n = 0, t = tp - ts, lambda = lambdas[1], mu = mus[1])
+  p_1_cs <- sls::pn(n = 1, t = t_d - t_c, lambda = lambdas[1], mu = mus[1])
+  p_0_sp <- sls::pn(n = 0, t = t_p - t_d, lambda = lambdas[1], mu = mus[1])
+  u_cs <- sls::ut(t = t_d - t_c, lambda = lambdas[1], mu = mus[1])
+  p_0_sp <- sls::pn(n = 0, t = t_p - t_d, lambda = lambdas[1], mu = mus[1])
   test2 <- p_1_cs *
     (1 - p_0_sp) *
     u_cs *
@@ -27,162 +27,161 @@ test_that("Analytical equivalence for conditional probability 1", {
   testthat::expect_equal(
     test1, test2
   )
-
 })
 
-test_that("Pc1 never smaller than Pc3 (Pc3 is a stricter condition)", {
+test_that("pc1 never smaller than pc3 (pc3 is a stricter condition)", {
 
   #test1
-  brts_m      <- c(10, 9, 1)
-  brts_s      <- c(5, 3, 2)
-  lambdas    <- c(0.5, 0)
-  mus        <- c(0.4, 0)
+  brts_m  <- c(10, 9, 1)
+  brts_s  <- c(5, 3, 2)
+  lambdas <- c(0.5, 0)
+  mus     <- c(0.4, 0)
   pars_m <- c(lambdas[1], mus[1])
   pars_s <- c(lambdas[2], mus[2])
 
-  Pc1 <- sls::pc_1shift(
+  pc1 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 1
   )
-  Pc3 <- sls::pc_1shift(
+  pc3 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 3
   )
-  testthat::expect_true(Pc1 >= Pc3)
+  testthat::expect_true(pc1 >= pc3)
 
   #test2
-  brts_m      <- c(13, 8, 3)
-  brts_s      <- c(5)
-  lambdas    <- c(0.5, 0.7)
-  mus        <- c(0.4, 0.2)
+  brts_m  <- c(13, 8, 3)
+  brts_s  <- c(5)
+  lambdas <- c(0.5, 0.7)
+  mus     <- c(0.4, 0.2)
   pars_m <- c(lambdas[1], mus[1])
   pars_s <- c(lambdas[2], mus[2])
 
-  Pc1 <- sls::pc_1shift(
+  pc1 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 1
   )
-  Pc3 <- sls::pc_1shift(
+  pc3 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 3
   )
-  testthat::expect_true(Pc1 >= Pc3)
+  testthat::expect_true(pc1 >= pc3)
 
   #test3
-  brts_m      <- c(10, 9, 6, 4, 1)
-  brts_s      <- c(5, 3, 2.8)
-  lambdas    <- c(0.4, 0.6)
-  mus        <- c(0.3, 0.1)
+  brts_m  <- c(10, 9, 6, 4, 1)
+  brts_s  <- c(5, 3, 2.8)
+  lambdas <- c(0.4, 0.6)
+  mus     <- c(0.3, 0.1)
   pars_m <- c(lambdas[1], mus[1])
   pars_s <- c(lambdas[2], mus[2])
 
-  Pc1 <- sls::pc_1shift(
+  pc1 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 1
   )
-  Pc3 <- sls::pc_1shift(
+  pc3 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 3
   )
-  testthat::expect_true(Pc1 >= Pc3)
+  testthat::expect_true(pc1 >= pc3)
 })
 
-test_that("If lambda2=mu2=0 (inert subclade), Pc1 equal to Pc3 (PS = 1)", {
+test_that("If lambda2=mu2=0 (inert subclade), pc1 equal to pc3 (PS = 1)", {
 
   #test1
-  brts_m      <- c(10, 9, 1)
-  brts_s      <- c(5, 3, 2)
-  lambdas    <- c(0.5, 0)
-  mus        <- c(0.4, 0)
+  brts_m  <- c(10, 9, 1)
+  brts_s  <- c(5, 3, 2)
+  lambdas <- c(0.5, 0)
+  mus     <- c(0.4, 0)
   pars_m <- c(lambdas[1], mus[1])
   pars_s <- c(lambdas[2], mus[2])
 
-  Pc1 <- sls::pc_1shift(
+  pc1 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 1
   )
-  Pc3 <- sls::pc_1shift(
+  pc3 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 3
   )
-  testthat::expect_true(Pc1 == Pc3)
+  testthat::expect_true(pc1 == pc3)
 
   #test2
-  brts_m      <- c(13, 8, 3)
-  brts_s      <- c(5)
-  lambdas    <- c(0.5, 0)
-  mus        <- c(0.4, 0)
+  brts_m  <- c(13, 8, 3)
+  brts_s  <- c(5)
+  lambdas <- c(0.5, 0)
+  mus     <- c(0.4, 0)
   pars_m <- c(lambdas[1], mus[1])
   pars_s <- c(lambdas[2], mus[2])
 
-  Pc1 <- sls::pc_1shift(
+  pc1 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 1
   )
-  Pc3 <- sls::pc_1shift(
+  pc3 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 3
   )
-  testthat::expect_true(Pc1 == Pc3)
+  testthat::expect_true(pc1 == pc3)
 
   #test3
-  brts_m      <- c(10, 9, 6, 4, 1)
-  brts_s      <- c(5, 3, 2.8)
-  lambdas    <- c(0.4, 0)
-  mus        <- c(0.3, 0)
+  brts_m  <- c(10, 9, 6, 4, 1)
+  brts_s  <- c(5, 3, 2.8)
+  lambdas <- c(0.4, 0)
+  mus     <- c(0.3, 0)
   pars_m <- c(lambdas[1], mus[1])
   pars_s <- c(lambdas[2], mus[2])
 
-  Pc1 <- sls::pc_1shift(
+  pc1 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 1
   )
-  Pc3 <- sls::pc_1shift(
+  pc3 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
     cond = 3
   )
-  testthat::expect_true(Pc1 == Pc3)
+  testthat::expect_true(pc1 == pc3)
 })
 
-test_that("sls algorithm yields the same Pc1 provided by DDD", {
+test_that("sls algorithm yields the same pc1 provided by DDD", {
 
-  diff_Pc_vs_DDD <- function(
+  diff_pc_vs_ddd <- function(
     pars_m,
     pars_s,
     cond = 1,
@@ -216,7 +215,7 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
       pars2_0 <- c(res, 1,    0, tsplit, 0, n_0)
       pars2_1 <- c(res, 1, cond, tsplit, 0, n_0)
 
-      DDDloglik0 <- DDD::dd_KI_loglik(
+      ddd_loglik0 <- DDD::dd_KI_loglik(
         pars1 = pars1,
         pars2 = pars2_0,
         brtsM = brts_m,
@@ -224,7 +223,7 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
         missnumspec = missnumspec
       )
 
-      DDDloglik1 <- DDD::dd_KI_loglik(
+      ddd_loglik1 <- DDD::dd_KI_loglik(
         pars1 = pars1,
         pars2 = pars2_1,
         brtsM = brts_m,
@@ -232,7 +231,7 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
         missnumspec = missnumspec
       )
 
-      Pc <- sls::pc_1shift(
+      pc <- sls::pc_1shift(
         pars_m = pars_m,
         pars_s = pars_s,
         brts_m = brts_m,
@@ -240,9 +239,9 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
         cond = cond
       )
 
-      DDD_Pc <- (DDDloglik0 - DDDloglik1)
+      ddd_pc <- (ddd_loglik0 - ddd_loglik1)
       out <- abs(
-        (exp(DDD_Pc) - exp(log(Pc))) / exp(DDD_Pc)
+        (exp(ddd_pc) - exp(log(pc))) / exp(ddd_pc)
       )
       res <- 2 * res
     }
@@ -256,7 +255,7 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
   t_d <- 4.8
   precision_threshold <- 1e-3
 
-  test <- diff_Pc_vs_DDD(
+  test <- diff_pc_vs_ddd(
     cond = 1,
     seed = 2,
     pars_m = pars_m,
@@ -275,7 +274,7 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
   if (packageVersion(pkg = "DDD") >= 3.8) {
 
     # test cond == 4
-    test <- diff_Pc_vs_DDD(
+    test <- diff_pc_vs_ddd(
       cond = 4,
       seed = 2,
       pars_m = pars_m,
@@ -289,5 +288,4 @@ test_that("sls algorithm yields the same Pc1 provided by DDD", {
       test < precision_threshold || is.infinite(test)
     )
   }
-
 })

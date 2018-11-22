@@ -1,28 +1,29 @@
-# rm(list = ls()); s = 1; simpars = c(0.3, 0.1, 0.6, 0.05); cond = 1; initparsopt = c(0.4, 0.15, 0.5, 0.12) # nolint test parameters
+# rm(list = ls()); seed = 1; sim_pars = c(0.3, 0.1, 0.6, 0.05); cond = 1; initparsopt = c(0.4, 0.15, 0.5, 0.12) # nolint test parameters
 
 #' @title Internal sls function
 #' @description Internal sls function.
+#' @inheritParams default_params_doc
 #' @details This is not to be called by the user.
 #' @export
 sls_ml_cluster <- function(
-  s,
-  simpars = c(0.3, 0.1, 0.6, 0.05),
+  seed,
+  sim_pars = c(0.3, 0.1, 0.6, 0.05),
   t_d  = 4.8,
   cond = 1,
   initparsopt = c(0.5, 0.3, 0.5, 0.3),
   age = 10,
   optimmethod = "simplex",
   tolerance = 1E-2,
-  fun = sls::loglik_slsP
+  fun = sls::loglik_sls_p
 ) {
   library(sls)
   fun <- eval(fun)
-  s <- as.numeric(s)
-  simpars <- as.numeric(simpars)
+  seed <- as.numeric(seed)
+  sim_pars <- as.numeric(sim_pars)
   cond <- as.numeric(cond)
 
-  print(s)
-  set.seed(s)
+  print(seed)
+  set.seed(seed)
   # optimmethod <- 'subplex' or 'simplex' # nolint
   # pars <- c(0.3, 0.1, 0.6, 0.05) # nolint
 
@@ -49,7 +50,7 @@ sls_ml_cluster <- function(
   parsfix   <- c(Inf, Inf, t_d)
   idparsnoshift <- NULL
 
-  pars1 <- c(simpars[1], simpars[2], Inf, simpars[3], simpars[4], Inf, t_d)
+  pars1 <- c(sim_pars[1], sim_pars[2], Inf, sim_pars[3], sim_pars[4], Inf, t_d)
   sim   <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
   brts_m <- sim$brts[[1]]; brts_s <- sim$brts[[2]]; brts_m; brts_s
   NM <- (soc - 1) + length(brts_m)
@@ -76,7 +77,7 @@ sls_ml_cluster <- function(
   datapath <- file.path(simpath, "data")
   datafile_name <- file.path(
     datapath,
-    paste0("sim_", s, ".RData")
+    paste0("sim_", seed, ".RData")
   )
   if (.Platform$OS.type != "windows" & !file.exists(datafile_name)) {
     if (!file.exists(datapath)) {
@@ -85,7 +86,7 @@ sls_ml_cluster <- function(
     save(sim, file = datafile_name)
   }
 
-  file_name <- paste0(simpath, "/", model1, "_MLE", s, ".txt")
+  file_name <- paste0(simpath, "/", model1, "_MLE", seed, ".txt")
   if (!file.exists(file_name)) {
     MLE_1 <- unlist(
       sls::sls_ml(
@@ -105,10 +106,10 @@ sls_ml_cluster <- function(
     )
 
     names(MLE_1) <- outnames
-    out_1 <- c(MLE_1, NM, NS, s);
+    out_1 <- c(MLE_1, NM, NS, seed);
     names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
 
-    write.table(matrix(out_1, ncol = length(out_1)), file = file_name,
+    utils::write.table(matrix(out_1, ncol = length(out_1)), file = file_name,
                 append = TRUE, row.names = FALSE, col.names = FALSE, sep = ",")
   }
 
@@ -117,21 +118,22 @@ sls_ml_cluster <- function(
 
 #' @title Internal sls function
 #' @description Internal sls function.
+#' @inheritParams default_params_doc
 #' @details This is not to be called by the user.
 #' @export
 sls_ml_cluster2 <- function(
-  s,
-  simpars = c(0.3, 0.1, 0.6, 0.05),
+  seed,
+  sim_pars = c(0.3, 0.1, 0.6, 0.05),
   t_d  = 4.8,
   cond = 1,
   initparsopt = c(0.5, 0.3, 0.5, 0.3),
   age = 10,
   optimmethod = "simplex",
   tolerance = 1E-2,
-  fun1 = sls::loglik_slsP,
-  fun2 = sls::loglik_DDD
+  fun1 = sls::loglik_sls_p,
+  fun2 = sls::loglik_ddd
 ) {
-  set.seed(s)
+  set.seed(seed)
   # optimmethod <- 'subplex' or 'simplex' #nolint
   # pars <- c(0.3, 0.1, 0.6, 0.05) # nolint
 
@@ -158,7 +160,7 @@ sls_ml_cluster2 <- function(
   parsfix <- c(Inf, Inf, t_d)
   idparsnoshift <- NULL
 
-  pars1 <- c(simpars[1], simpars[2], Inf, simpars[3], simpars[4], Inf, t_d)
+  pars1 <- c(sim_pars[1], sim_pars[2], Inf, sim_pars[3], sim_pars[4], Inf, t_d)
   sim   <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
   brts_m <- sim$brts[[1]]; brts_s <- sim$brts[[2]]; brts_m; brts_s
   NM <- (soc - 1) + length(brts_m)
@@ -186,7 +188,7 @@ sls_ml_cluster2 <- function(
   if (.Platform$OS.type != "windows") {
     filename <- file.path(
       datapath,
-      paste0("sim_", s, ".RData")
+      paste0("sim_", seed, ".RData")
     )
     save(sim, file = filename)
   }
@@ -210,14 +212,14 @@ sls_ml_cluster2 <- function(
   )
 
   names(MLE_1) <- outnames
-  out_1 <- c(MLE_1, NM, NS, s);
+  out_1 <- c(MLE_1, NM, NS, seed);
   names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
-  write.table(
+  utils::write.table(
     matrix(
       out_1,
       ncol = length(out_1)
     ),
-    file = paste0(simpath, "/", model1, "_MLE", s, ".txt"),
+    file = paste0(simpath, "/", model1, "_MLE", seed, ".txt"),
     append = TRUE,
     row.names = FALSE,
     col.names = FALSE,
@@ -242,11 +244,11 @@ sls_ml_cluster2 <- function(
   )
 
   names(MLE_2) <- outnames
-  out_2 <- c(MLE_2, NM, NS, s);
+  out_2 <- c(MLE_2, NM, NS, seed);
   names(out_2) <- c(names(MLE_2), "tips_M", "tips_S", "tree_id")
-  write.table(
+  utils::write.table(
     matrix(out_2, ncol = length(out_2)),
-    file = paste0(simpath, "/", model2, "_MLE", s, ".txt"),
+    file = paste0(simpath, "/", model2, "_MLE", seed, ".txt"),
     append = TRUE,
     row.names = FALSE,
     col.names = FALSE,

@@ -4,9 +4,13 @@
 \alias{pc_1shift}
 \title{sls-conditioning}
 \usage{
-pc_1shift(pars_m, pars_s, brts_m, brts_s, cond, nmax = 100, n_0 = 2)
+pc_1shift(pars_m, pars_s, brts_m, brts_s, cond, n_max = 100, n_0 = 2)
 }
 \arguments{
+\item{pars_m}{parameters for the main clade (lambda, mu)}
+
+\item{pars_s}{parameters for the sub clade (lambda, mu)}
+
 \item{brts_m}{branching times for the Main-clade}
 
 \item{brts_s}{branching times for the Sub-clade}
@@ -15,13 +19,16 @@ pc_1shift(pars_m, pars_s, brts_m, brts_s, cond, nmax = 100, n_0 = 2)
 \itemize{
   \item cond = 0 no conditiong;
   \item cond = 1 conditions on the survival of crown descendents;
-  \item cond = 2 conditions on the survival of subclade and
-   on the other crown descendents in the main clade;
+  \item cond = 2 not available;
   \item cond = 3 conditions on the survival of the subclade and
   both crown descendents in the main clade;
+  \item cond = 4 conditions on the survival of subclade and
+  on the other crown descendents in the main clade;
 }}
 
-\item{nmax}{maximum number of lineages to consider}
+\item{n_max}{maximum number of lineages to consider}
+
+\item{n_0}{starting number of lineages}
 }
 \value{
 Three different conditioning probabilities

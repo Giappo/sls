@@ -1,73 +1,85 @@
-# MAIN SCRIPT ----
+#' @title Simulate an sls process
+#' @description Simulate an sls process
+#' @inheritParams default_params_doc
+#' @return  l_1 table and brts
+#' @author Giovanni Laudanno
 #' @export
 sls_sim <- function(
   lambdas,
   mus,
-  Ks = c(Inf, Inf),
+  ks = c(Inf, Inf),
   cond = 3,
-  LS = sls:::sls_sim.get_standard_LS(),
+  l_2 = sls::sls_sim_get_standard_l_2(),
   l_matrix_size = 1e4
 ) {
-  pars <- sls_sim.get_pars(
+
+  # create the parameters
+  pars <- sls_sim_get_pars(
     lambdas = lambdas,
     mus = mus,
-    Ks = Ks
+    ks = ks
   )
   good_sim <- 0
   while (!good_sim) {
-    data <- sls_sim.initialize_LL_new_clade(clade = 0); clade <- 1;
-    for (clade in LS$clade_id) {
-      data <- sls_sim.initialize_LL_new_clade(
+
+    # initialize data
+    data <- sls_sim_initialize_data_new_clade(clade = 0, l_2 = l_2); clade <- 1;
+    for (clade in l_2$clade_id) {
+
+      # initialize data for the clade
+      data <- sls_sim_initialize_data_new_clade(
         data = data,
         clade = clade,
         pars = pars,
-        LS = LS,
+        l_2 = l_2,
         l_matrix_size = l_matrix_size
       )
-      t <- sls_sim.initialize_t_new_clade(
-        data = data,
-        clade = clade
-      )
-      while (t > 0) {
-        deltas <- sls_sim.sample_deltas(
+      while (data$t[[clade]] > 0) {
+
+        # sample delta_n and delta_t
+        deltas <- sls_sim_sample_deltas(
           data = data,
           clade = clade,
           pars = pars
-        ); delta_n <- deltas$delta_n; delta_t <- deltas$delta_t; deltas
-        event <- sls_sim.decide_event(
+        ); deltas
+
+        # decide the event
+        event <- sls_sim_decide_event(
           data = data,
           clade = clade,
-          LS = LS,
-          delta_n = delta_n,
-          delta_t = delta_t,
-          t = t
-        )
-        output <- sls_sim.use_event(
+          l_2 = l_2,
+          deltas = deltas
+        ); event
+
+        # modify data accordingly
+        output <- sls_sim_use_event(
           data = data,
           clade = clade,
-          LS = LS,
+          l_2 = l_2,
           event = event,
-          t = t - deltas$delta_t
-        )
-        t <- output$t
-        data <- output$data
+          deltas = deltas
+        ); output
+        data <- output
       }
     }
-    good_sim <- sls_sim.conditioning(
+
+    # is the simulation in agreement with the conditioning?
+    good_sim <- sls_sim_conditioning(
       data = data,
-      LS = LS,
+      l_2 = l_2,
       cond = cond
     ); good_sim
   }
 
-  brts <- sls_sim.get_brts(
+  # retrieve branching times info
+  brts <- sls_sim_get_brts(
     data = data,
-    LS = LS
+    l_2 = l_2
   )
 
   return(
     list(
-      l_tables = data$LL,
+      l_tables = data$l_1,
       brts = brts
     )
   )

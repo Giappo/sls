@@ -4,18 +4,25 @@
 \alias{loglik_bisse}
 \title{BISSE loglik}
 \usage{
-loglik_bisse(pars, brts, n_0 = 2, tds = NULL, D0s = NULL, tp = 0)
+loglik_bisse(pars, brts, n_0 = 2, t_ds = NULL, d_0s = NULL,
+  t_p = 0)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
 \itemize{
-  \item pars[1] is lambdaM, i.e. speciation rate of the main clade;
-  \item pars[2] is muM, i.e. extinction rate of the main clade;
-  \item pars[3] is lambdaS, i.e. speciation rate of the sub clade;
-  \item pars[4] is muS, i.e. extinction rate of the sub clade;
+  \item pars[1] is lambda, i.e. speciation rate;
+  \item pars[2] is mu, i.e. extinction rate;
 }}
 
 \item{brts}{branchin times}
+
+\item{n_0}{starting number of lineages}
+
+\item{t_ds}{decoupling times}
+
+\item{d_0s}{starting values for BiSSE's D functions}
+
+\item{t_p}{present time}
 }
 \value{
 loglik

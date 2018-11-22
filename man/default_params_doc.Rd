@@ -5,27 +5,72 @@
 \title{This function does nothing. It is intended to inherit is parameters'
 documentation.}
 \usage{
-default_params_doc(lambda, mu, t, n, tbar, pars, brts, brts_m, brts_s,
-  nmax, matrix_size, lx, ddep, k, cond, vec)
+default_params_doc(lambda, mu, lambdas, mus, ks, l_0, l_1, l_2,
+  l_matrix_size, data, clade, delta_n, delta_t, deltas, event, final_time,
+  L, l_matrix, pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, n_max,
+  cond, t, t_c, t_d, ts, times, tbar, n, fun, fun1, fun2, k, vec, D0, D_0,
+  d_0, D0s, D_0s, d_0s, E0, E_0, e_0, t_0, tf, t_f, td, t_p, tds, t_ds,
+  shift_time, log_scale, lambdaterms, message, verbose, startpars,
+  loglik_function, matrix_size, sim_pars, lx, ddep, trparsopt, trparsfix,
+  idparsopt, idparsfix, idparsnoshift, initparsopt, optimmethod, tolerance,
+  pars2, seed, age, crown_age, missnumspec)
 }
 \arguments{
 \item{lambda}{speciation rate}
 
 \item{mu}{extinction rate}
 
-\item{t}{time}
+\item{lambdas}{speciation rates, for all the clades}
 
-\item{n}{number of lineages}
+\item{mus}{extinction rate, for all the clades}
 
-\item{tbar}{time left from shift time to the present}
+\item{ks}{carrying capacities, for all the clades}
+
+\item{l_0}{the l table, for a single clade}
+
+\item{l_1}{the collection of all the l tables, for all the clades}
+
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
+
+\item{l_matrix_size}{the initial length of the l matrix. It will be
+increased if necessary}
+
+\item{data}{contains all the information about the simulated process}
+
+\item{clade}{the id of the clade}
+
+\item{delta_n}{in the Doob-Gillespie algorithm,
+the change in number of species}
+
+\item{delta_t}{in the Doob-Gillespie algorithm,
+the waiting time for the next event to occur}
+
+\item{deltas}{in the Doob-Gillespie algorithm,
+the collection of delta_n and delta_t, which are, respectively,
+the change in number of species and
+the waiting time for the next event to occur}
+
+\item{event}{the event occurring in the simulated process at a given time}
+
+\item{final_time}{the final time that you want to consider for the survival
+of the species considered in the l table}
+
+\item{L}{the l table}
+
+\item{l_matrix}{the l table}
 
 \item{pars}{parameters of the likelihood functions:
 \itemize{
-  \item pars[1] is lambdaM, i.e. speciation rate of the main clade;
-  \item pars[2] is muM, i.e. extinction rate of the main clade;
-  \item pars[3] is lambdaS, i.e. speciation rate of the sub clade;
-  \item pars[4] is muS, i.e. extinction rate of the sub clade;
+  \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
+  \item pars[2] is mu_m, i.e. extinction rate of the main clade;
+  \item pars[3] is lambda_s, i.e. speciation rate of the sub clade;
+  \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
 }}
+
+\item{pars_m}{parameters for the main clade (lambda, mu)}
+
+\item{pars_s}{parameters for the sub clade (lambda, mu)}
 
 \item{brts}{branchin times}
 
@@ -33,27 +78,126 @@ default_params_doc(lambda, mu, t, n, tbar, pars, brts, brts_m, brts_s,
 
 \item{brts_s}{branching times for the Sub-clade}
 
-\item{nmax}{maximum number of lineages to consider}
+\item{n_0}{starting number of lineages}
 
-\item{matrix_size}{size of the matrix}
-
-\item{lx}{size of the matrix}
-
-\item{ddep}{specifies the kind of diversity-dependent model you want to use}
-
-\item{k}{frequencies in discrete fourier transform}
+\item{n_max}{maximum number of lineages to consider}
 
 \item{cond}{type of conditioning:
 \itemize{
   \item cond = 0 no conditiong;
   \item cond = 1 conditions on the survival of crown descendents;
-  \item cond = 2 conditions on the survival of subclade and
-   on the other crown descendents in the main clade;
+  \item cond = 2 not available;
   \item cond = 3 conditions on the survival of the subclade and
   both crown descendents in the main clade;
+  \item cond = 4 conditions on the survival of subclade and
+  on the other crown descendents in the main clade;
 }}
 
+\item{t}{time}
+
+\item{t_c}{crown time}
+
+\item{t_d}{decoupling time}
+
+\item{ts}{times}
+
+\item{times}{times}
+
+\item{tbar}{time left from shift time to the present}
+
+\item{n}{number of lineages}
+
+\item{fun}{a function}
+
+\item{fun1}{a function}
+
+\item{fun2}{another function}
+
+\item{k}{frequencies in the Discrete Fourier Transform (DFT)}
+
 \item{vec}{a vector or a matrix to be transformed}
+
+\item{D0}{starting value for BiSSE's D function}
+
+\item{D_0}{starting value for BiSSE's D function}
+
+\item{d_0}{starting value for BiSSE's D function}
+
+\item{D0s}{starting values for BiSSE's D functions}
+
+\item{D_0s}{starting values for BiSSE's D functions}
+
+\item{d_0s}{starting values for BiSSE's D functions}
+
+\item{E0}{starting value for BiSSE's E function}
+
+\item{E_0}{starting value for BiSSE's E function}
+
+\item{e_0}{starting value for BiSSE's E function}
+
+\item{t_0}{starting time}
+
+\item{tf}{ending time}
+
+\item{t_f}{ending time}
+
+\item{td}{decoupling time}
+
+\item{t_p}{present time}
+
+\item{tds}{decoupling times}
+
+\item{t_ds}{decoupling times}
+
+\item{shift_time}{the time of the shift}
+
+\item{log_scale}{set it to TRUE if you desire the output in log form}
+
+\item{lambdaterms}{set it to TRUE if you desire the powers of lambda
+in the likelihood}
+
+\item{message}{the message to print}
+
+\item{verbose}{set it to TRUE if you want to see the outputs on screen}
+
+\item{startpars}{parameters to start from for the search of the likelihood
+maximum}
+
+\item{loglik_function}{the loglik function you want to use}
+
+\item{matrix_size}{size of the matrix}
+
+\item{sim_pars}{parameters of the simulation}
+
+\item{lx}{size of the matrix}
+
+\item{ddep}{see DDD package}
+
+\item{trparsopt}{see DDD package}
+
+\item{trparsfix}{see DDD package}
+
+\item{idparsopt}{see DDD package}
+
+\item{idparsfix}{see DDD package}
+
+\item{idparsnoshift}{see DDD package}
+
+\item{initparsopt}{see DDD package}
+
+\item{optimmethod}{see DDD package}
+
+\item{tolerance}{see DDD package}
+
+\item{pars2}{see DDD package}
+
+\item{seed}{the seed}
+
+\item{age}{the age of the phylogeny}
+
+\item{crown_age}{the age of the phylogeny}
+
+\item{missnumspec}{number of missing (unseen) species in the phylogeny}
 }
 \description{
 This function does nothing. It is intended to inherit is parameters'

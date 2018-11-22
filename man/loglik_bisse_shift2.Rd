@@ -4,19 +4,30 @@
 \alias{loglik_bisse_shift2}
 \title{BISSE loglik shift}
 \usage{
-loglik_bisse_shift2(pars, brts, n_0 = 2, t0 = 0, td, LOG = TRUE,
-  lambdaterms = TRUE)
+loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, t_d,
+  log_scale = TRUE, lambdaterms = TRUE)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
 \itemize{
-  \item pars[1] is lambdaM, i.e. speciation rate of the main clade;
-  \item pars[2] is muM, i.e. extinction rate of the main clade;
-  \item pars[3] is lambdaS, i.e. speciation rate of the sub clade;
-  \item pars[4] is muS, i.e. extinction rate of the sub clade;
+  \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
+  \item pars[2] is mu_m, i.e. extinction rate of the main clade;
+  \item pars[3] is lambda_s, i.e. speciation rate of the sub clade;
+  \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
 }}
 
 \item{brts}{branchin times}
+
+\item{n_0}{starting number of lineages}
+
+\item{t_0}{starting time}
+
+\item{t_d}{decoupling time}
+
+\item{log_scale}{set it to TRUE if you desire the output in log form}
+
+\item{lambdaterms}{set it to TRUE if you desire the powers of lambda
+in the likelihood}
 }
 \value{
 loglik

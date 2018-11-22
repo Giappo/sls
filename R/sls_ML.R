@@ -1,22 +1,23 @@
 #' @title sls Maximum Likelihood
 #' @description Calculates ML.
+#' @inheritParams default_params_doc
 #' @return  best parameters
 #' @export
 sls_ml <- function(
-  loglik_function = sls::loglik_slsP,
+  loglik_function = sls::loglik_sls_p,
   brts_m,
   brts_s,
   startpars = c(0.5, 0.3, 0.5, 0.3),
-  cond = 1,
-  n_0 = 2
+  cond = 3,
+  n_0 = 2,
+  verbose = 1
 ) {
-  tol <- c(0.001, 1e-04, 1e-06)
-  maxiter <- 1000 * round(1.25 ^ length(pars))
-  changeloglikifnoconv <- FALSE
-  optimmethod <- "subplex"
+  if (any(startpars < 0)) {
+    stop("you cannot start from negative parameters")
+  }
   failpars <- rep(-1, length(startpars))
+  par_names <- c("lambda_s", "mu_m", "lambda_s", "mu_s")
   failout  <- data.frame(t(failpars), loglik = -1, df = -1, conv = -1)
-
   pars <- startpars
 
   #Rampal's transformation
@@ -35,10 +36,16 @@ sls_ml <- function(
   }
 
   initloglik <- fun(pars); pars; initloglik
-  cat("The loglikelihood for the initial parameter values is", initloglik, "\n")
-  flush.console()
+  cat2(
+    message = paste0("The loglikelihood for the initial parameter values is", initloglik, "\n"), # nolint
+    verbose = verbose
+  )
+  utils::flush.console()
   if (initloglik == -Inf) {
-    cat("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n")
+    cat2(
+      message = paste0("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n"), # nolint
+      verbose = verbose
+    )
     out2 <- failout
   } else {
     out <- subplex::subplex(
@@ -46,8 +53,9 @@ sls_ml <- function(
       fn = function(x) -fun(x)
     ); out; fun(out$par)
     if (out$conv > 0) {
-      cat(
-        "Optimization has not converged. Try again with different initial values.\n" # no lint
+      cat2(
+        "Optimization has not converged. Try again with different initial values.\n", # nolint
+        verbose = verbose
       )
       out2 <- data.frame(
         t(failpars),
@@ -58,17 +66,29 @@ sls_ml <- function(
     } else {
       outpars2 <- as.numeric(unlist(out$par))
       outpars <- outpars2 / (1 - outpars2)
+      names(outpars) <- par_names
+
+      out2 <- data.frame(
+        row.names = "results",
+        lambda_m = outpars[1],
+        mu_m = outpars[2],
+        lambda_s = outpars[3],
+        mu_s = outpars[4],
+        loglik = out$value,
+        df = length(startpars),
+        conv = unlist(out$conv)
+      )
     }
   }
 
-  invisible(outpars)
+  invisible(out2)
 }
 
   #' #' @title sls Maximum Likelihood
   #' #' @description Calculates ML.
   #' #' @details best parameters
   #' #' @export
-  #' sls_ML <- function(loglik_function = sls::loglik_slsP,
+  #' sls_ML <- function(loglik_function = sls::loglik_sls_p,
   #'                     brts_m, brts_s, tsplit,
   #'                     initparsopt = c(0.5, 0.1, 2 * (1 + length(brts_m) + missnumspec[1]), 2 * (1 + length(brts_s) +
   #'                     missnumspec[length(missnumspec)]), (tsplit + max(brts_s))/2),
@@ -155,7 +175,7 @@ sls_ml <- function(
   #'         }
   #'         cat("You are not shifting", noshiftstr, "\n")
   #'         cat("Optimizing the likelihood - this may take a while.", "\n")
-  #'         flush.console()
+  #'         utils::flush.console()
   #'
   #'         #Rampal's transformation
   #'         trparsopt = initparsopt/(1 + initparsopt)
@@ -175,7 +195,7 @@ sls_ml <- function(
   #'                                                pars2 = pars2, brts_m = brts_m, brts_s = brts_s,
   #'                                                missnumspec = missnumspec); initloglik
   #'         cat("The loglikelihood for the initial parameter values is", initloglik, "\n")
-  #'         flush.console()
+  #'         utils::flush.console()
   #'         if (initloglik == -Inf)
   #'         {
   #'           cat("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n")
