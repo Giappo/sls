@@ -36,7 +36,6 @@
 #' @param fun2 another function
 #' @param k frequencies in the Discrete Fourier Transform (DFT)
 #' @param ks carrying capacities, for all the clades
-#' @param L the l table
 #' @param l_0 the l table, for a single clade
 #' @param l_1 the collection of all the l tables, for all the clades
 #' @param l_2 the matrix containing the information about how the subclades are
