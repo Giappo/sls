@@ -26,11 +26,11 @@ loglik_sls_p_nodiv <- function(
     all(sign(brts_s1 * !is.null(brts_s1)) == sign(t_d * !is.null(brts_s1)))
   )
 
-  BRTSM <- rbind(
+  brts_matrix <- rbind(
     brts_m1,
     rep(1, length(brts_m1))
-  ); dim(BRTSM) <- c(2, length(brts_m1))
-  TD <- c(t_d, -1); dim(TD) <- c(2, 1)
+  ); dim(brts_matrix) <- c(2, length(brts_m1))
+  t_d_matrix <- c(t_d, -1); dim(t_d_matrix) <- c(2, 1)
 
   if (n_0 == 2) {
     brts_m2 <- c(brts_m1[1], brts_m1)
@@ -38,11 +38,11 @@ loglik_sls_p_nodiv <- function(
     brts_m2 <- brts_m1
   }
   ts_m_pre_shift  <- brts_m2[brts_m2 > t_d] - t_d; ts_m_pre_shift
-  ts_m_post_shift <- brts_m2[brts_m2 < t_d]     ; ts_m_post_shift
+  ts_m_post_shift <- brts_m2[brts_m2 < t_d]; ts_m_post_shift
   if (length(ts_m_post_shift) == 0) {
     ts_m_post_shift <- 0
   }
-  if (length(ts_m_pre_shift ) == 0) {
+  if (length(ts_m_pre_shift) == 0) {
     cat("There are no branching times before the shift"); return(-Inf)
   }
 
@@ -140,11 +140,13 @@ loglik_sls_q_nodiv <- function(
 
   #LIKELIHOOD INTEGRATION
   clade <- 0 #clade == 1 is the main clade, clade == 2 is the subclade
-  while ( (clade <- clade + 1) <= n_clades ) {
+  while (
+    (clade <- clade + 1) <= n_clades
+  ) {
     #SETTING CLADE CONDITIONS
     lambda <- lambdas[clade]
     mu     <- mus[clade]
-    K      <- ks[clade]
+    kappa  <- ks[clade]
     soc    <- n_0s[clade]
     max_t  <- length(brts_list[[clade]])
     brts   <- brts_list[[clade]]
@@ -165,7 +167,7 @@ loglik_sls_q_nodiv <- function(
         q_t[t, ] <- q_t[(t - 1), ]
       } else {
         transition_matrix <- DDD::dd_loglik_M_aux(
-          pars = c(lambda, mu, K),
+          pars = c(lambda, mu, kappa),
           lx = n_max + 1,
           k = k,
           ddep = 1
@@ -202,10 +204,10 @@ loglik_sls_q_nodiv <- function(
 
     #Selecting the state I am interested in
     vm <- choose(k + missnumspec[clade], k) ^ -1
-    P  <- vm * q_t[t, (missnumspec[clade] + 1)]
+    p_m  <- vm * q_t[t, (missnumspec[clade] + 1)]
 
     #Removing C and D effects from the LL
-    loglik <- log(P) - sum(log(C)) - sum(log(D))
+    loglik <- log(p_m) - sum(log(C)) - sum(log(D))
 
     #Various checks
     loglik <- as.numeric(loglik)

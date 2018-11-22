@@ -1,16 +1,16 @@
 context("convolutions")
 
-test_that("DFT is a unitary operator", {
+test_that("dft is a unitary operator", {
   vec <- 1:30
   testthat::expect_true(
-    all(unlist(Re(sls::IDFT(sls::DFT(vec)))) - vec < 1e-10)
+    all(unlist(Re(sls::idft(sls::dft(vec)))) - vec < 1e-10)
   )
   testthat::expect_true(
-    all(unlist(Re(sls::DFT(sls::IDFT(vec)))) - vec < 1e-10)
+    all(unlist(Re(sls::dft(sls::idft(vec)))) - vec < 1e-10)
   )
 })
 
-test_that("DFT yields the same result as the standard convolution", {
+test_that("dft yields the same result as the standard convolution", {
   lambda <- 0.3
   mu <- 0.1
   times <- c(10, 8, 7, 3)

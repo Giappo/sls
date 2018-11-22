@@ -7,13 +7,13 @@ documentation.}
 \usage{
 default_params_doc(lambda, mu, lambdas, mus, ks, l_0, l_1, l_2,
   l_matrix_size, data, clade, delta_n, delta_t, deltas, event, final_time,
-  L, l_matrix, pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, n_max,
-  cond, t, t_c, t_d, ts, times, tbar, n, fun, fun1, fun2, k, vec, D0, D_0,
-  d_0, D0s, D_0s, d_0s, E0, E_0, e_0, t_0, tf, t_f, td, t_p, tds, t_ds,
-  shift_time, log_scale, lambdaterms, message, verbose, startpars,
-  loglik_function, matrix_size, sim_pars, lx, ddep, trparsopt, trparsfix,
-  idparsopt, idparsfix, idparsnoshift, initparsopt, optimmethod, tolerance,
-  pars2, seed, age, crown_age, missnumspec)
+  l_matrix, pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, n_max, cond,
+  t, t_c, t_d, ts, times, tbar, n, fun, fun1, fun2, k, vec, d_0, d_0s, e_0,
+  t_0, tf, t_f, td, t_p, tds, t_ds, shift_time, log_scale, lambdaterms,
+  message, verbose, startpars, loglik_function, matrix_size, sim_pars, lx,
+  ddep, trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
+  initparsopt, optimmethod, tolerance, pars2, seed, age, crown_age,
+  missnumspec)
 }
 \arguments{
 \item{lambda}{speciation rate}
@@ -55,8 +55,6 @@ the waiting time for the next event to occur}
 
 \item{final_time}{the final time that you want to consider for the survival
 of the species considered in the l table}
-
-\item{L}{the l table}
 
 \item{l_matrix}{the l table}
 
@@ -117,21 +115,9 @@ of the species considered in the l table}
 
 \item{vec}{a vector or a matrix to be transformed}
 
-\item{D0}{starting value for BiSSE's D function}
-
-\item{D_0}{starting value for BiSSE's D function}
-
 \item{d_0}{starting value for BiSSE's D function}
 
-\item{D0s}{starting values for BiSSE's D functions}
-
-\item{D_0s}{starting values for BiSSE's D functions}
-
 \item{d_0s}{starting values for BiSSE's D functions}
-
-\item{E0}{starting value for BiSSE's E function}
-
-\item{E_0}{starting value for BiSSE's E function}
 
 \item{e_0}{starting value for BiSSE's E function}
 
@@ -198,6 +184,20 @@ maximum}
 \item{crown_age}{the age of the phylogeny}
 
 \item{missnumspec}{number of missing (unseen) species in the phylogeny}
+
+\item{D0}{starting value for BiSSE's D function}
+
+\item{D_0}{starting value for BiSSE's D function}
+
+\item{D0s}{starting values for BiSSE's D functions}
+
+\item{D_0s}{starting values for BiSSE's D functions}
+
+\item{E0}{starting value for BiSSE's E function}
+
+\item{E_0}{starting value for BiSSE's E function}
+
+\item{L}{the l table}
 }
 \description{
 This function does nothing. It is intended to inherit is parameters'

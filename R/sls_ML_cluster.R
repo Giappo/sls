@@ -53,8 +53,8 @@ sls_ml_cluster <- function(
   pars1 <- c(sim_pars[1], sim_pars[2], Inf, sim_pars[3], sim_pars[4], Inf, t_d)
   sim   <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
   brts_m <- sim$brts[[1]]; brts_s <- sim$brts[[2]]; brts_m; brts_s
-  NM <- (soc - 1) + length(brts_m)
-  NS <- 1 + length(brts_s)
+  n_m <- (soc - 1) + length(brts_m)
+  n_s <- 1 + length(brts_s)
   tsplit <- min(abs(brts_m[abs(brts_m) > t_d]))
 
   # ddmodel <- 1 # nolint
@@ -88,7 +88,7 @@ sls_ml_cluster <- function(
 
   file_name <- paste0(simpath, "/", model1, "_MLE", seed, ".txt")
   if (!file.exists(file_name)) {
-    MLE_1 <- unlist(
+    mle_1 <- unlist(
       sls::sls_ml(
         loglik_function = fun,
         brts_m = brts_m,
@@ -105,9 +105,9 @@ sls_ml_cluster <- function(
       )
     )
 
-    names(MLE_1) <- outnames
-    out_1 <- c(MLE_1, NM, NS, seed);
-    names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
+    names(mle_1) <- outnames
+    out_1 <- c(mle_1, n_m, n_s, seed);
+    names(out_1) <- c(names(mle_1), "tips_M", "tips_S", "tree_id")
 
     utils::write.table(matrix(out_1, ncol = length(out_1)), file = file_name,
                 append = TRUE, row.names = FALSE, col.names = FALSE, sep = ",")
@@ -163,8 +163,8 @@ sls_ml_cluster2 <- function(
   pars1 <- c(sim_pars[1], sim_pars[2], Inf, sim_pars[3], sim_pars[4], Inf, t_d)
   sim   <- sls::sls_sim(pars1 = pars1, age = age, soc = soc, cond = cond)
   brts_m <- sim$brts[[1]]; brts_s <- sim$brts[[2]]; brts_m; brts_s
-  NM <- (soc - 1) + length(brts_m)
-  NS <- 1 + length(brts_s)
+  n_m <- (soc - 1) + length(brts_m)
+  n_s <- 1 + length(brts_s)
   tsplit <- min(abs(brts_m[abs(brts_m) > t_d]))
 
   # ddmodel <- 1 # nolint
@@ -194,7 +194,7 @@ sls_ml_cluster2 <- function(
   }
 
   #loglik 1
-  MLE_1 <- unlist(
+  mle_1 <- unlist(
     sls::sls_ml(
       loglik_function = fun1,
       brts_m = brts_m,
@@ -211,9 +211,9 @@ sls_ml_cluster2 <- function(
     )
   )
 
-  names(MLE_1) <- outnames
-  out_1 <- c(MLE_1, NM, NS, seed);
-  names(out_1) <- c(names(MLE_1), "tips_M", "tips_S", "tree_id")
+  names(mle_1) <- outnames
+  out_1 <- c(mle_1, n_m, n_s, seed);
+  names(out_1) <- c(names(mle_1), "tips_M", "tips_S", "tree_id")
   utils::write.table(
     matrix(
       out_1,
@@ -227,7 +227,7 @@ sls_ml_cluster2 <- function(
   )
 
   #DDD_KI
-  MLE_2 <- unlist(
+  mle_2 <- unlist(
     sls::sls_ml(
       loglik_function = fun2,
       brts_m = brts_m,
@@ -243,9 +243,9 @@ sls_ml_cluster2 <- function(
       optimmethod = optimmethod)
   )
 
-  names(MLE_2) <- outnames
-  out_2 <- c(MLE_2, NM, NS, seed);
-  names(out_2) <- c(names(MLE_2), "tips_M", "tips_S", "tree_id")
+  names(mle_2) <- outnames
+  out_2 <- c(mle_2, n_m, n_s, seed);
+  names(out_2) <- c(names(mle_2), "tips_M", "tips_S", "tree_id")
   utils::write.table(
     matrix(out_2, ncol = length(out_2)),
     file = paste0(simpath, "/", model2, "_MLE", seed, ".txt"),

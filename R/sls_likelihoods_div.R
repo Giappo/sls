@@ -37,15 +37,15 @@ loglik_sls_p <- function(
     all(sign(brts_s1 * !is.null(brts_s1)) == sign(t_d * !is.null(brts_s1)))
   )
 
-  BRTSM <- rbind(
+  brts_matrix <- rbind(
     brts_m1,
     rep(1, length(brts_m1))
-  ); dim(BRTSM) <- c(2, length(brts_m1))
-  TD <- c(t_d, -1); dim(TD) <- c(2, 1)
-  EVENTSM <- (M <- cbind(BRTSM, TD))[, order(-M[1, ])]
-  kvec_m_after <- (n_0 - 1) + cumsum(EVENTSM[2, ])
+  ); dim(brts_matrix) <- c(2, length(brts_m1))
+  t_d_matrix <- c(t_d, -1); dim(t_d_matrix) <- c(2, 1)
+  events_matrix <- (mat <- cbind(brts_matrix, t_d_matrix))[, order(-mat[1, ])]
+  kvec_m_after <- (n_0 - 1) + cumsum(events_matrix[2, ])
   kvec_m_before <- c(n_0 - 1, kvec_m_after[-length(kvec_m_after)])
-  k_shift <- kvec_m_before[EVENTSM[2, ] == -1]
+  k_shift <- kvec_m_before[events_matrix[2, ] == -1]
 
   if (n_0 == 2) {
     brts_m2 <- c(brts_m1[1], brts_m1)
@@ -53,11 +53,11 @@ loglik_sls_p <- function(
     brts_m2 <- brts_m1
   }
   ts_m_pre_shift  <- brts_m2[brts_m2 > t_d] - t_d; ts_m_pre_shift
-  ts_m_post_shift <- brts_m2[brts_m2 < t_d]     ; ts_m_post_shift
+  ts_m_post_shift <- brts_m2[brts_m2 < t_d] ; ts_m_post_shift
   if (length(ts_m_post_shift) == 0) {
     ts_m_post_shift <- 0
   }
-  if (length(ts_m_pre_shift ) == 0) {
+  if (length(ts_m_pre_shift) == 0) {
     cat("There are no branching times before the shift"); return(-Inf)
   }
 
@@ -101,7 +101,7 @@ loglik_sls_p <- function(
   loglik_s <- loglik_s0 +
     logcombinatorics_s + log(lambdas[2] + (length(brts_s) == 0)) * l_s
 
-  Pc <- sls::pc_1shift(
+  pc <- sls::pc_1shift(
     pars_m = pars_m,
     pars_s = pars_s,
     brts_m = brts_m,
@@ -111,7 +111,7 @@ loglik_sls_p <- function(
     n_0 = n_0
   )
 
-  loglik <- loglik_m + loglik_s - log(Pc); loglik
+  loglik <- loglik_m + loglik_s - log(pc); loglik
   return(loglik)
 }
 
@@ -161,11 +161,13 @@ loglik_sls_q <- function(
 
   #LIKELIHOOD INTEGRATION
   clade <- 0 #clade == 1 is the main clade, clade == 2 is the subclade
-  while ( (clade <- clade + 1) <= n_clades) {
+  while (
+    (clade <- clade + 1) <= n_clades
+  ) {
     #SETTING CLADE CONDITIONS
     lambda <- lambdas[clade]
     mu     <- mus[clade]
-    K      <- ks[clade]
+    kappa  <- ks[clade]
     soc    <- n_0s[clade]
     max_t  <- length(brts_list[[clade]])
     brts   <- brts_list[[clade]]
@@ -186,7 +188,7 @@ loglik_sls_q <- function(
         q_t[t, ] <- q_t[(t - 1), ]
       } else {
         transition_matrix <- DDD::dd_loglik_M_aux(
-          pars = c(lambda, mu, K),
+          pars = c(lambda, mu, kappa),
           lx = n_max + 1,
           k = k,
           ddep = 1
@@ -223,10 +225,10 @@ loglik_sls_q <- function(
 
     #Selecting the state I am interested in
     vm <- choose(k + missnumspec[clade], k) ^ -1
-    P  <- vm * q_t[t, (missnumspec[clade] + 1)]
+    p_m  <- vm * q_t[t, (missnumspec[clade] + 1)]
 
     #Removing C and D effects from the LL
-    loglik <- log(P) - sum(log(C)) - sum(log(D))
+    loglik <- log(p_m) - sum(log(C)) - sum(log(D))
 
     #Various checks
     loglik <- as.numeric(loglik)
@@ -236,7 +238,7 @@ loglik_sls_q <- function(
     logliks[clade] <- loglik
   }
 
-  Pc <- sls::pc_1shift(
+  pc <- sls::pc_1shift(
     pars_m = pars_m,
     pars_s = pars_s,
     brts_m = brts_m,
@@ -246,7 +248,7 @@ loglik_sls_q <- function(
     n_0 = n_0
   )
 
-  total_loglik <- sum(logliks) - log(Pc)
+  total_loglik <- sum(logliks) - log(pc)
   return(total_loglik)
 }
 

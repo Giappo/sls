@@ -21,39 +21,39 @@ pc_1shift <- function(
   t_d <- brts_s1[1]
   t_c <- brts_m1[1]
   t_p <- 0
-  A <- abs(t_d - t_c); B <- abs(t_p - t_d)
+  aa <- abs(t_d - t_c); bb <- abs(t_p - t_d)
 
   if (n_0 != 2) {
     stop("Pc can be calculated only if phylogeny starts with a crown!")
   }
 
-  PS   <- 1 - sls::pn(
+  p_s <- 1 - sls::pn(
     n = 0,
-    t = B,
+    t = bb,
     lambda = lambdas[2],
     mu = mus[2]
   )
   nvec <- 1:n_max
   ns1  <- row(matrix(NA, nrow = n_max, ncol = n_max))
   ns2  <- col(matrix(NA, nrow = n_max, ncol = n_max))
-  p_a   <- sls::pt(t = A, lambda = lambdas[1], mu = mus[1]); p_a
-  u_a   <- sls::ut(t = A, lambda = lambdas[1], mu = mus[1]); u_a
-  p_b1  <- sls::pt(t = B, lambda = lambdas[1], mu = mus[1]); p_b1
-  p_b2  <- sls::pt(t = B, lambda = lambdas[2], mu = mus[2]); p_b2
-  p_ns1 <- sls::pn(n = ns1, t = A, lambda = lambdas[1], mu = mus[1])
+  p_a   <- sls::pt(t = aa, lambda = lambdas[1], mu = mus[1]); p_a
+  u_a   <- sls::ut(t = aa, lambda = lambdas[1], mu = mus[1]); u_a
+  p_b1  <- sls::pt(t = bb, lambda = lambdas[1], mu = mus[1]); p_b1
+  p_b2  <- sls::pt(t = bb, lambda = lambdas[2], mu = mus[2]); p_b2
+  p_ns1 <- sls::pn(n = ns1, t = aa, lambda = lambdas[1], mu = mus[1])
   rownames(p_ns1) <- paste0("ns1=", nvec)
   colnames(p_ns1) <- paste0("ns2=", nvec)
-  p_ns2 <- sls::pn(n = ns2, t = A, lambda = lambdas[1], mu = mus[1])
+  p_ns2 <- sls::pn(n = ns2, t = aa, lambda = lambdas[1], mu = mus[1])
   rownames(p_ns2) <- paste0("ns1=", nvec)
   colnames(p_ns2) <- paste0("ns2=", nvec)
   aux1 <- p_ns1 * p_ns2 * (ns1 / (ns1 + ns2)) * (1 - (1 - p_b1) ^ ns2)
-  P1   <- sum(aux1) #branch 2 survives till the present
+  p_1   <- sum(aux1) #branch 2 survives till the present
   aux2 <- aux1 * (1 - (1 - p_b1) ^ (ns1 - 1))
-  P2   <- sum(aux2) #both branches 1 and 2 survive till the present
+  p_2   <- sum(aux2) #both branches 1 and 2 survive till the present
 
-  pc_1  <- 2 * PS * P1 + 2 * (1 - PS) * P2
-  pc_4  <- 2 * PS * P2
-  pc_3  <- 2 * PS * P1
+  pc_1  <- 2 * p_s * p_1 + 2 * (1 - p_s) * p_2
+  pc_4  <- 2 * p_s * p_2
+  pc_3  <- 2 * p_s * p_1
 
   pc <- (cond == 0) * 1 +
     (cond == 1) * pc_1 +
