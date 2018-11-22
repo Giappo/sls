@@ -1,53 +1,53 @@
 #' @title Fourier term
 #' @author Giovanni Laudanno
-#' @description Provides fourier terms: exp((2 * pi * i)/N)
+#' @description Provides fourier terms: exp((2 * pi * i)/n_max)
 #' @inheritParams default_params_doc
 #' @return Fourier term
 #' @export
-phase.factor <- function(n_max, n, k) {
+phase_factor <- function(n_max, n, k) {
   exp(1i * 2 * pi * n * k * (n_max ^ -1))
 }
 
-#' @title DFT
+#' @title dft
 #' @author Giovanni Laudanno
-#' @description Computes the Discrete Fourier Transform (DFT)
+#' @description Computes the Discrete Fourier Transform (dft)
 #' @inheritParams default_params_doc
-#' @return DFT
+#' @return dft
 #' @export
-DFT <- function(vec) {
+dft <- function(vec) {
   if (is.matrix(vec)) {
     n_max <- nrow(vec)
   }
   if (is.vector(vec)) {
     n_max <- length(vec)
   }
-  O <- outer(
+  oo <- outer(
     X = 1:n_max,
     Y = 1:n_max,
-    FUN = function(n, k) sls::phase.factor(n = n, k = k, n_max = n_max)
+    FUN = function(n, k) sls::phase_factor(n = n, k = k, n_max = n_max)
   )
-  O %*% vec
+  oo %*% vec
 }
 
-#' @title Inverse DFT
+#' @title Inverse dft
 #' @author Giovanni Laudanno
 #' @description Computes the inverse Discrete Fourier Transform
 #' @inheritParams default_params_doc
-#' @return Inverse DFT
+#' @return Inverse dft
 #' @export
-IDFT <- function(vec) {
+idft <- function(vec) {
   if (is.matrix(vec)) {
     n_max <- nrow(vec)
   }
   if (is.vector(vec)) {
     n_max <- length(vec)
   }
-  O <- outer(
+  oo <- outer(
     X = 1:n_max,
     Y = 1:n_max,
-    FUN = function(n, k) sls::phase.factor(n = n, k = k, n_max = n_max)
+    FUN = function(n, k) sls::phase_factor(n = n, k = k, n_max = n_max)
   )
-  solve(O) %*% vec
+  solve(oo) %*% vec
 }
 
 #' @title Combine pn
@@ -65,19 +65,25 @@ combine_pns <- function(
   fun = sls::pn_bar
 ) {
   nvec <- 1:n_max
-  N <- length(times)
-  X <- vector("list", N)
-  for (t in 1:N) {
-    X[[t]] <- fun(n = nvec, t = times[t], lambda = lambda, mu = mu, tbar = tbar)
+  n_t <- length(times)
+  p_t_n <- vector("list", n_t)
+  for (t in 1:n_t) {
+    p_t_n[[t]] <- fun(
+      n = nvec,
+      t = times[t],
+      lambda = lambda,
+      mu = mu,
+      tbar = tbar
+    )
   }
   pippo <- matrix(
-    unlist(lapply(X, FUN = sls::DFT)),
-    nrow = N,
+    unlist(lapply(p_t_n, FUN = sls::dft)),
+    nrow = n_t,
     byrow = T
   )
-  rownames(pippo) <- paste0("t", 1:N)
+  rownames(pippo) <- paste0("t", 1:n_t)
   Re(sum(
-    (nvec ^ -1) * sls::IDFT(apply(pippo, MARGIN = 2, "prod"))
+    (nvec ^ -1) * sls::idft(apply(pippo, MARGIN = 2, "prod"))
   )) # awesome!
 }
 
@@ -94,28 +100,28 @@ combine_pns0 <- function(
   tbar,
   n_max = 1e2
 ) {
-  N  <- length(times)
+  n_t  <- length(times)
 
-  ls <- rep(lambda, N)
-  ms <- rep(mu, N)
+  ls <- rep(lambda, n_t)
+  ms <- rep(mu, n_t)
   nvec <- 1:n_max
 
-  ns      <- expand.grid(replicate(expr = nvec, n = N, simplify = FALSE))
-  colnames(ns) <- paste0("n", 1:N)
-  LAMBDAS <- matrix(ls, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
-  colnames(LAMBDAS) <- paste0("lambda", 1:N)
-  MUS     <- matrix(ms, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
-  colnames(MUS) <- paste0("mu", 1:N)
-  TIMES   <- matrix(times, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
-  colnames(TIMES) <- paste0("t", 1:N)
+  ns      <- expand.grid(replicate(expr = nvec, n = n_t, simplify = FALSE))
+  colnames(ns) <- paste0("n", 1:n_t)
+  lambda_n <- matrix(ls, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
+  colnames(lambda_n) <- paste0("lambda", 1:n_t)
+  mu_n     <- matrix(ms, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
+  colnames(mu_n) <- paste0("mu", 1:n_t)
+  t_n   <- matrix(times, nrow = dim(ns)[1], ncol = dim(ns)[2], byrow = T)
+  colnames(t_n) <- paste0("t", 1:n_t)
 
   out <- sum(
     apply(sls::pn_bar(
       n = ns,
-      t = TIMES,
+      t = t_n,
       tbar = tbar,
-      lambda = LAMBDAS,
-      mu = MUS
+      lambda = lambda_n,
+      mu = mu_n
     ), MARGIN = 1, FUN = prod) *
       apply(ns, MARGIN = 1, FUN = sum) ^ -1
   ); out
@@ -137,12 +143,18 @@ combine_pns_nodiv <- function(
   fun = sls::pn_bar
 ) {
   nvec <- 1:n_max
-  N <- length(times)
-  X <- vector("list", N)
-  for (t in 1:N) {
-    X[[t]] <- fun(n = nvec, t = times[t], lambda = lambda, mu = mu, tbar = tbar)
+  n_t <- length(times)
+  p_t_n <- vector("list", n_t)
+  for (t in 1:n_t) {
+    p_t_n[[t]] <- fun(
+      n = nvec,
+      t = times[t],
+      lambda = lambda,
+      mu = mu,
+      tbar = tbar
+    )
   }
-  pippo <- matrix(unlist(lapply(X, FUN = sls::DFT)), nrow = N, byrow = T)
-  rownames(pippo) <- paste0("t", 1:N)
-  Re(sum(sls::IDFT(apply(pippo, MARGIN = 2, "prod")))) #awesome!
+  pippo <- matrix(unlist(lapply(p_t_n, FUN = sls::dft)), nrow = n_t, byrow = T)
+  rownames(pippo) <- paste0("t", 1:n_t)
+  Re(sum(sls::idft(apply(pippo, MARGIN = 2, "prod")))) #awesome!
 }

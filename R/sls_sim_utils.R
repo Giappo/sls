@@ -6,7 +6,7 @@
 #' @inheritParams default_params_doc
 #' @return sls parameters
 #' @export
-sls_sim_get_pars <- function(
+sim_get_pars <- function(
   lambdas,
   mus,
   ks = c(Inf, Inf)
@@ -43,11 +43,11 @@ sls_sim_get_pars <- function(
 #' @inheritParams default_params_doc
 #' @return data for the clade
 #' @export
-sls_sim_initialize_data_new_clade <- function(
+sim_initialize_data_new_clade <- function(
   data,
   clade,
   pars,
-  l_2 = sls::sls_sim_get_standard_l_2(),
+  l_2 = sls::sim_get_standard_l_2(),
   l_matrix_size = 1e4
 ) {
   if (clade == 0) {
@@ -66,9 +66,9 @@ sls_sim_initialize_data_new_clade <- function(
   }
 
   l_1 <- data$l_1
-  n_0 <- sls_sim_get_n_0(l_2 = l_2, clade = clade)
-  t_0 <- sls_sim_get_t_0(l_2 = l_2, clade = clade)
-  motherclade <- sls_sim_get_motherclade(l_2 = l_2, clade = clade)
+  n_0 <- sim_get_n_0(l_2 = l_2, clade = clade)
+  t_0 <- sim_get_t_0(l_2 = l_2, clade = clade)
+  motherclade <- sim_get_motherclade(l_2 = l_2, clade = clade)
   n_max <- n_0
 
   cladeborn <- 1
@@ -120,7 +120,7 @@ sls_sim_initialize_data_new_clade <- function(
 #' @inheritParams default_params_doc
 #' @return delta_n and delta_t
 #' @export
-sls_sim_sample_deltas <- function(
+sim_sample_deltas <- function(
   data,
   clade,
   pars
@@ -129,12 +129,12 @@ sls_sim_sample_deltas <- function(
   pools <- data$pools
   pool <- pools[[clade]]
 
-  PARS   <- pars[[clade]]
-  lambda <- PARS["lambda"]
-  mu     <- PARS["mu"]
+  pars_0   <- pars[[clade]]
+  lambda <- pars_0["lambda"]
+  mu     <- pars_0["mu"]
 
-  N <- length(pool)
-  total_rate <- N * (lambda + mu)
+  n <- length(pool)
+  total_rate <- n * (lambda + mu)
   testit::assert(total_rate >= 0)
   if (total_rate > 0) {
   delta_t <- (total_rate > 0) *
@@ -157,7 +157,7 @@ sls_sim_sample_deltas <- function(
 #' @inheritParams default_params_doc
 #' @return the event
 #' @export
-sls_sim_decide_event <- function(
+sim_decide_event <- function(
   data,
   clade,
   deltas,
@@ -169,7 +169,7 @@ sls_sim_decide_event <- function(
   l_1 <- data$l_1
   l_0 <- l_1[[clade]]
   already_shifted <- any(l_0[, 5] > 0)
-  tshifts <- sls::sls_sim_get_shifts_info(l_2 = l_2, clade = clade)
+  tshifts <- sls::sim_get_shifts_info(l_2 = l_2, clade = clade)
   if (nrow(tshifts) > 1) {
     stop("Check the function if you want to implement more than 1 shift!")
   }
@@ -184,7 +184,7 @@ sls_sim_decide_event <- function(
     return("shift")
   }
 
-  if ( (t - delta_t) < 0 ) {
+  if (t - delta_t < 0) {
     return("end")
   }
 
@@ -207,7 +207,7 @@ sls_sim_decide_event <- function(
 #' @inheritParams default_params_doc
 #' @return data
 #' @export
-sls_sim_use_event <- function(
+sim_use_event <- function(
   data,
   clade,
   l_2,
@@ -215,18 +215,18 @@ sls_sim_use_event <- function(
   deltas
 ) {
 
-  shifts <- sls_sim_get_shifts_info(l_2 = l_2, clade = clade)
+  shifts <- sim_get_shifts_info(l_2 = l_2, clade = clade)
   t <- data$t[[clade]] - deltas$delta_t
   l_0 <- data$l_1[[clade]]
   pool <- data$pools[[clade]]; pool
-  N <- length(pool)
+  n <- length(pool)
   n_max <- data$n_max[[clade]]
   shifted <- 0
 
   if (event == "shift") {
     where <- shifts$where
     t <- shifts$when #time becomes the shift point
-    if (N > 1) {
+    if (n > 1) {
       shifted <- sample(pool, replace = FALSE, size = 1)
     } else {
       shifted <- pool
@@ -237,15 +237,15 @@ sls_sim_use_event <- function(
   }
 
   if (event == "speciation") {
-    data <- sls_sim_adapt_l_matrix_size(
+    data <- sim_adapt_l_matrix_size(
       data = data,
       clade = clade
     )
     l_0 <- data$l_1[[clade]]
     pool <- data$pools[[clade]]; pool
-    N <- length(pool)
+    n <- length(pool)
 
-    if (N > 1) {
+    if (n > 1) {
       parents <- sample(pool, replace = FALSE, size = 1)
     } else {
       parents <- pool
@@ -265,7 +265,7 @@ sls_sim_use_event <- function(
   }
 
   if (event == "extinction") {
-    if (N > 1) {
+    if (n > 1) {
       dead <- sample(pool, replace = FALSE, size = 1)
     } else {
       dead <- pool
@@ -276,7 +276,7 @@ sls_sim_use_event <- function(
 
   if (event == "end" | length(pool) == 0) {
     t <- 0
-    l_02 <- sls_sim_cut_l_matrix(l_0)
+    l_02 <- sim_cut_l_matrix(l_0)
     l_0 <- l_02
   }
 
@@ -311,7 +311,7 @@ sls_sim_use_event <- function(
 #' @inheritParams default_params_doc
 #' @return a boolean
 #' @export
-sls_sim_check_survival <- function(
+sim_check_survival <- function(
   l_0,
   final_time = 0
 ) {
@@ -329,7 +329,7 @@ sls_sim_check_survival <- function(
 #' @inheritParams default_params_doc
 #' @return a boolean
 #' @export
-sls_sim_conditioning <- function(
+sim_conditioning <- function(
   data,
   l_2,
   cond
@@ -348,7 +348,7 @@ sls_sim_conditioning <- function(
     if (!is.matrix(l_0) && !is.null(l_0)) {
       dim(l_0) <- c(1, 5)
     }
-    shifts <- sls_sim_get_shifts_info(l_2 = l_2, clade = clade)
+    shifts <- sim_get_shifts_info(l_2 = l_2, clade = clade)
     shifts_times <- shifts$when
     shifted_id <- l_0[(l_0[, 5] != 0), 3]
 
@@ -381,19 +381,19 @@ sls_sim_conditioning <- function(
       l_0_right_cs <- l_0_right[coords_right_cs, ]
       dim(l_0_right_cs) <- c(sum(coords_right_cs), 5)
 
-      surv_left_cp  <- sls::sls_sim_check_survival(
+      surv_left_cp  <- sls::sim_check_survival(
         l_0 = l_0_left,
         final_time = t_p
       ) #M1 survives from c to p
-      surv_right_cp <- sls::sls_sim_check_survival(
+      surv_right_cp <- sls::sim_check_survival(
         l_0 = l_0_right,
         final_time = t_p
       ) #M2 survives from c to p
-      surv_left_cs  <- sls::sls_sim_check_survival(
+      surv_left_cs  <- sls::sim_check_survival(
         l_0 = l_0_left_cs,
         final_time = ts
       ) #M1 survives from c to s
-      surv_right_cs <- sls::sls_sim_check_survival(
+      surv_right_cs <- sls::sim_check_survival(
         l_0 = l_0_right_cs,
         final_time = ts
       ) #M2 survives from c to s
@@ -402,7 +402,7 @@ sls_sim_conditioning <- function(
       testit::assert(surv_right_cs >= surv_right_cp)
     } else {
       l_0 <- l_1[[clade]]
-      surv_s <- sls::sls_sim_check_survival(
+      surv_s <- sls::sim_check_survival(
         l_0 = l_0,
         final_time = t_p
       ) #S survives from s to p
@@ -429,7 +429,7 @@ sls_sim_conditioning <- function(
 #' @inheritParams default_params_doc
 #' @return the branching times
 #' @export
-sls_sim_get_brts <- function(
+sim_get_brts <- function(
   data,
   l_2
 ) {
@@ -445,7 +445,7 @@ sls_sim_get_brts <- function(
       done <- 1
     }
     if (done == 0) {
-      l_0 <- sls_sim_cut_l_matrix(
+      l_0 <- sim_cut_l_matrix(
         unname(data$l_1[[clade]])
       )
     }
@@ -483,7 +483,7 @@ sls_sim_get_brts <- function(
 #' @inheritParams default_params_doc
 #' @return l_1
 #' @export
-sls_sim_read_l_1 <- function(
+sim_read_l_1 <- function(
   l_1
 ) {
   if (!is.list(l_1)) {
@@ -503,7 +503,7 @@ sls_sim_read_l_1 <- function(
 #' @inheritParams default_params_doc
 #' @return l_2
 #' @export
-sls_sim_get_standard_l_2 <- function(
+sim_get_standard_l_2 <- function(
   crown_age = 10,
   n_0 = 2,
   shift_time = 4
@@ -538,8 +538,8 @@ sls_sim_get_standard_l_2 <- function(
 #' @inheritParams default_params_doc
 #' @return when and where the shifts occurs
 #' @export
-sls_sim_get_shifts_info <- function(
-  l_2 = sls::sls_sim_get_standard_l_2(),
+sim_get_shifts_info <- function(
+  l_2 = sls::sim_get_standard_l_2(),
   clade
 ) {
   when  <- l_2[l_2[, 2] == clade, 1]
@@ -555,8 +555,8 @@ sls_sim_get_shifts_info <- function(
 #' @inheritParams default_params_doc
 #' @return t_0 for the clade
 #' @export
-sls_sim_get_t_0 <- function(
-  l_2 = sls::sls_sim_get_standard_l_2(),
+sim_get_t_0 <- function(
+  l_2 = sls::sim_get_standard_l_2(),
   clade
 ) {
   t_0 <- l_2[l_2[, 3] == clade, 1]
@@ -569,8 +569,8 @@ sls_sim_get_t_0 <- function(
 #' @inheritParams default_params_doc
 #' @return n0 for the clade
 #' @export
-sls_sim_get_n_0 <- function(
-  l_2 = sls::sls_sim_get_standard_l_2(),
+sim_get_n_0 <- function(
+  l_2 = sls::sim_get_standard_l_2(),
   clade
 ) {
   n_0 <- l_2[l_2[, 3] == clade, 4]
@@ -583,8 +583,8 @@ sls_sim_get_n_0 <- function(
 #' @inheritParams default_params_doc
 #' @return the motherclade
 #' @export
-sls_sim_get_motherclade <- function(
-  l_2 = sls::sls_sim_get_standard_l_2(),
+sim_get_motherclade <- function(
+  l_2 = sls::sim_get_standard_l_2(),
   clade
 ) {
   motherclade <- l_2[l_2[, 3] == clade, 2]
@@ -597,7 +597,7 @@ sls_sim_get_motherclade <- function(
 #' @inheritParams default_params_doc
 #' @return the pool of species
 #' @export
-sls_sim_get_pool <- function(
+sim_get_pool <- function(
   l_0
 ) {
   right_rows <- l_0[, 3] != 0 & l_0[, 4] == -1
@@ -611,7 +611,7 @@ sls_sim_get_pool <- function(
 #' @inheritParams default_params_doc
 #' @return a clean l_0 table
 #' @export
-sls_sim_cut_l_matrix <- function(
+sim_cut_l_matrix <- function(
   l_0
 ) {
   if (is.null(l_0)) {
@@ -636,7 +636,7 @@ sls_sim_cut_l_matrix <- function(
 #' @inheritParams default_params_doc
 #' @return a bigger l_0 table
 #' @export
-sls_sim_adapt_l_matrix_size <- function(
+sim_adapt_l_matrix_size <- function(
   data,
   clade
 ) {

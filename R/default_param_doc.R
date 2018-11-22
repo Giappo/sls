@@ -25,14 +25,8 @@
 #' the change in number of species
 #' @param delta_t in the Doob-Gillespie algorithm,
 #' the waiting time for the next event to occur
-#' @param D0 starting value for BiSSE's D function
-#' @param D_0 starting value for BiSSE's D function
 #' @param d_0 starting value for BiSSE's D function
-#' @param D0s starting values for BiSSE's D functions
-#' @param D_0s starting values for BiSSE's D functions
 #' @param d_0s starting values for BiSSE's D functions
-#' @param E0 starting value for BiSSE's E function
-#' @param E_0 starting value for BiSSE's E function
 #' @param e_0 starting value for BiSSE's E function
 #' @param event the event occurring in the simulated process at a given time
 #' @param final_time the final time that you want to consider for the survival
@@ -42,7 +36,6 @@
 #' @param fun2 another function
 #' @param k frequencies in the Discrete Fourier Transform (DFT)
 #' @param ks carrying capacities, for all the clades
-#' @param L the l table
 #' @param l_0 the l table, for a single clade
 #' @param l_1 the collection of all the l tables, for all the clades
 #' @param l_2 the matrix containing the information about how the subclades are
@@ -122,7 +115,6 @@ default_params_doc <- function(
   deltas,
   event,
   final_time,
-  L,
   l_matrix,
   pars,
   pars_m,
@@ -145,14 +137,8 @@ default_params_doc <- function(
   fun2,
   k,
   vec,
-  D0,
-  D_0,
   d_0,
-  D0s,
-  D_0s,
   d_0s,
-  E0,
-  E_0,
   e_0,
   t_0,
   tf,

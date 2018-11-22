@@ -4,15 +4,15 @@
 #' @inheritParams default_params_doc
 #' @return pt
 #' @export
-pt  <- function (lambda, mu, t) {
+pt  <- function(lambda, mu, t) {
   time <- t
-  Lambda <- exp(
+  exp_term <- exp(
     (mu - lambda) * time
   )
   out    <- (lambda == mu) * (1 / (1 + lambda * time)) +
     (lambda != mu) * (
       (lambda - mu + (lambda == mu)) /
-        (lambda - mu * Lambda * (lambda != mu) + (lambda == mu))
+        (lambda - mu * exp_term * (lambda != mu) + (lambda == mu))
     )
   return(unname(out))
 }
@@ -23,15 +23,15 @@ pt  <- function (lambda, mu, t) {
 #' @inheritParams default_params_doc
 #' @return ut
 #' @export
-ut  <- function (lambda, mu, t) {
+ut  <- function(lambda, mu, t) {
   time <- t
-  Lambda <- exp(
+  exp_term <- exp(
     (mu - lambda) * time
   )
   out    <- (lambda == mu) * (lambda * time / (1 + lambda * time)) +
     (lambda != mu) * (
-      (lambda - lambda * Lambda + (lambda == mu)) /
-        (lambda - mu * Lambda * (lambda != mu) + (lambda == mu))
+      (lambda - lambda * exp_term + (lambda == mu)) /
+        (lambda - mu * exp_term * (lambda != mu) + (lambda == mu))
     )
   return(unname(out))
 }

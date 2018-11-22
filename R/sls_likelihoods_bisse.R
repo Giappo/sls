@@ -17,8 +17,8 @@ d_t <- function(pars, t_0, t_f, e_0, d_0) {
     (mu - lambda) * delta_t
   )
   denominator <- lambda * (1 - e_0) - exp_factor * (mu - e_0 * lambda)
-  DD <- (exp_factor * d_0 * (lambda - mu) ^ 2) / denominator ^ 2
-  return(DD)
+  dd <- (exp_factor * d_0 * (lambda - mu) ^ 2) / denominator ^ 2
+  return(dd)
 }
 
 #' @title BISSE's E
@@ -71,8 +71,8 @@ loglik_bisse <- function(
 
   tips <- (n_0 - 1) + length(brts) - length(t_ds)
 
-  BRTS <- sort(c(brts, t_p, t_ds), decreasing = TRUE)
-  maxt <- length(BRTS); mint <- 2; times <- maxt:mint; times
+  brts1 <- sort(c(brts, t_p, t_ds), decreasing = TRUE)
+  maxt <- length(brts1); mint <- 2; times <- maxt:mint; times
   lefts  <- rep(1, length(times))
   rights <- rep(2, length(times))
   for (t in times) {
@@ -87,7 +87,7 @@ loglik_bisse <- function(
     pool <- 1:l_d
     ds_t   <- rep(NA, l_d)
     for (N in pool) {
-      t_0 <- BRTS[t]; t_f <- BRTS[t - 1]
+      t_0 <- brts1[t]; t_f <- brts1[t - 1]
       ds_t[N] <- d_t(pars = pars, t_0 = t_0, t_f = t_f, e_0 = e_0, d_0 = d_0[N])
     }
     es_t    <- e_t(pars = pars, t_0 = t_0, t_f = t_f, e_0 = e_0, d_0 = d_0)
@@ -95,11 +95,11 @@ loglik_bisse <- function(
 
     if (t_f %in% t_ds) {
       if (length(t_ds) == 1) {
-        DS0 <- d_0s
+        ds_0 <- d_0s
       } else {
-        DS0 <- d_0s[which[t_ds == t_f]]
+        ds_0 <- d_0s[which[t_ds == t_f]]
       }
-      ds_t <- c(ds_t, DS0)
+      ds_t <- c(ds_t, ds_0)
     } else {
       if (length(ds_t) > 1) {
         ds_t <- c(
@@ -131,8 +131,8 @@ loglik_bisse2 <- function(
   lambdaterms = TRUE
 ) {
   lambda <- pars[1]
-  BRTS <- c(rep(brts[1], n_0 - 1), brts)
-  prod_d <- prod(d_t(pars = pars, t_f = BRTS, t_0 = t_0, e_0 = e_0, d_0 = d_0))
+  brts1 <- c(rep(brts[1], n_0 - 1), brts)
+  prod_d <- prod(d_t(pars = pars, t_f = brts1, t_0 = t_0, e_0 = e_0, d_0 = d_0))
   prod_d <- prod_d * lambda ^ (length(brts[-1]) * lambdaterms)
   out <- (log_scale) * log(prod_d) + (1 - log_scale) * prod_d
   return(out)
