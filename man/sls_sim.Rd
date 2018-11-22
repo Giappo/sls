@@ -5,7 +5,7 @@
 \title{Simulate an sls process}
 \usage{
 sls_sim(lambdas, mus, ks = c(Inf, Inf), cond = 3,
-  l_2 = sls::sls_sim.get_standard_l_2(), l_matrix_size = 10000)
+  l_2 = sls::sls_sim_get_standard_l_2(), l_matrix_size = 10000)
 }
 \arguments{
 \item{lambdas}{speciation rates, for all the clades}
@@ -32,7 +32,7 @@ nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 increased if necessary}
 }
 \value{
-l_0 table and brts
+l_1 table and brts
 }
 \description{
 Simulate an sls process

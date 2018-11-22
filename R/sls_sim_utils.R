@@ -205,7 +205,7 @@ sls_sim_decide_event <- function(
 #' @description sls_sim module
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
-#' @return data and time
+#' @return data
 #' @export
 sls_sim_use_event <- function(
   data,
