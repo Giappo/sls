@@ -25,14 +25,8 @@
 #' the change in number of species
 #' @param delta_t in the Doob-Gillespie algorithm,
 #' the waiting time for the next event to occur
-#' @param D0 starting value for BiSSE's D function
-#' @param D_0 starting value for BiSSE's D function
 #' @param d_0 starting value for BiSSE's D function
-#' @param D0s starting values for BiSSE's D functions
-#' @param D_0s starting values for BiSSE's D functions
 #' @param d_0s starting values for BiSSE's D functions
-#' @param E0 starting value for BiSSE's E function
-#' @param E_0 starting value for BiSSE's E function
 #' @param e_0 starting value for BiSSE's E function
 #' @param event the event occurring in the simulated process at a given time
 #' @param final_time the final time that you want to consider for the survival
