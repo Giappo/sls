@@ -184,8 +184,6 @@ maximum}
 \item{crown_age}{the age of the phylogeny}
 
 \item{missnumspec}{number of missing (unseen) species in the phylogeny}
-
-\item{L}{the l table}
 }
 \description{
 This function does nothing. It is intended to inherit is parameters'
