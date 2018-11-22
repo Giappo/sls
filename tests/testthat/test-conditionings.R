@@ -11,7 +11,7 @@ test_that("Analytical equivalence for conditional probability 1", {
   p_ns_cs <- sls::pn(n = ns, t = t_d - t_c, lambda = lambdas[1], mu = mus[1])
   p_0_sp <- sls::pn(n = 0, t = t_p - t_d, lambda = lambdas[1], mu = mus[1])
   test1 <- sum(
-    p_ns_cs * (1 - (p_0_sp) ^ (ns - 1) )
+    p_ns_cs * (1 - (p_0_sp) ^ (ns - 1))
   )
 
   p_1_cs <- sls::pn(n = 1, t = t_d - t_c, lambda = lambdas[1], mu = mus[1])
@@ -27,7 +27,6 @@ test_that("Analytical equivalence for conditional probability 1", {
   testthat::expect_equal(
     test1, test2
   )
-
 })
 
 test_that("pc1 never smaller than pc3 (pc3 is a stricter condition)", {
