@@ -133,8 +133,8 @@ sls_sim_sample_deltas <- function(
   lambda <- PARS["lambda"]
   mu     <- PARS["mu"]
 
-  N <- length(pool)
-  total_rate <- N * (lambda + mu)
+  n <- length(pool)
+  total_rate <- n * (lambda + mu)
   testit::assert(total_rate >= 0)
   if (total_rate > 0) {
   delta_t <- (total_rate > 0) *
@@ -219,14 +219,14 @@ sls_sim_use_event <- function(
   t <- data$t[[clade]] - deltas$delta_t
   l_0 <- data$l_1[[clade]]
   pool <- data$pools[[clade]]; pool
-  N <- length(pool)
+  n <- length(pool)
   n_max <- data$n_max[[clade]]
   shifted <- 0
 
   if (event == "shift") {
     where <- shifts$where
     t <- shifts$when #time becomes the shift point
-    if (N > 1) {
+    if (n > 1) {
       shifted <- sample(pool, replace = FALSE, size = 1)
     } else {
       shifted <- pool
@@ -243,9 +243,9 @@ sls_sim_use_event <- function(
     )
     l_0 <- data$l_1[[clade]]
     pool <- data$pools[[clade]]; pool
-    N <- length(pool)
+    n <- length(pool)
 
-    if (N > 1) {
+    if (n > 1) {
       parents <- sample(pool, replace = FALSE, size = 1)
     } else {
       parents <- pool
@@ -265,7 +265,7 @@ sls_sim_use_event <- function(
   }
 
   if (event == "extinction") {
-    if (N > 1) {
+    if (n > 1) {
       dead <- sample(pool, replace = FALSE, size = 1)
     } else {
       dead <- pool
