@@ -4,10 +4,6 @@ test_that("all the likelihoods with division yield the same result", {
 
   # testthat::skip('I skip it because it is slow. It works, though.') # nolint
 
-  while (!require("ribir")) {
-    devtools::install_github("richelbilderbeek/ribir")
-  }
-
   diff <- function(
     pars_m,
     pars_s,

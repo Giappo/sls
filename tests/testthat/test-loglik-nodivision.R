@@ -2,10 +2,6 @@ context("likelihoods - no division")
 
 test_that("all the likelihoods with no division yield the same result", {
 
-  while (!require("ribir")) {
-    devtools::install_github("richelbilderbeek/ribir")
-  }
-
   diff <- function(
     pars_m,
     pars_s,
