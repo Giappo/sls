@@ -149,5 +149,4 @@ test_that("all the likelihoods with no division yield the same result", {
   testthat::expect_equal(
     tests, length(models) * (length(models) - 1) / 2
   )
-
 })
