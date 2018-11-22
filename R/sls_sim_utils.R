@@ -184,7 +184,7 @@ sls_sim_decide_event <- function(
     return("shift")
   }
 
-  if ( (t - delta_t) < 0 ) {
+  if (t - delta_t < 0) {
     return("end")
   }
 
