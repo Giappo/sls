@@ -1,6 +1,6 @@
 context("likelihoods - division")
 
-test_that( "all the likelihoods with division yield the same result", {
+test_that("all the likelihoods with division yield the same result", {
 
   # testthat::skip('I skip it because it is slow. It works, though.') # nolint
 

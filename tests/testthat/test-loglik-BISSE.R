@@ -1,6 +1,6 @@
 context("likelihoods - bisse")
 
-test_that( "test bisse and DDD logliks equivalence", {
+test_that("test bisse and DDD logliks equivalence", {
 
   diff <- function(pars, brts) {
 
@@ -53,7 +53,7 @@ test_that( "test bisse and DDD logliks equivalence", {
   }
 })
 
-test_that( "test bisse alternative functions", {
+test_that("test bisse alternative functions", {
 
   diff4 <- function(pars, brts) {
 
