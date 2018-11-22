@@ -1,0 +1,109 @@
+---
+title: "sls pipeline"
+author: "Giovanni Laudanno"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{sls pipeline}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[T1]{fontenc}
+  \usepackage{lmodern}
+---
+
+Legenda:
+
+This is the pipeline to follow for the sls project. 
+The aim of the project is to correctly estimate the likelihood for a process with a rate shift occurring on a single lineage at a given time.
+
+## Folder structure
+
+
+Filename|Description|Created by
+-------------|---------------------------------------|--------------------------
+
+Update our dependencies:
+
+```{r message=FALSE}
+if (1 == 2) {
+
+}
+```
+
+Load the library:
+
+```{r}
+library(sls, quietly = TRUE)
+```
+
+We will work in this folder:
+
+```{r}
+super_folder_name <- tempdir()
+project_folder_name <- file.path(super_folder_name, "razzo_project") 
+dir.create(path = project_folder_name, recursive = TRUE)
+```
+
+## Step 1: Simulations
+
+First we simulate the process
+
+```{r}
+lambdas <- c(0.3, 0.6)
+mus <- c(0.2, 0.1)
+cond <- 3
+l_2 <- sls::sls_sim_get_standard_l_2(crown_age = 5, shift_time = 2)
+set.seed(1)
+sim <- sls::sls_sim(
+  lambdas = lambdas, 
+  mus = mus, 
+  cond = cond,
+  l_2 = l_2
+)
+sim
+```
+
+We can also plot both the main clade and the subclade
+
+```{r}
+par(mfrow = c(1, 2))
+ape::plot.phylo(
+  DDD::L2phylo(sim$l_tables[[1]], dropextinct = FALSE)
+)
+ape::plot.phylo(
+  DDD::L2phylo(sim$l_tables[[2]], dropextinct = FALSE)
+)
+```
+
+## Step 2: calculate the likelihood
+
+We can calculate the (log) likelihood function for this main and sub clade
+
+```{r}
+pars_m <- c(0.2, 0.1)
+pars_s <- c(0.5, 0.4)
+brts_m <- sim$brts[[1]]
+brts_s <- sim$brts[[2]]
+
+loglik <- sls::loglik_sls_p(
+  pars_m = pars_m, 
+  pars_s = pars_s, 
+  brts_m = brts_m, 
+  brts_s = brts_s, 
+  cond = cond
+)
+loglik
+```
+
+We have many ways to calculate the same likelihood. For example we can integrate the Q-equation
+
+```{r}
+loglik <- sls::loglik_sls_q(
+  pars_m = pars_m, 
+  pars_s = pars_s, 
+  brts_m = brts_m, 
+  brts_s = brts_s, 
+  cond = cond
+)
+loglik
+```

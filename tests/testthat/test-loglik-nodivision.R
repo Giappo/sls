@@ -1,126 +1,156 @@
-context("likelihoods with no division")
+context("likelihoods - no division")
 
-test_that( "test P and Q approach equivalence", {
+is_on_travis <- function() {
+  Sys.getenv("TRAVIS") != ""
+}
 
+is_on_travis <- function() {
+  Sys.getenv("TRAVIS") != ""
+}
 
-  while (!require("ribir")) {devtools::install_github("richelbilderbeek/ribir")}
+test_that("all the likelihoods with no division yield the same result", {
 
-  #define difference
-  likelihood_diff <- function(fun1 = sls::loglik_slsP_nodivision,
-                              fun2 = DDD::dd_KI_loglik,
-                              pars1,
-                              pars2,
-                              brtsM,
-                              brtsS,
-                              missnumspec) {
+  diff <- function(
+    pars_m,
+    pars_s,
+    brts_m,
+    brts_s,
+    cond,
+    fun1,
+    fun2,
+    precision = 1e2,
+    ratios = FALSE
+  ) {
 
-    lik1a <- fun1(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS,
-                                       missnumspec = missnumspec); lik1a
-    lik2a <- fun2(pars1 = pars1, pars2 = pars2, brtsM = brtsM, brtsS = brtsS,
-                               missnumspec = missnumspec); lik2a
+    pars_m1 <- pars_m  ; pars_s1 <- pars_s
 
-    pars1b <- c(pars1[1:6]/2, pars1[7])
+    res_1_1 <- fun1(
+      pars_m = pars_m1,
+      pars_s = pars_s1,
+      brts_m = brts_m,
+      brts_s = brts_s,
+      cond = cond,
+      n_max = precision
+    ); res_1_1
+    res_2_1 <- fun2(
+      pars_m = pars_m1,
+      pars_s = pars_s1,
+      brts_m = brts_m,
+      brts_s = brts_s,
+      cond = cond,
+      n_max = precision
+    ); res_2_1
 
-    lik1b <- fun1(pars1 = pars1b, pars2 = pars2 , brtsM = brtsM, brtsS = brtsS,
-                                       missnumspec = missnumspec); lik1b
-    lik2b <- fun2(pars1 = pars1b, pars2 = pars2, brtsM = brtsM, brtsS = brtsS,
-                               missnumspec = missnumspec); lik2b
+    res_1_2 <- res_2_2 <- 0
+    if (ratios == TRUE) {
+      pars_m2 <- pars_m / 2; pars_s2 <- pars_s * 3 / 4;
 
-    lik1 <- lik1a - lik1b
-    lik2 <- lik2a - lik2b
-
-    return(lik1 - lik2)
-  }
-
-  #test1
-  if (1) {
-    lambdas <- c(0.3, 0.5)
-    mus     <- c(0.1, 0.1)
-    brtsM   <- c(10, 8, 7, 2)
-    brtsS   <- c(3)
-    tsplit  <- c(7)
-    td      <- c(6.5)
-    cond    <- 0
-    pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-    pars2   <- c(800, 1, cond, tsplit, 0, 2)
-    missnumspec <- 0
-  }
-
-  diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
-                          fun2 = DDD::dd_KI_loglik,
-                          pars1 = pars1,
-                          pars2 = pars2,
-                          brtsM = brtsM,
-                          brtsS = brtsS,
-                          missnumspec = missnumspec); diff
-
-  testthat::expect_true(
-    abs(diff) < 1e-3
-  )
-
-  #test2
-  if (1) {
-    lambdas <- c(0.4, 0.6)
-    mus     <- c(0.2, 0.1)
-    brtsM   <- c(10, 8, 7, 5, 2, 1)
-    brtsS   <- c(3, 2.8, 1.5)
-    tsplit  <- c(5)
-    td      <- c(4.8)
-    cond    <- 0
-    pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-    pars2   <- c(800, 1, cond, tsplit, 0, 2)
-    missnumspec <- 0
-  }
-
-  diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
-                          fun2 = DDD::dd_KI_loglik,
-                          pars1 = pars1,
-                          pars2 = pars2,
-                          brtsM = brtsM,
-                          brtsS = brtsS,
-                          missnumspec = missnumspec); diff
-
-  testthat::expect_true(
-    abs(diff) < 1e-3
-  )
-
-  #test3
-  lM <- 18 + 2 * (ribir:::is_on_travis()); age <- 8;
-  maxs <- 30 * 90^(ribir:::is_on_travis()); res <- rep(NA, maxs); test_threshold <- 1e-3; max_iterations <- 8 + (ribir:::is_on_travis())
-  for (s in 1:maxs) {
-    set.seed(s)
-    diff <- 1; precision <- 3 * lM; iterations <- 1
-    while (abs(diff) > test_threshold && !is.infinite(diff) && iterations < max_iterations) {
-      l1 <- runif(n = 1, min = 0.1 , max = 1)
-      m1 <- runif(n = 1, min = 0.02, max = l1 * (3/4))
-      l2 <- l1 * 2
-      m2 <- m1 / 2
-      lambdas <- c(l1, l2)
-      mus     <- c(m1, m2)
-      brtsM   <- c(age, sort(runif(n = (lM - 1), min = 0, max = age), decreasing = TRUE))
-      tsplit  <- sample(x = brtsM[-c(1:floor(lM/6), (lM - floor(lM/6)):lM)], size = 1)
-      td      <- tsplit - 0.1
-      brtsS   <- sort(runif(n = floor(lM/2), min = 0, max = td - 0.1), decreasing = TRUE)
-      cond    <- 0
-      pars1   <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, td)
-      missnumspec <- 0
-
-      pars2   <- c(precision, 1, cond, tsplit, 0, 2)
-      diff <- likelihood_diff(fun1 = sls::loglik_slsP_nodivision,
-                              fun2 = DDD::dd_KI_loglik,
-                              pars1 = pars1,
-                              pars2 = pars2,
-                              brtsM = brtsM,
-                              brtsS = brtsS,
-                              missnumspec = missnumspec); diff
-      precision  <- precision  * 2
-      iterations <- iterations + 1
+      res_1_2 <- fun1(
+        pars_m = pars_m2,
+        pars_s = pars_s2,
+        brts_m = brts_m,
+        brts_s = brts_s,
+        cond = cond,
+        n_max = precision
+      ); res_1_2
+      res_2_2 <- fun2(
+        pars_m = pars_m2,
+        pars_s = pars_s2,
+        brts_m = brts_m,
+        brts_s = brts_s,
+        cond = cond,
+        n_max = precision
+      ); res_2_2
     }
-    res[s] <- diff
+
+    delta_1 <- res_1_1 - res_1_2; delta_1
+    delta_2 <- res_2_1 - res_2_2; delta_2
+
+    diff <- abs(delta_1 - delta_2)
+
+    return(diff)
+  }
+  test_diff <- function(
+    pars_m,
+    pars_s,
+    brts_m,
+    brts_s,
+    cond,
+    fun1,
+    fun2,
+    precision = 1e2,
+    threshold = 1e-3
+  ) {
+    out <- 1; max_rep <- 10; rep <- 0
+    while (out > threshold && rep <= max_rep) {
+      precision <- precision * 2
+      out <- diff(
+        pars_m = pars_m,
+        pars_s = pars_s,
+        brts_m = brts_m,
+        brts_s = brts_s,
+        cond = cond,
+        fun1 = fun1,
+        fun2 = fun2,
+        precision = precision
+      )
+      rep <- rep + 1
+    }
+    out
   }
 
-  testthat::expect_true(
-    all(abs(res) < test_threshold | is.infinite(abs(res)))
+  models <- c(
+    sls::loglik_bisse_shift,
+    sls::loglik_ddd,
+    sls::loglik_sls_p_nodiv,
+    sls::loglik_sls_q_nodiv
   )
+  threshold <- (!is_on_travis()) * 1e-2 +
+               (is_on_travis())  * 1e-3
 
+  cond <- 0; s <- 1
+  for (s in 1:(2 + 4 * is_on_travis())) {
+    set.seed(s)
+    t_0s    <- c(4, 1.5)
+    brts_m  <- c(
+      t_0s[1],
+      sort(runif(n = 20, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
+    )
+    pars_m  <- c(
+      x <- runif(n = 1, min = 0.1, max = 1),
+      runif(n = 1, min = 0.05, max = x * 3 / 4)
+    )
+    brts_s  <- c(
+      t_0s[2],
+      sort(runif(n = 10, min = 0.01, max = t_0s[2] - 0.01), decreasing = TRUE)
+    )
+    pars_s  <- c(
+      x <- runif(n = 1, min = 0.1, max = 1),
+      runif(n = 1, min = 0.05, max = x * 3 / 4)
+    ) * c(2, 0.5)
+    cond   <- (cond == 0) * 1 + (cond == 1) * 0
+
+    tests <- 0
+    for (i in 1:(length(models) - 1)) {
+      for (j in (i + 1):length(models)) {
+        testthat::expect_true(
+          test_diff(
+            pars_m = pars_m,
+            pars_s = pars_s,
+            brts_m = brts_m,
+            brts_s = brts_s,
+            cond = cond,
+            fun1 = models[[i]],
+            fun2 = models[[j]],
+            threshold = threshold
+          ) <= threshold
+        )
+        tests <- tests + 1
+      }
+    }
+  }
+
+  testthat::expect_equal(
+    tests, length(models) * (length(models) - 1) / 2
+  )
 })

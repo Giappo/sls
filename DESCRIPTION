@@ -8,10 +8,21 @@ Description: Simulates and estimates likelihoods for diversification processes w
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests: testthat,
-    knitr,
-    rmarkdown,
+Imports:
+  ape,
+  DDD,
+  deSolve,
+  devtools,
+  expoRkit,
+  ggplot2,
+  MASS,
+  subplex,
+  testit
+Suggests:
+  knitr,
+  lintr,
+  rmarkdown,
+  testthat,
 	xlsx
-Imports: DDD, testit, MASS, ggplot2, deSolve, expoRkit
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

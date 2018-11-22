@@ -2,22 +2,41 @@
 % Please edit documentation in R/sls_sim.R
 \name{sls_sim}
 \alias{sls_sim}
-\title{Simulates a process with a single lineage rate shift}
+\title{Simulate an sls process}
 \usage{
-sls_sim(pars1, age, soc, cond)
+sls_sim(lambdas, mus, ks = c(Inf, Inf), cond = 3,
+  l_2 = sls::sim_get_standard_l_2(), l_matrix_size = 10000)
 }
 \arguments{
+\item{lambdas}{speciation rates, for all the clades}
+
+\item{mus}{extinction rate, for all the clades}
+
+\item{ks}{carrying capacities, for all the clades}
+
 \item{cond}{type of conditioning:
 \itemize{
   \item cond = 0 no conditiong;
   \item cond = 1 conditions on the survival of crown descendents;
-  \item cond = 2 conditions on the survival of subclade and on the other crown descendents in the main clade;
-  \item cond = 3 conditions on the survival of the subclade and both crown descendents in the main clade;
+  \item cond = 2 not available;
+  \item cond = 3 conditions on the survival of the subclade and
+  both crown descendents in the main clade;
+  \item cond = 4 conditions on the survival of subclade and
+  on the other crown descendents in the main clade;
 }}
+
+\item{l_2}{the matrix containing the information about how the subclades are
+nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
+
+\item{l_matrix_size}{the initial length of the l matrix. It will be
+increased if necessary}
 }
 \value{
-result
+l_1 table and brts
 }
 \description{
-Simulates a process with a single lineage rate shift
+Simulate an sls process
+}
+\author{
+Giovanni Laudanno
 }

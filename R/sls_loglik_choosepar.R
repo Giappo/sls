@@ -1,70 +1,79 @@
-#' @title Internal MBD function
-#' @description Internal MBD function.
+#' @title Calculates the likelihood for a subset of parameters
+#' @description Calculates the likelihood for a subset of parameters
+#' @inheritParams default_params_doc
 #' @details This is not to be called by the user.
 #' @export
-sls_loglik_choosepar <- function (trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
-                                  pars2, brtsM, brtsS, missnumspec = c(0,0),
-                                  loglik_function = sls::loglik_slsP)
-{
-  methode <- 'analytical'
-  if (length(missnumspec) != length(c(0,0)))
-  {
-    cat("This likelihood function is meant to work only for missnumspec = c(0,0).\n")
+sls_loglik_choosepar <- function(
+  trparsopt,
+  trparsfix,
+  idparsopt,
+  idparsfix,
+  idparsnoshift,
+  pars2,
+  brts_m,
+  brts_s,
+  missnumspec = c(0, 0),
+  loglik_function = sls::loglik_sls_p
+) {
+  if (length(missnumspec) != length(c(0, 0))) {
+    cat(
+      "This likelihood function is meant to work only for missnumspec = c(0,0).\n" # nolint
+    )
     loglik <- -Inf
     return(loglik)
-  }else
-  {
-    if (!all.equal(missnumspec, c(0,0)))
-    {
-      cat("This likelihood function is meant to work only for missnumspec = c(0,0).\n")
+  } else {
+    if (!all.equal(missnumspec, c(0, 0))) {
+      cat(
+        "This likelihood function is meant to work only for missnumspec = c(0,0).\n" # nolint
+      )
       loglik <- -Inf
       return(loglik)
     }
   }
 
-  namepars <- c("la_M", "mu_M", "K_M", "la_S", "mu_S", "K_S", "t_d"); Npars <- length(namepars);
+  namepars <- c("la_M", "mu_M", "K_M", "la_S", "mu_S", "K_S", "t_d")
+  n_pars <- length(namepars)
 
-  trpars1 = rep(0, Npars)
-  trpars1[idparsopt] = trparsopt
-  if (length(idparsfix) != 0)
-  {
-    trpars1[idparsfix] = trparsfix
+  trpars1 <- rep(0, n_pars)
+  trpars1[idparsopt] <- trparsopt
+  if (length(idparsfix) != 0) {
+    trpars1[idparsfix] <- trparsfix
   }
-  if (length(idparsnoshift) != 0)
-  {
-    trpars1[idparsnoshift] = trpars1[idparsnoshift - 3]
+  if (length(idparsnoshift) != 0) {
+    trpars1[idparsnoshift] <- trpars1[idparsnoshift - 3]
   }
-  brtsM = -sort(abs(as.numeric(brtsM)), decreasing = TRUE)
-  brtsS = -sort(abs(as.numeric(brtsS)), decreasing = TRUE)
+  brts_m <- -sort(abs(as.numeric(brts_m)), decreasing = TRUE)
+  brts_s <- -sort(abs(as.numeric(brts_s)), decreasing = TRUE)
 
-  t_d    <- trpars1[7]
-  tsplit <- pars2[4]
+  t_d <- trpars1[7]
+  t_split <- pars2[4]
   trpars1[7] <- abs(t_d)
-  pars2[4]   <- abs(tsplit)
+  pars2[4] <- abs(t_split)
 
   #Rampal's transformation
   pars1 <- trpars1
-  pars1 <- trpars1/(1 - trpars1)
+  pars1 <- trpars1 / (1 - trpars1)
 
   names(trpars1) <- namepars
-  first_S_branch <- ifelse(length(brtsS) != 0, max(abs(brtsS)), 0)
-  if (max(trpars1[1:(Npars - 1)]) > 1 ||
-      min(trpars1[1:(Npars - 1)]) < 0 ||
+  first_s_branch <- ifelse(length(brts_s) != 0, max(abs(brts_s)), 0)
+  if (max(trpars1[1:(n_pars - 1)]) > 1 ||
+      min(trpars1[1:(n_pars - 1)]) < 0 ||
       trpars1[1] <= trpars1[2] ||
       trpars1[4] <= trpars1[5] ||
       abs(pars1[7]) >= abs(pars2[4]) ||
-      abs(pars1[7]) <= first_S_branch)
-  {
-    loglik = -Inf
-  }else
-  {
-    loglik = loglik_function(pars1 = pars1, pars2 = pars2,
-                             brtsM = brtsM, brtsS = brtsS,
-                             missnumspec = missnumspec)
-    if (is.nan(loglik) || is.na(loglik))
-    {
+      abs(pars1[7]) <= first_s_branch) {
+    loglik <- -Inf
+  } else {
+    loglik <- loglik_function(
+      pars1 = pars1,
+      pars2 = pars2,
+      brts_m = brts_m,
+      brts_s = brts_s,
+      missnumspec = missnumspec
+    )
+    if (is.nan(loglik) || is.na(loglik)) {
       cat("There are parameter values used which cause numerical problems.\n")
-      loglik = -Inf
+      loglik <- -Inf
     }
   }
   return(loglik)
