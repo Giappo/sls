@@ -20,10 +20,10 @@ sls_ml_cluster(seed, sim_pars = c(0.3, 0.1, 0.6, 0.05), t_d = 4.8,
   \item cond = 0 no conditiong;
   \item cond = 1 conditions on the survival of crown descendents;
   \item cond = 2 not available;
-  \item cond = 3 conditions on the survival of the subclade and
-  both crown descendents in the main clade;
-  \item cond = 4 conditions on the survival of subclade and
+  \item cond = 3 conditions on the survival of subclade and
   on the other crown descendents in the main clade;
+  \item cond = 4 conditions on the survival of the subclade and
+  both crown descendents in the main clade;
 }}
 
 \item{initparsopt}{see DDD package}

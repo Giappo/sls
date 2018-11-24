@@ -458,8 +458,8 @@ test_that("sls_sim", {
   n_clades <- length(lambdas)
   l_2 <- sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2)
 
-  maxsims <- 2
-  maxtravis <- (13 * is_on_travis())
+  maxsims <- 30
+  maxtravis <- (70 * is_on_travis())
   conds <- c(3, 4)
   i <- 1
   out <- vector(
@@ -470,6 +470,9 @@ test_that("sls_sim", {
     for (cond in conds) {
       if (s <= maxsims) {
         set.seed(s)
+      } else {
+        lambdas <- c(x <- runif(n = 1, min = 0.2, max = 1), x / 2)
+        mus <- lambdas * runif(n = 2, min = 0.2, max = 0.8)
       }
       out[[i]] <- sls_sim(
         lambdas = lambdas,
@@ -490,24 +493,29 @@ test_that("sls_sim", {
         all(l_0_1[-1, 2] %in% l_0_1[, 3]),
         all(l_0_2[-1, 2] %in% l_0_2[, 3])
       )
+      survivors_m <- l_0_1[l_0_1[, 4] == -1, 3]
+      survivors_s <- l_0_2[l_0_2[, 4] == -1, 3]
       if (cond == 3) {
         testthat::expect_true(
-          surv_m <- length(l_0_1[l_0_1[, 4] == -1, 3]) > 0,
-          length(l_0_2[l_0_2[, 4] == -1, 3]) > 0
+          # at least one survivor for M and one for S
+          length(survivors_m) > 0,
+          length(survivors_s) > 0
         )
-        if (surv_m) {
-          testthat::expect_true(
-            sum(unique(sign(l_0_1[l_0_1[, 4] == -1, 3]))) == 0
-          )
-        }
       }
       if (cond == 4) {
         testthat::expect_true(
-          length(l_0_1[l_0_1[, 4] == -1, 3]) > 0,
-          length(l_0_2[l_0_2[, 4] == -1, 3]) > 0
+          # does M survive?
+          surv_m <- length(survivors_m) > 0,
+          # does S survive?
+          length(survivors_s) > 0
         )
+        if (surv_m) {
+          testthat::expect_true(
+            # both left and right crown species survive
+            sum(unique(sign(survivors_m))) == 0
+          )
+        }
       }
-
       i <- i + 1
     }
   }

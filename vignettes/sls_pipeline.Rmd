@@ -52,7 +52,7 @@ First we simulate the process
 lambdas <- c(0.3, 0.6)
 mus <- c(0.2, 0.1)
 cond <- 3
-l_2 <- sls::sls_sim_get_standard_l_2(crown_age = 5, shift_time = 2)
+l_2 <- sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2)
 set.seed(1)
 sim <- sls::sls_sim(
   lambdas = lambdas, 

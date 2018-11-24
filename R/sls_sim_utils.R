@@ -465,10 +465,14 @@ sim_get_brts <- function(
       }
     }
     if (l_2$n_0[clade] == 2 && done == 0) {
-      brts[[clade]] <- DDD::L2brts(
-        l_0,
-        dropextinct = TRUE
-      )
+      if (sum(l_0[, 4] == -1) == 1 | nrow(l_0) == 1) {
+        brts[[clade]] <- l_0[1, 1]
+      } else {
+        brts[[clade]] <- DDD::L2brts(
+          l_0,
+          dropextinct = TRUE
+        )
+      }
     }
   }
   brts <- unname(brts)
