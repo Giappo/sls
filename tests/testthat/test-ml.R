@@ -4,7 +4,7 @@ test_that("use", {
 
   brts_m <- c(3, 2, 1)
   brts_s <- c(2.5, 1.5)
-  startpars <- c(0.4, 0.05, 0.3, 0.1)
+  start_pars <- c(0.4, 0.05, 0.3, 0.1)
   cond <- 3
   n_0 <- 2
 
@@ -12,7 +12,7 @@ test_that("use", {
     loglik_function = sls::loglik_sls_p,
     brts_m = brts_m,
     brts_s = brts_s,
-    startpars = startpars,
+    start_pars = start_pars,
     cond = cond,
     n_0 = n_0,
     verbose = FALSE
@@ -34,7 +34,7 @@ test_that("use", {
     is.numeric(test$loglik) == TRUE
   )
   testthat::expect_true(
-    test$df == length(startpars)
+    test$df == length(start_pars)
   )
   testthat::expect_true(
     test$conv == 0
@@ -45,7 +45,7 @@ test_that("abuse", {
 
   brts_m <- c(3, 2, 1)
   brts_s <- c(2.5, 1.5)
-  startpars <- c(0.4, 0.05, 0.3, 0.1)
+  start_pars <- c(0.4, 0.05, 0.3, 0.1)
   cond <- 3
   n_0 <- 2
 
@@ -54,7 +54,7 @@ test_that("abuse", {
       loglik_function = sls::loglik_sls_p,
       brts_m = c(),
       brts_s = brts_s,
-      startpars = startpars,
+      start_pars = start_pars,
       cond = cond,
       n_0 = n_0,
       verbose = FALSE
@@ -66,7 +66,7 @@ test_that("abuse", {
       loglik_function = sls::loglik_sls_p,
       brts_m = brts_m,
       brts_s = c(),
-      startpars = startpars,
+      start_pars = start_pars,
       cond = cond,
       n_0 = n_0,
       verbose = FALSE
@@ -78,7 +78,7 @@ test_that("abuse", {
       loglik_function = sls::loglik_sls_p,
       brts_m = brts_m,
       brts_s = brts_s,
-      startpars = c(-1, startpars[2:4]),
+      start_pars = c(-1, start_pars[2:4]),
       cond = cond,
       n_0 = n_0,
       verbose = FALSE
@@ -90,7 +90,7 @@ test_that("abuse", {
       loglik_function = sls::loglik_sls_p,
       brts_m = brts_m,
       brts_s = brts_s,
-      startpars = startpars,
+      start_pars = start_pars,
       cond = 15,
       n_0 = n_0,
       verbose = FALSE
@@ -102,7 +102,7 @@ test_that("abuse", {
       loglik_function = sls::loglik_sls_p,
       brts_m = brts_m,
       brts_s = brts_s,
-      startpars = startpars,
+      start_pars = start_pars,
       cond = cond,
       n_0 = 3,
       verbose = FALSE

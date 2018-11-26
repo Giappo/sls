@@ -96,3 +96,35 @@ sls_n_0s <- function() {
   n_0s <- c(2)
   n_0s
 }
+
+#' @title Logliks with division
+#' @author Giovanni Laudanno
+#' @description Get all the loglik functions with division
+#' @inheritParams default_params_doc
+#' @return loglik functions with division in sls
+#' @export
+sls_logliks_div <- function() {
+  fun_list <- ls("package:sls")
+  div_funs <- fun_list[sapply(
+    fun_list, function(x)
+      any(grepl("loglik_sls", x)) &
+      !any(grepl("nodiv", x))
+  )]
+  div_funs
+}
+
+#' @title Logliks with no division
+#' @author Giovanni Laudanno
+#' @description Get all the loglik functions with no division
+#' @inheritParams default_params_doc
+#' @return loglik functions with no division in sls
+#' @export
+sls_logliks_nodiv <- function() {
+  fun_list <- ls("package:sls")
+  nodiv_funs <- fun_list[sapply(
+    fun_list, function(x)
+      any(grepl("loglik", x)) &
+      any(grepl("nodiv", x))
+  )]
+  nodiv_funs
+}

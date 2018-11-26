@@ -83,7 +83,7 @@
 #' @param shift_time the time of the shift
 #' @param sim_pars parameters of the simulation
 #' @param verbose set it to TRUE if you want to see the outputs on screen
-#' @param startpars parameters to start from for the search of the likelihood
+#' @param start_pars parameters to start from for the search of the likelihood
 #' maximum
 #' @param vec a vector or a matrix to be transformed
 #' @param missnumspec number of missing (unseen) species in the phylogeny
@@ -152,7 +152,7 @@ default_params_doc <- function(
   lambdaterms,
   message,
   verbose,
-  startpars,
+  start_pars,
   loglik_function,
   matrix_size,
   sim_pars,

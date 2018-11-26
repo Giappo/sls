@@ -5,7 +5,7 @@
 \title{sls Maximum Likelihood}
 \usage{
 sls_ml(loglik_function = sls::loglik_sls_p, brts_m, brts_s,
-  startpars = c(0.5, 0.3, 0.5, 0.3), cond = 3, n_0 = 2,
+  start_pars = c(0.5, 0.3, 0.5, 0.3), cond = 3, n_0 = 2,
   verbose = 1)
 }
 \arguments{
@@ -15,7 +15,7 @@ sls_ml(loglik_function = sls::loglik_sls_p, brts_m, brts_s,
 
 \item{brts_s}{branching times for the Sub-clade}
 
-\item{startpars}{parameters to start from for the search of the likelihood
+\item{start_pars}{parameters to start from for the search of the likelihood
 maximum}
 
 \item{cond}{type of conditioning:

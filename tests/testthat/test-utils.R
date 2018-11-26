@@ -32,7 +32,7 @@ test_that("cat2", {
 test_that("sls_check_input", {
   brts_m <- c(6, 3, 2)
   brts_s <- c(2.5, 1)
-  startpars <- c(0.5, 0.3, 0.5, 0.3)
+  start_pars <- c(0.5, 0.3, 0.5, 0.3)
   cond <- 3
   n_0 <- 2
   n_max <- 1e2
