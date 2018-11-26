@@ -52,6 +52,7 @@
 #' @param lx size of the matrix
 #' @param matrix_size size of the matrix
 #' @param message the message to print
+#' @param models the models you want to use to define the likelihood
 #' @param mu extinction rate
 #' @param mus extinction rate, for all the clades
 #' @param n number of lineages
@@ -151,6 +152,7 @@ default_params_doc <- function(
   log_scale,
   lambdaterms,
   message,
+  models,
   verbose,
   start_pars,
   loglik_function,

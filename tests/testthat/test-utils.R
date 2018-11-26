@@ -108,3 +108,15 @@ test_that("sls_n_0s", {
     is.numeric(sls_n_0s())
   )
 })
+
+test_that("sls_logliks_div", {
+  testthat::expect_true(
+    length(sls_logliks_div()) > 0
+  )
+})
+
+test_that("sls_logliks_nodiv", {
+  testthat::expect_true(
+    length(sls_logliks_nodiv()) > 0
+  )
+})

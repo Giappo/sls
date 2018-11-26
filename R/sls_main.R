@@ -13,7 +13,8 @@ sls_main <- function(
    shift_time = 2
  ),
  start_pars = c(0.2, 0.1, 0.2, 0.1),
- models = sls_logliks_div()
+ models = sls_logliks_div(),
+ verbose = TRUE
 ) {
   # set up
   lambdas <- sim_pars[c(1, 3)]
@@ -37,8 +38,15 @@ sls_main <- function(
     if (is.null(which_function[m])) {
       stop("This is not a likelihood function provided by sls!")
     }
-    fun_name_1 <- toString(fun_list[which_function[m]]); print(fun_name_1)
-    model_names[m] <- unlist(strsplit(fun_name_1, split = "loglik_", fixed = TRUE))[2]
+    fun_name_1 <- toString(fun_list[which_function[m]])
+    model_names[m] <- unlist(strsplit(
+      fun_name_1,
+      split = "loglik_",
+      fixed = TRUE
+    ))[2]
+  }
+  if (verbose == TRUE) {
+   cat("You are using the functions:", model_names)
   }
 
   # simulate

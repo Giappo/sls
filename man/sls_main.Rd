@@ -6,7 +6,7 @@
 \usage{
 sls_main(seed, sim_pars, cond, l_2 = sim_get_standard_l_2(crown_age = 5,
   shift_time = 2), start_pars = c(0.2, 0.1, 0.2, 0.1),
-  models = sls_logliks_div())
+  models = sls_logliks_div(), verbose = TRUE)
 }
 \arguments{
 \item{seed}{the seed}
@@ -29,6 +29,10 @@ nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
 \item{start_pars}{parameters to start from for the search of the likelihood
 maximum}
+
+\item{models}{the models you want to use to define the likelihood}
+
+\item{verbose}{set it to TRUE if you want to see the outputs on screen}
 }
 \description{
 Simulate an sls process and infer parameters maximizing the
