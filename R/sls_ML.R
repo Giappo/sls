@@ -7,18 +7,20 @@ sls_ml <- function(
   loglik_function = sls::loglik_sls_p,
   brts_m,
   brts_s,
-  startpars = c(0.5, 0.3, 0.5, 0.3),
+  start_pars = c(0.5, 0.3, 0.5, 0.3),
   cond = 3,
   n_0 = 2,
   verbose = 1
 ) {
-  if (any(startpars < 0)) {
+  if (any(start_pars < 0)) {
     stop("you cannot start from negative parameters")
   }
-  failpars <- rep(-1, length(startpars))
+  failpars <- rep(-1, length(start_pars))
   par_names <- c("lambda_s", "mu_m", "lambda_s", "mu_s")
+  out_names <- c(par_names, "loglik", "df", "conv")
   failout  <- data.frame(t(failpars), loglik = -1, df = -1, conv = -1)
-  pars <- startpars
+  colnames(failout) <- out_names
+  pars <- start_pars
 
   #Rampal's transformation
   pars2 <- pars / (1 + pars)
@@ -37,7 +39,7 @@ sls_ml <- function(
 
   initloglik <- fun(pars); pars; initloglik
   cat2(
-    message = paste0("The loglikelihood for the initial parameter values is", initloglik, "\n"), # nolint
+    message = paste0("The loglikelihood for the initial parameter values is ", initloglik, "\n"), # nolint
     verbose = verbose
   )
   utils::flush.console()
@@ -75,7 +77,7 @@ sls_ml <- function(
         lambda_s = outpars[3],
         mu_s = outpars[4],
         loglik = out$value,
-        df = length(startpars),
+        df = length(start_pars),
         conv = unlist(out$conv)
       )
     }

@@ -32,7 +32,7 @@ test_that("cat2", {
 test_that("sls_check_input", {
   brts_m <- c(6, 3, 2)
   brts_s <- c(2.5, 1)
-  startpars <- c(0.5, 0.3, 0.5, 0.3)
+  start_pars <- c(0.5, 0.3, 0.5, 0.3)
   cond <- 3
   n_0 <- 2
   n_max <- 1e2
@@ -106,5 +106,17 @@ test_that("sls_conds", {
 test_that("sls_n_0s", {
   testthat::expect_true(
     is.numeric(sls_n_0s())
+  )
+})
+
+test_that("sls_logliks_div", {
+  testthat::expect_true(
+    length(sls_logliks_div()) > 0
+  )
+})
+
+test_that("sls_logliks_nodiv", {
+  testthat::expect_true(
+    length(sls_logliks_nodiv()) > 0
   )
 })

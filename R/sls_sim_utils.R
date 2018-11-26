@@ -474,6 +474,7 @@ sim_get_brts <- function(
         )
       }
     }
+    brts[[clade]] <- unname(brts[[clade]])
   }
   brts <- unname(brts)
   brts
