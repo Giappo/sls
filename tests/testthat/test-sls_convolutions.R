@@ -1,4 +1,4 @@
-context("convolutions")
+context("sls_convolutions")
 
 test_that("dft is a unitary operator", {
   vec <- 1:30

@@ -1,4 +1,4 @@
-context("simulations")
+context("sls_sim")
 
 is_on_ci <- function() {
   is_it_on_appveyor <- Sys.getenv("APPVEYOR") != ""

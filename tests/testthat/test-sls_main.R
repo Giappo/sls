@@ -71,15 +71,26 @@ test_that("use", {
     testthat::expect_true(
       length(test$model) > 0
     )
+
+    # test file saving
+    if (.Platform$OS.type == "windows") {
+      sim_path <- "extdata"
+    } else {
+      sim_path <- getwd()
+    }
     testthat::expect_true(
       file.exists(
-        system.file("extdata", "data", package = "sls")
+        system.file(
+          sim_path,
+          "data",
+          package = "sls"
+        )
       )
     )
     testthat::expect_true(
       file.exists(
         system.file(
-          "extdata",
+          sim_path,
           "data",
           paste0("sim_", seed, ".RData"),
           package = "sls"
@@ -89,7 +100,7 @@ test_that("use", {
     testthat::expect_true(
       file.exists(
         system.file(
-          "extdata",
+          sim_path,
           paste0("sls_mle", seed, ".txt"),
           package = "sls"
         )
@@ -98,7 +109,7 @@ test_that("use", {
     testthat::expect_equal(
       utils::read.csv(
         system.file(
-          "extdata",
+          sim_path,
           paste0("sls_mle", seed, ".txt"),
           package = "sls"
         )

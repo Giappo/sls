@@ -112,25 +112,25 @@ sls_main <- function(
 
   # save data
   if (.Platform$OS.type == "windows") {
-    simpath  <- system.file("extdata", package = "sls")
-    if (!file.exists(simpath)) {
-      dir.create(simpath, showWarnings = FALSE)
+    sim_path  <- system.file("extdata", package = "sls")
+    if (!file.exists(sim_path)) {
+      dir.create(sim_path, showWarnings = FALSE)
     }
   } else {
-    simpath  <- getwd()
+    sim_path  <- getwd()
   }
-  datapath <- file.path(simpath, "data")
-  datafile_name <- file.path(
-    datapath,
+  data_path <- file.path(sim_path, "data")
+  data_file_name <- file.path(
+    data_path,
     paste0("sim_", seed, ".RData")
   )
-  if (!file.exists(datafile_name)) {
-    if (!file.exists(datapath)) {
-      dir.create(datapath, showWarnings = FALSE)
+  if (!file.exists(data_file_name)) {
+    if (!file.exists(data_path)) {
+      dir.create(data_path, showWarnings = FALSE)
     }
   }
-  save(sim, file = datafile_name)
-  file_name <- file.path(simpath, paste0("sls_mle", seed, ".txt"))
+  save(sim, file = data_file_name)
+  file_name <- file.path(sim_path, paste0("sls_mle", seed, ".txt"))
   utils::write.csv(
     x = out,
     file = file_name

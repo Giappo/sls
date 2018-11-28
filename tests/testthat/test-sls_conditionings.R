@@ -1,4 +1,4 @@
-context("conditional probabilities")
+context("sls_conditionings")
 
 test_that("Analytical equivalence for conditional probability 1", {
 
