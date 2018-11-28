@@ -71,8 +71,12 @@ test_that("sls_sim", {
   n_clades <- length(lambdas)
   l_2 <- sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2)
 
+  time <- format(Sys.time(), "%X")
   maxsims <- 100
-  maxtravis <- (900 * is_on_ci())
+  maxtravis <- (
+    is_on_ci() *
+      (200 + 700 * (time > "23:00:00" && time < "9:30:00"))
+  )
   seed_interval <- 1:(maxsims + maxtravis)
   conds <- c(3, 4)
   i <- 1
