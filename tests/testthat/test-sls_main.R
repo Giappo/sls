@@ -74,7 +74,7 @@ test_that("use", {
 
     # test file saving
     if (.Platform$OS.type == "windows") {
-      sim_path  <- system.file("extdata", package = "sls")
+      sim_path  <- system.file("extdata", package = sls_pkg_name())
     } else {
       sim_path  <- getwd()
     }
@@ -86,13 +86,16 @@ test_that("use", {
     # check data file existence
     data_file_name <- file.path(
       data_path,
-      paste0("sim_", seed, ".RData")
+      paste0(sls_pkg_name(), "_sim_", seed, ".RData")
     )
     testthat::expect_true(
       file.exists(data_file_name)
     )
     # check results file existence
-    results_file_name <- file.path(sim_path, paste0("sls_mle", seed, ".txt"))
+    results_file_name <- file.path(
+      sim_path,
+      paste0(sls_pkg_name(), "_mle_", seed, ".txt")
+    )
     testthat::expect_true(
       file.exists(results_file_name)
     )

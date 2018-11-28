@@ -120,3 +120,9 @@ test_that("sls_logliks_nodiv", {
     length(sls_logliks_nodiv()) > 0
   )
 })
+
+test_that("sls_pkg_name", {
+  testthat::expect_true(
+    sls_pkg_name() == "sls"
+  )
+})

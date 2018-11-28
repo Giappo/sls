@@ -21,10 +21,11 @@ sls_main <- function(
   mus <- sim_pars[c(2, 4)]
   ks <- c(Inf, Inf)
 
+  pkg_name <- sls_pkg_name()
+  fun_list <- ls(paste0("package:", pkg_name))
   model_names <- which_function <- rep(NA, length(models))
   for (m in seq_along(models)) {
     fun <- eval(models[m])[[1]]
-    fun_list <- ls("package:sls")
     if (is.character(models[m])) {
       which_function[m] <- which(fun_list == models[m])
     } else {
@@ -36,7 +37,11 @@ sls_main <- function(
       }
     }
     if (is.null(which_function[m])) {
-      stop("This is not a likelihood function provided by sls!")
+      stop(paste0(
+        "This is not a likelihood function provided by ",
+        pkg_name,
+        "!"
+      ))
     }
     fun_name_1 <- toString(fun_list[which_function[m]])
     model_names[m] <- unlist(strsplit(
@@ -69,6 +74,13 @@ sls_main <- function(
     ncol = length(start_pars) + 3 + 3
   ))
   for (m in seq_along(models)) {
+    if (verbose == FALSE) {
+      if (rappdirs::app_dir()$os != "win") {
+        sink(file.path(rappdirs::user_cache_dir(), "ddd"))
+      } else {
+        sink(rappdirs::user_cache_dir())
+      }
+    }
     mle <- sls_ml(
       loglik_function = get(fun_list[which_function[m]]),
       brts_m = sim$brts[[1]],
@@ -78,6 +90,9 @@ sls_main <- function(
       n_0 = l_2$n_0[1],
       verbose = FALSE
     )
+    if (verbose == FALSE) {
+      sink()
+    }
     results[m, ] <- data.frame(
       mle,
       tips_m = tips_m,
@@ -112,7 +127,7 @@ sls_main <- function(
 
   # save data
   if (.Platform$OS.type == "windows") {
-    sim_path  <- system.file("extdata", package = "sls")
+    sim_path  <- system.file("extdata", package = pkg_name)
     if (!file.exists(sim_path)) {
       dir.create(sim_path, showWarnings = FALSE)
     }
@@ -122,7 +137,7 @@ sls_main <- function(
   data_path <- file.path(sim_path, "data")
   data_file_name <- file.path(
     data_path,
-    paste0("sim_", seed, ".RData")
+    paste0(pkg_name, "_sim_", seed, ".RData")
   )
   if (!file.exists(data_file_name)) {
     if (!file.exists(data_path)) {
@@ -130,7 +145,10 @@ sls_main <- function(
     }
   }
   save(sim, file = data_file_name)
-  results_file_name <- file.path(sim_path, paste0("sls_mle", seed, ".txt"))
+  results_file_name <- file.path(
+    sim_path,
+    paste0(pkg_name, "_mle_", seed, ".txt")
+  )
   utils::write.csv(
     x = out,
     file = results_file_name

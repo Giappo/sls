@@ -128,3 +128,14 @@ sls_logliks_nodiv <- function() {
   )]
   nodiv_funs
 }
+
+#' @title Get package name
+#' @author Giovanni Laudanno
+#' @description Get package name
+#' @inheritParams default_params_doc
+#' @return Package name
+#' @export
+sls_pkg_name <- function() {
+  pkg_name <- "sls"
+  pkg_name
+}

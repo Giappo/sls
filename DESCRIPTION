@@ -12,7 +12,8 @@ Imports:
   DDD,
   expoRkit,
   subplex,
-  testit
+  testit,
+  rappdirs
 Suggests:
   ape,
   devtools,
