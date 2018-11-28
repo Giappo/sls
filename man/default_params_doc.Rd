@@ -8,12 +8,12 @@ documentation.}
 default_params_doc(lambda, mu, lambdas, mus, ks, l_0, l_1, l_2,
   l_matrix_size, data, clade, delta_n, delta_t, deltas, event, final_time,
   l_matrix, pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, n_max, cond,
-  t, t_c, t_d, ts, times, tbar, n, fun, fun1, fun2, k, vec, d_0, d_0s, e_0,
-  t_0, tf, t_f, td, t_p, tds, t_ds, shift_time, log_scale, lambdaterms,
-  message, verbose, startpars, loglik_function, matrix_size, sim_pars, lx,
-  ddep, trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
-  initparsopt, optimmethod, tolerance, pars2, seed, age, crown_age,
-  missnumspec)
+  t, t_c, t_d, ts, times, tbar, n, dropextinct, fun, fun1, fun2, k, vec,
+  d_0, d_0s, e_0, t_0, tf, t_f, td, t_p, tds, t_ds, shift_time, log_scale,
+  lambdaterms, message, models, verbose, start_pars, loglik_function,
+  matrix_size, sim_pars, lx, ddep, trparsopt, trparsfix, idparsopt,
+  idparsfix, idparsnoshift, initparsopt, optimmethod, tolerance, pars2,
+  seed, age, crown_age, missnumspec)
 }
 \arguments{
 \item{lambda}{speciation rate}
@@ -105,6 +105,9 @@ of the species considered in the l table}
 
 \item{n}{number of lineages}
 
+\item{dropextinct}{TRUE if you want to remove the dead species from the
+tree. FALSE otherwise.}
+
 \item{fun}{a function}
 
 \item{fun1}{a function}
@@ -144,9 +147,11 @@ in the likelihood}
 
 \item{message}{the message to print}
 
+\item{models}{the models you want to use to define the likelihood}
+
 \item{verbose}{set it to TRUE if you want to see the outputs on screen}
 
-\item{startpars}{parameters to start from for the search of the likelihood
+\item{start_pars}{parameters to start from for the search of the likelihood
 maximum}
 
 \item{loglik_function}{the loglik function you want to use}

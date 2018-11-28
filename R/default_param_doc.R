@@ -25,6 +25,8 @@
 #' the change in number of species
 #' @param delta_t in the Doob-Gillespie algorithm,
 #' the waiting time for the next event to occur
+#' @param dropextinct TRUE if you want to remove the dead species from the
+#' tree. FALSE otherwise.
 #' @param d_0 starting value for BiSSE's D function
 #' @param d_0s starting values for BiSSE's D functions
 #' @param e_0 starting value for BiSSE's E function
@@ -52,6 +54,7 @@
 #' @param lx size of the matrix
 #' @param matrix_size size of the matrix
 #' @param message the message to print
+#' @param models the models you want to use to define the likelihood
 #' @param mu extinction rate
 #' @param mus extinction rate, for all the clades
 #' @param n number of lineages
@@ -83,7 +86,7 @@
 #' @param shift_time the time of the shift
 #' @param sim_pars parameters of the simulation
 #' @param verbose set it to TRUE if you want to see the outputs on screen
-#' @param startpars parameters to start from for the search of the likelihood
+#' @param start_pars parameters to start from for the search of the likelihood
 #' maximum
 #' @param vec a vector or a matrix to be transformed
 #' @param missnumspec number of missing (unseen) species in the phylogeny
@@ -132,6 +135,7 @@ default_params_doc <- function(
   times,
   tbar,
   n,
+  dropextinct,
   fun,
   fun1,
   fun2,
@@ -151,8 +155,9 @@ default_params_doc <- function(
   log_scale,
   lambdaterms,
   message,
+  models,
   verbose,
-  startpars,
+  start_pars,
   loglik_function,
   matrix_size,
   sim_pars,
