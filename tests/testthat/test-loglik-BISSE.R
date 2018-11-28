@@ -1,7 +1,9 @@
 context("likelihoods - bisse")
 
-is_on_travis <- function() {
-  Sys.getenv("TRAVIS") != ""
+is_on_ci <- function() {
+  is_it_on_appveyor <- Sys.getenv("APPVEYOR") != ""
+  is_it_on_travis <- Sys.getenv("TRAVIS") != ""
+  is_it_on_appveyor || is_it_on_travis # nolint internal function
 }
 
 test_that("test bisse and DDD logliks equivalence", {
@@ -173,12 +175,12 @@ test_that("test bisse alternative functions for the version with shift", {
   )
 
   #test2
-  l_m <- 13 + (2 * (is_on_travis()))
+  l_m <- 13 + (2 * (is_on_ci()))
   age <- 10;
-  maxs <- 10 + (90 * (is_on_travis()))
+  maxs <- 10 + (90 * (is_on_ci()))
   res <- rep(NA, maxs)
   test_threshold <- 1e-3
-  max_iterations <- 8 + (is_on_travis())
+  max_iterations <- 8 + (is_on_ci())
   for (s in 1:maxs) {
     set.seed(s)
 

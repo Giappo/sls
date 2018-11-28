@@ -1,7 +1,9 @@
 context("simulations")
 
-is_on_travis <- function() {
-  Sys.getenv("TRAVIS") != ""
+is_on_ci <- function() {
+  is_it_on_appveyor <- Sys.getenv("APPVEYOR") != ""
+  is_it_on_travis <- Sys.getenv("TRAVIS") != ""
+  is_it_on_appveyor || is_it_on_travis # nolint internal function
 }
 
 syntetic_data <- function(
@@ -459,7 +461,7 @@ test_that("sls_sim", {
   l_2 <- sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2)
 
   maxsims <- 30
-  maxtravis <- (70 * is_on_travis())
+  maxtravis <- (70 * is_on_ci())
   conds <- c(3, 4)
   i <- 1
   out <- vector(
@@ -546,7 +548,6 @@ test_that("shift is always recorded in main clade l_0_after and
 
   for (s in 23:25) {
     set.seed(s)
-    print(s)
     lambdas <- c(0.3, 0.6)
     mus <- c(0.2, 0.1)
     cond <- 3
@@ -581,14 +582,13 @@ test_that("l_0 matrix size check is working", {
 
   for (s in 1:30) {
     set.seed(s)
-    print(s)
     sim <- sls::sls_sim(
       lambdas = lambdas,
       mus = mus,
       cond = cond,
       l_2 = l_2,
       l_matrix_size = starting_l_size
-    ); sim
+    )
 
     for (i in seq_along(nrow(l_2))) {
       testthat::expect_true(
@@ -596,5 +596,4 @@ test_that("l_0 matrix size check is working", {
       )
     }
   }
-
 })

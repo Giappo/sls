@@ -16,7 +16,7 @@ sls_ml <- function(
     stop("you cannot start from negative parameters")
   }
   failpars <- rep(-1, length(start_pars))
-  par_names <- c("lambda_s", "mu_m", "lambda_s", "mu_s")
+  par_names <- c("lambda_m", "mu_m", "lambda_s", "mu_s")
   out_names <- c(par_names, "loglik", "df", "conv")
   failout  <- data.frame(t(failpars), loglik = -1, df = -1, conv = -1)
   colnames(failout) <- out_names
@@ -65,6 +65,7 @@ sls_ml <- function(
         df = -1,
         conv = unlist(out$conv)
       )
+      names(out2) <- out_names
     } else {
       outpars2 <- as.numeric(unlist(out$par))
       outpars <- outpars2 / (1 - outpars2)
@@ -80,6 +81,7 @@ sls_ml <- function(
         df = length(start_pars),
         conv = unlist(out$conv)
       )
+      names(out2) <- out_names
     }
   }
 

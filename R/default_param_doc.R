@@ -25,6 +25,8 @@
 #' the change in number of species
 #' @param delta_t in the Doob-Gillespie algorithm,
 #' the waiting time for the next event to occur
+#' @param dropextinct TRUE if you want to remove the dead species from the
+#' tree. FALSE otherwise.
 #' @param d_0 starting value for BiSSE's D function
 #' @param d_0s starting values for BiSSE's D functions
 #' @param e_0 starting value for BiSSE's E function
@@ -133,6 +135,7 @@ default_params_doc <- function(
   times,
   tbar,
   n,
+  dropextinct,
   fun,
   fun1,
   fun2,

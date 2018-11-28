@@ -1,11 +1,13 @@
 context("sls_main")
 
-is_on_travis <- function() {
-  Sys.getenv("TRAVIS") != ""
+is_on_ci <- function() {
+  is_it_on_appveyor <- Sys.getenv("APPVEYOR") != ""
+  is_it_on_travis <- Sys.getenv("TRAVIS") != ""
+  is_it_on_appveyor || is_it_on_travis # nolint internal function
 }
 
 test_that("use", {
-  seed_interval <- 1:(1 + 9 * is_on_travis())
+  seed_interval <- 6:(6 + 9 * is_on_ci()) # 6 is critical
   for (seed in seed_interval) {
     sim_pars <- c(0.3, 0.2, 0.6, 0.1)
     cond <- 3

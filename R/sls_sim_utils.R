@@ -439,6 +439,7 @@ sim_get_brts <- function(
   brts <- vector("list", length(data$l_1))
 
   for (clade in seq_along(data$l_1)) {
+    n_0 <- l_2$n_0[clade]
     done <- 0
     if (is.null(data$l_1[[clade]]) && done == 0) {
       brts[clade] <- NULL
@@ -449,31 +450,7 @@ sim_get_brts <- function(
         unname(data$l_1[[clade]])
       )
     }
-    if (!any(l_0[, 4] == -1) && done == 0) {
-      brts[clade] <- NULL
-      done <- 1
-    }
-    if (l_2$n_0[clade] == 1 && done == 0) {
-      if (sum(l_0[, 4] == -1) == 1 | nrow(l_0) == 1) {
-        brts[[clade]] <- l_0[1, 1]
-      } else {
-        phylo <- DDD::L2phylo(l_0, dropextinct = TRUE)
-        brts[[clade]] <- c(
-          l_0[1, 1],
-          ape::branching.times(phylo)
-        )
-      }
-    }
-    if (l_2$n_0[clade] == 2 && done == 0) {
-      if (sum(l_0[, 4] == -1) == 1 | nrow(l_0) == 1) {
-        brts[[clade]] <- l_0[1, 1]
-      } else {
-        brts[[clade]] <- DDD::L2brts(
-          l_0,
-          dropextinct = TRUE
-        )
-      }
-    }
+    brts[[clade]] <- sls_l_2_brts(l_0 = l_0, n_0 = n_0)
     brts[[clade]] <- unname(brts[[clade]])
   }
   brts <- unname(brts)
