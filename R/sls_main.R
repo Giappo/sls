@@ -130,10 +130,10 @@ sls_main <- function(
     }
   }
   save(sim, file = data_file_name)
-  file_name <- file.path(sim_path, paste0("sls_mle", seed, ".txt"))
+  results_file_name <- file.path(sim_path, paste0("sls_mle", seed, ".txt"))
   utils::write.csv(
     x = out,
-    file = file_name
+    file = results_file_name
   )
 
   out

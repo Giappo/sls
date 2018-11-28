@@ -72,7 +72,7 @@ test_that("sls_sim", {
   l_2 <- sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2)
 
   maxsims <- 100
-  maxtravis <- (200 * is_on_ci())
+  maxtravis <- (900 * is_on_ci())
   seed_interval <- 1:(maxsims + maxtravis)
   conds <- c(3, 4)
   i <- 1

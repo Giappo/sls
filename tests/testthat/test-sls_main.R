@@ -74,46 +74,31 @@ test_that("use", {
 
     # test file saving
     if (.Platform$OS.type == "windows") {
-      sim_path <- "extdata"
+      sim_path  <- system.file("extdata", package = "sls")
     } else {
-      sim_path <- getwd()
+      sim_path  <- getwd()
     }
+    # check data_path folder existence
+    data_path <- file.path(sim_path, "data")
     testthat::expect_true(
-      file.exists(
-        system.file(
-          sim_path,
-          "data",
-          package = "sls"
-        )
-      )
+      file.exists(data_path)
+    )
+    # check data file existence
+    data_file_name <- file.path(
+      data_path,
+      paste0("sim_", seed, ".RData")
     )
     testthat::expect_true(
-      file.exists(
-        system.file(
-          sim_path,
-          "data",
-          paste0("sim_", seed, ".RData"),
-          package = "sls"
-        )
-      )
+      file.exists(data_file_name)
     )
+    # check results file existence
+    results_file_name <- file.path(sim_path, paste0("sls_mle", seed, ".txt"))
     testthat::expect_true(
-      file.exists(
-        system.file(
-          sim_path,
-          paste0("sls_mle", seed, ".txt"),
-          package = "sls"
-        )
-      )
+      file.exists(results_file_name)
     )
+    # check if saved results are the right ones
     testthat::expect_equal(
-      utils::read.csv(
-        system.file(
-          sim_path,
-          paste0("sls_mle", seed, ".txt"),
-          package = "sls"
-        )
-      )[, -1],
+      utils::read.csv(results_file_name)[, -1],
       test
     )
   }
