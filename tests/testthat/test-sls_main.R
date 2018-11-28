@@ -96,7 +96,7 @@ test_that("use", {
       )
     )
     testthat::expect_equal(
-      read.csv(
+      utils::read.csv(
         system.file(
           "extdata",
           paste0("sls_mle", seed, ".txt"),

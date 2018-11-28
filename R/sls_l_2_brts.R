@@ -60,7 +60,7 @@ sls_l_2_brts <- function(
     "t_end"
   )
   lin_list$label <- as.character(lin_list$label)
-  if (n_row_l == 1 && l_0[, 4] == -1) {
+  if (nrow(lin_list) == 1) {
     brts <- age
   } else {
     done <- 0
