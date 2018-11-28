@@ -139,3 +139,128 @@ sls_pkg_name <- function() {
   pkg_name <- "sls"
   pkg_name
 }
+
+#' @title Get function names
+#' @author Giovanni Laudanno
+#' @description Get function names
+#' @inheritParams default_params_doc
+#' @return function names
+#' @export
+sls_get_function_names <- function(
+  models
+) {
+pkg_name <- sls_pkg_name()
+fun_list <- ls(paste0("package:", pkg_name))
+
+if (is.vector(models)) {
+  fun_names <- model_names <- which_function <- rep(NA, length(models))
+  for (m in seq_along(models)) {
+    fun <- eval(models[m])[[1]]
+    if (is.character(models[m])) {
+      if (length(
+        (find_function <- which(fun_list == models[m]))
+      ) == 0) {
+        stop(paste0(
+          "This is not a likelihood function provided by ",
+          pkg_name,
+          "!"
+        ))
+      }
+      which_function[m] <- find_function
+    } else {
+      for (i in seq_along(fun_list)) {
+        if (all.equal(get(fun_list[i]), fun) == TRUE) {
+          which_function[m] <- i
+        }
+      }
+    }
+    if (is.null(which_function[m]) | is.na(which_function[m])) {
+      stop(paste0(
+        "This is not a likelihood function provided by ",
+        pkg_name,
+        "!"
+      ))
+    }
+    fun_names[m] <- toString(fun_list[which_function[m]])
+    model_names[m] <- unlist(strsplit(
+      fun_names,
+      split = "loglik_",
+      fixed = TRUE
+    ))[2]
+  }
+} else {
+  fun <- eval(models)[[1]]
+  if (is.character(models)) {
+    if (length(
+      (find_function <- which(fun_list == models))
+    ) == 0) {
+      stop(paste0(
+        "This is not a likelihood function provided by ",
+        pkg_name,
+        "!"
+      ))
+    }
+    which_function <- find_function
+  } else {
+    for (i in seq_along(fun_list)) {
+      if (all.equal(get(fun_list[i]), fun) == TRUE) {
+        which_function <- i
+      }
+    }
+  }
+  if (is.null(which_function) | is.na(which_function)) {
+    stop(paste0(
+      "This is not a likelihood function provided by ",
+      pkg_name,
+      "!"
+    ))
+  }
+  fun_names <- toString(fun_list[which_function])
+  model_names <- unlist(strsplit(
+    fun_names,
+    split = "loglik_",
+    fixed = TRUE
+  ))[2]
+}
+
+
+if (any(is.na(model_names))) {
+  stop(paste0(
+    "This is not a likelihood function provided by ",
+    pkg_name,
+    "!"
+  ))
+}
+invisible(fun_names)
+}
+
+#' @title Check if provided models make sense
+#' @author Giovanni Laudanno
+#' @description Check if provided models make sense
+#' @inheritParams default_params_doc
+#' @return models names
+#' @export
+sls_get_model_names <- function(
+  function_names,
+  verbose = FALSE
+) {
+  model_names <- function_names
+  for (m in seq_along(function_names)) {
+    model_names[m] <- unlist(strsplit(
+      function_names[m],
+      split = "loglik_",
+      fixed = TRUE
+    ))[2]
+    if (is.null(model_names[m]) | is.na(model_names[m])) {
+      stop(paste0(
+        "This is not a likelihood function provided by ",
+        sls_pkg_name(),
+        "!"
+      ))
+    }
+  }
+  if (verbose == TRUE) {
+    cat("You are using the functions:", model_names)
+  }
+  model_names
+}

@@ -126,3 +126,40 @@ test_that("sls_pkg_name", {
     sls_pkg_name() == "sls"
   )
 })
+
+test_that("sls_get_function_names & sls_get_model_names", {
+  #use
+  testthat::expect_true(
+    all(
+      sls_get_function_names(
+        models = sls_logliks_div()
+      ) == c("loglik_sls_p", "loglik_sls_q")
+    )
+  )
+  testthat::expect_silent(
+    sls_get_model_names(
+      function_names = sls_logliks_div(),
+      verbose = FALSE
+    )
+  )
+  testthat::expect_output(
+    sls_get_model_names(
+      function_names = sls_logliks_div(),
+      verbose = TRUE
+    ),
+    "You are using the functions: sls_p sls_q"
+  )
+  #abuse
+  testthat::expect_error(
+    sls_get_function_names(
+      models = "nonsense"
+    ),
+    "This is not a likelihood function provided by sls!"
+  )
+  testthat::expect_error(
+    sls_get_model_names(
+      function_names = "nonsense"
+    ),
+    "This is not a likelihood function provided by sls!"
+  )
+})
