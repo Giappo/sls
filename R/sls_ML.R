@@ -10,7 +10,7 @@ sls_ml <- function(
   start_pars = c(0.5, 0.3, 0.5, 0.3),
   cond = 3,
   n_0 = 2,
-  verbose = 1
+  verbose = TRUE
 ) {
   if (any(start_pars < 0)) {
     stop("you cannot start from negative parameters")
@@ -51,8 +51,8 @@ sls_ml <- function(
   } else {
     out <- subplex::subplex(
       par = pars2,
-      fn = function(x) -fun(x)
-    ); out; fun(out$par)
+      fn = function(x) -fun(pars_transform_back(x))
+    ); pars_transform_back(out$par); out[-1]; fun(pars_transform_back(out$par))
     if (out$conv > 0) {
       cat2(
         "Optimization has not converged. Try again with different initial values.\n", # nolint

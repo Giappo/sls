@@ -6,7 +6,7 @@
 \usage{
 sls_ml(loglik_function = sls::loglik_sls_p, brts_m, brts_s,
   start_pars = c(0.5, 0.3, 0.5, 0.3), cond = 3, n_0 = 2,
-  verbose = 1)
+  verbose = TRUE)
 }
 \arguments{
 \item{loglik_function}{the loglik function you want to use}
