@@ -105,4 +105,47 @@ test_that("use", {
       test
     )
   }
+  # test silent mode and character entry for "models" input
+  testthat::expect_silent(
+    out <- sls_main(
+      seed = seed,
+      sim_pars = sim_pars,
+      cond = cond,
+      l_2 = sim_get_standard_l_2(
+        crown_age = 5,
+        shift_time = 2
+      ),
+      start_pars = c(0.2, 0.1, 0.2, 0.1),
+      models = "loglik_sls_p",
+      verbose = FALSE
+    )
+  )
+  testthat::expect_true(
+    is.data.frame(out)
+  )
+})
+
+test_that("abuse", {
+  seed <- 1
+  sim_pars <- c(0.3, 0.2, 0.6, 0.1)
+  cond <- 3
+  testthat::expect_error(
+    sls_main(
+      seed = seed,
+      sim_pars = sim_pars,
+      cond = cond,
+      l_2 = sim_get_standard_l_2(
+        crown_age = 5,
+        shift_time = 2
+      ),
+      start_pars = c(0.2, 0.1, 0.2, 0.1),
+      models = "nonsense",
+      verbose = FALSE
+    ),
+    paste0(
+      "This is not a likelihood function provided by ",
+      sls_pkg_name(),
+      "!"
+    )
+  )
 })

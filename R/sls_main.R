@@ -20,39 +20,15 @@ sls_main <- function(
   lambdas <- sim_pars[c(1, 3)]
   mus <- sim_pars[c(2, 4)]
   ks <- c(Inf, Inf)
-
   pkg_name <- sls_pkg_name()
-  fun_list <- ls(paste0("package:", pkg_name))
-  model_names <- which_function <- rep(NA, length(models))
-  for (m in seq_along(models)) {
-    fun <- eval(models[m])[[1]]
-    if (is.character(models[m])) {
-      which_function[m] <- which(fun_list == models[m])
-    } else {
-      for (i in seq_along(fun_list)) {
 
-        if (all.equal(get(fun_list[i]), fun) == TRUE) {
-          which_function[m] <- i
-        }
-      }
-    }
-    if (is.null(which_function[m])) {
-      stop(paste0(
-        "This is not a likelihood function provided by ",
-        pkg_name,
-        "!"
-      ))
-    }
-    fun_name_1 <- toString(fun_list[which_function[m]])
-    model_names[m] <- unlist(strsplit(
-      fun_name_1,
-      split = "loglik_",
-      fixed = TRUE
-    ))[2]
-  }
-  if (verbose == TRUE) {
-   cat("You are using the functions:", model_names)
-  }
+  function_names <- sls_get_function_names(
+    models = models
+  )
+  model_names <- sls_get_model_names(
+    function_names = function_names,
+    verbose = verbose
+  )
 
   # simulate
   set.seed(seed)
@@ -82,7 +58,7 @@ sls_main <- function(
       }
     }
     mle <- sls_ml(
-      loglik_function = get(fun_list[which_function[m]]),
+      loglik_function = get(function_names[m]),
       brts_m = sim$brts[[1]],
       brts_s = sim$brts[[2]],
       start_pars = start_pars,

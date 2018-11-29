@@ -36,6 +36,7 @@
 #' @param fun a function
 #' @param fun1 a function
 #' @param fun2 another function
+#' @param function_names function names
 #' @param k frequencies in the Discrete Fourier Transform (DFT)
 #' @param ks carrying capacities, for all the clades
 #' @param l_0 the l table, for a single clade
@@ -139,6 +140,7 @@ default_params_doc <- function(
   fun,
   fun1,
   fun2,
+  function_names,
   k,
   vec,
   d_0,

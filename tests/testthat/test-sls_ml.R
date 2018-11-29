@@ -49,6 +49,18 @@ test_that("abuse", {
   cond <- 3
   n_0 <- 2
 
+  testthat::expect_output(
+    sls_ml(
+      loglik_function = sls::loglik_sls_p,
+      brts_m = brts_m,
+      brts_s = brts_s,
+      start_pars = c(0, 1, 0, 1),
+      cond = cond,
+      n_0 = n_0,
+      verbose = FALSE
+    ),
+    "The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values." # nolint
+  )
   testthat::expect_error(
     test <- sls_ml(
       loglik_function = sls::loglik_sls_p,
