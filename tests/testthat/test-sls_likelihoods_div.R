@@ -1,7 +1,9 @@
 context("likelihoods - division")
 
-is_on_travis <- function() {
-  Sys.getenv("TRAVIS") != ""
+is_on_ci <- function() {
+  is_it_on_appveyor <- Sys.getenv("APPVEYOR") != ""
+  is_it_on_travis <- Sys.getenv("TRAVIS") != ""
+  is_it_on_appveyor || is_it_on_travis # nolint internal function
 }
 
 test_that("all the likelihoods with division yield the same result", {
@@ -102,11 +104,11 @@ test_that("all the likelihoods with division yield the same result", {
     sls::loglik_sls_p,
     sls::loglik_sls_q
   )
-  threshold <- (!is_on_travis()) * 1e-2 +
-               (is_on_travis())  * (1 / 2) * 1e-3
+  threshold <- (!is_on_ci()) * 1e-2 +
+               (is_on_ci())  * (1 / 2) * 1e-3
 
   cond <- sls_conds()[1]
-  for (s in 1:(4 + 4 * is_on_travis())) {
+  for (s in 1:(4 + 4 * is_on_ci())) {
     set.seed(s)
     t_0s    <- c(6, 2)
     brts_m  <- c(

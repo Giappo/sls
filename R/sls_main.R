@@ -5,49 +5,30 @@
 #' @details mle inference
 #' @export
 sls_main <- function(
- seed,
- sim_pars,
- cond,
- l_2 = sim_get_standard_l_2(
-   crown_age = 5,
-   shift_time = 2
- ),
- start_pars = c(0.2, 0.1, 0.2, 0.1),
- models = sls_logliks_div(),
- verbose = TRUE
+  seed,
+  sim_pars,
+  cond,
+  l_2 = sim_get_standard_l_2(
+    crown_age = 5,
+    shift_time = 2
+  ),
+  start_pars = c(0.2, 0.1, 0.2, 0.1),
+  models = sls_logliks_div(),
+  verbose = TRUE
 ) {
   # set up
   lambdas <- sim_pars[c(1, 3)]
   mus <- sim_pars[c(2, 4)]
   ks <- c(Inf, Inf)
+  pkg_name <- sls::sls_pkg_name()
 
-  model_names <- which_function <- rep(NA, length(models))
-  for (m in seq_along(models)) {
-    fun <- eval(models[m])[[1]]
-    fun_list <- ls("package:sls")
-    if (is.character(models[m])) {
-      which_function[m] <- which(fun_list == models[m])
-    } else {
-      for (i in seq_along(fun_list)) {
-
-        if (all.equal(get(fun_list[i]), fun) == TRUE) {
-          which_function[m] <- i
-        }
-      }
-    }
-    if (is.null(which_function[m])) {
-      stop("This is not a likelihood function provided by sls!")
-    }
-    fun_name_1 <- toString(fun_list[which_function[m]])
-    model_names[m] <- unlist(strsplit(
-      fun_name_1,
-      split = "loglik_",
-      fixed = TRUE
-    ))[2]
-  }
-  if (verbose == TRUE) {
-   cat("You are using the functions:", model_names)
-  }
+  function_names <- sls_get_function_names(
+    models = models
+  )
+  model_names <- sls_get_model_names(
+    function_names = function_names,
+    verbose = verbose
+  )
 
   # simulate
   set.seed(seed)
@@ -69,8 +50,15 @@ sls_main <- function(
     ncol = length(start_pars) + 3 + 3
   ))
   for (m in seq_along(models)) {
+    if (verbose == FALSE) {
+      if (rappdirs::app_dir()$os != "win") {
+        sink(file.path(rappdirs::user_cache_dir(), "ddd"))
+      } else {
+        sink(rappdirs::user_cache_dir())
+      }
+    }
     mle <- sls_ml(
-      loglik_function = get(fun_list[which_function[m]]),
+      loglik_function = get(function_names[m]),
       brts_m = sim$brts[[1]],
       brts_s = sim$brts[[2]],
       start_pars = start_pars,
@@ -78,6 +66,9 @@ sls_main <- function(
       n_0 = l_2$n_0[1],
       verbose = FALSE
     )
+    if (verbose == FALSE) {
+      sink()
+    }
     results[m, ] <- data.frame(
       mle,
       tips_m = tips_m,
@@ -112,28 +103,31 @@ sls_main <- function(
 
   # save data
   if (.Platform$OS.type == "windows") {
-    simpath  <- system.file("extdata", package = "sls")
-    if (!file.exists(simpath)) {
-      dir.create(simpath, showWarnings = FALSE)
+    sim_path  <- system.file("extdata", package = pkg_name)
+    if (!file.exists(sim_path)) {
+      dir.create(sim_path, showWarnings = FALSE)
     }
   } else {
-    simpath  <- getwd()
+    sim_path  <- getwd()
   }
-  datapath <- file.path(simpath, "data")
-  datafile_name <- file.path(
-    datapath,
-    paste0("sim_", seed, ".RData")
+  data_path <- file.path(sim_path, "data")
+  data_file_name <- file.path(
+    data_path,
+    paste0(pkg_name, "_sim_", seed, ".RData")
   )
-  if (!file.exists(datafile_name)) {
-    if (!file.exists(datapath)) {
-      dir.create(datapath, showWarnings = FALSE)
+  if (!file.exists(data_file_name)) {
+    if (!file.exists(data_path)) {
+      dir.create(data_path, showWarnings = FALSE)
     }
   }
-  save(sim, file = datafile_name)
-  file_name <- file.path(simpath, paste0("sls_mle", seed, ".txt"))
+  save(sim, file = data_file_name)
+  results_file_name <- file.path(
+    sim_path,
+    paste0(pkg_name, "_mle_", seed, ".txt")
+  )
   utils::write.csv(
     x = out,
-    file = file_name
+    file = results_file_name
   )
 
   out

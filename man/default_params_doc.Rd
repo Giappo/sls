@@ -7,13 +7,13 @@ documentation.}
 \usage{
 default_params_doc(lambda, mu, lambdas, mus, ks, l_0, l_1, l_2,
   l_matrix_size, data, clade, delta_n, delta_t, deltas, event, final_time,
-  l_matrix, pars, pars_m, pars_s, brts, brts_m, brts_s, n_0, n_max, cond,
-  t, t_c, t_d, ts, times, tbar, n, fun, fun1, fun2, k, vec, d_0, d_0s, e_0,
-  t_0, tf, t_f, td, t_p, tds, t_ds, shift_time, log_scale, lambdaterms,
-  message, models, verbose, start_pars, loglik_function, matrix_size,
-  sim_pars, lx, ddep, trparsopt, trparsfix, idparsopt, idparsfix,
-  idparsnoshift, initparsopt, optimmethod, tolerance, pars2, seed, age,
-  crown_age, missnumspec)
+  l_matrix, pars, pars_m, pars_s, pars_transformed, brts, brts_m, brts_s,
+  n_0, n_max, cond, t, t_c, t_d, ts, times, tbar, n, dropextinct, fun,
+  fun1, fun2, function_names, k, vec, d_0, d_0s, e_0, t_0, tf, t_f, td,
+  t_p, tds, t_ds, shift_time, log_scale, lambdaterms, message, models,
+  verbose, start_pars, loglik_function, matrix_size, sim_pars, lx, ddep,
+  trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift, initparsopt,
+  optimmethod, tolerance, pars2, seed, age, crown_age, missnumspec)
 }
 \arguments{
 \item{lambda}{speciation rate}
@@ -70,6 +70,9 @@ of the species considered in the l table}
 
 \item{pars_s}{parameters for the sub clade (lambda, mu)}
 
+\item{pars_transformed}{parameters of the likelihood functions, transformed
+according to y = x / (1 + x)}
+
 \item{brts}{branchin times}
 
 \item{brts_m}{branching times for the Main-clade}
@@ -105,11 +108,16 @@ of the species considered in the l table}
 
 \item{n}{number of lineages}
 
+\item{dropextinct}{TRUE if you want to remove the dead species from the
+tree. FALSE otherwise.}
+
 \item{fun}{a function}
 
 \item{fun1}{a function}
 
 \item{fun2}{another function}
+
+\item{function_names}{function names}
 
 \item{k}{frequencies in the Discrete Fourier Transform (DFT)}
 

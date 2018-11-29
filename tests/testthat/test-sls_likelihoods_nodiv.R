@@ -1,11 +1,9 @@
 context("likelihoods - no division")
 
-is_on_travis <- function() {
-  Sys.getenv("TRAVIS") != ""
-}
-
-is_on_travis <- function() {
-  Sys.getenv("TRAVIS") != ""
+is_on_ci <- function() {
+  is_it_on_appveyor <- Sys.getenv("APPVEYOR") != ""
+  is_it_on_travis <- Sys.getenv("TRAVIS") != ""
+  is_it_on_appveyor || is_it_on_travis # nolint internal function
 }
 
 test_that("all the likelihoods with no division yield the same result", {
@@ -105,11 +103,11 @@ test_that("all the likelihoods with no division yield the same result", {
     sls::loglik_sls_p_nodiv,
     sls::loglik_sls_q_nodiv
   )
-  threshold <- (!is_on_travis()) * 1e-2 +
-               (is_on_travis())  * 1e-3
+  threshold <- (!is_on_ci()) * 1e-2 +
+               (is_on_ci())  * 1e-3
 
   cond <- 0; s <- 1
-  for (s in 1:(2 + 4 * is_on_travis())) {
+  for (s in 1:(2 + 4 * is_on_ci())) {
     set.seed(s)
     t_0s    <- c(4, 1.5)
     brts_m  <- c(

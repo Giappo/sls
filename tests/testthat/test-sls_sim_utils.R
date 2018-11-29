@@ -1,7 +1,9 @@
-context("simulations")
+context("sls_sim_utils")
 
-is_on_travis <- function() {
-  Sys.getenv("TRAVIS") != ""
+is_on_ci <- function() {
+  is_it_on_appveyor <- Sys.getenv("APPVEYOR") != ""
+  is_it_on_travis <- Sys.getenv("TRAVIS") != ""
+  is_it_on_appveyor || is_it_on_travis # nolint internal function
 }
 
 syntetic_data <- function(
@@ -31,7 +33,7 @@ syntetic_data <- function(
 
   data <- list()
   data$l_1[[clade]] <- l_0
-  data$pools[[clade]] <- sim_get_pool(l_0)
+  data$pools[[clade]] <- sim_get_pool(l_0) # nolint internal function
   data$n_max <- length(
     unique(data$l_1[[clade]][, 3])[unique(data$l_1[[clade]][, 3]) != 0]
   )
@@ -112,6 +114,29 @@ test_that("sim_initialize_data_new_clade", {
   )
   testthat::expect_true(
     length(data$l_1) == clade
+  )
+
+  # it works even if you specify the wrong matrix size
+  clade <- 1
+  data <- sls::sim_initialize_data_new_clade(
+    data = data,
+    pars = pars,
+    clade = 0,
+    l_2 = l_2,
+    l_matrix_size = 2
+  )
+  testthat::expect_true(
+    length(data$l_1) > 0
+  )
+  data <- sim_initialize_data_new_clade(
+    data = data,
+    pars = pars,
+    clade = clade,
+    l_2 = l_2,
+    l_matrix_size = 2
+  )
+  testthat::expect_true(
+    length(data$l_1) > 0
   )
 })
 
@@ -450,151 +475,187 @@ test_that("sim_check_conditioning", {
 
 })
 
-test_that("sls_sim", {
-
-  lambdas <- c(0.2, 0.4)
-  mus <- c(0.1, 0.05)
-  ks <- c(Inf, Inf)
-  n_clades <- length(lambdas)
-  l_2 <- sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2)
-
-  maxsims <- 30
-  maxtravis <- (70 * is_on_travis())
-  conds <- c(3, 4)
-  i <- 1
-  out <- vector(
-    "list",
-    length(conds) * (maxsims + maxtravis)
-  ); s <- 1; cond <- conds[1]
-  for (s in 1:(maxsims + maxtravis)) {
-    for (cond in conds) {
-      if (s <= maxsims) {
-        set.seed(s)
-      } else {
-        lambdas <- c(x <- runif(n = 1, min = 0.2, max = 1), x / 2)
-        mus <- lambdas * runif(n = 2, min = 0.2, max = 0.8)
-      }
-      out[[i]] <- sls_sim(
-        lambdas = lambdas,
-        mus = mus,
-        ks = ks,
-        cond = cond,
-        l_2 = l_2
-      )
-
-      test <- out[[i]]
-      l_0_1   <- test$l_tables[[1]]
-      l_0_2   <- test$l_tables[[2]]
-      testthat::expect_true(
-        ncol(l_0_1) == ncol(l_0_2),
-        ncol(l_0_1) == 5
-      )
-      testthat::expect_true(
-        all(l_0_1[-1, 2] %in% l_0_1[, 3]),
-        all(l_0_2[-1, 2] %in% l_0_2[, 3])
-      )
-      survivors_m <- l_0_1[l_0_1[, 4] == -1, 3]
-      survivors_s <- l_0_2[l_0_2[, 4] == -1, 3]
-      if (cond == 3) {
-        testthat::expect_true(
-          # at least one survivor for M and one for S
-          length(survivors_m) > 0,
-          length(survivors_s) > 0
-        )
-      }
-      if (cond == 4) {
-        testthat::expect_true(
-          # does M survive?
-          surv_m <- length(survivors_m) > 0,
-          # does S survive?
-          length(survivors_s) > 0
-        )
-        if (surv_m) {
-          testthat::expect_true(
-            # both left and right crown species survive
-            sum(unique(sign(survivors_m))) == 0
-          )
-        }
-      }
-      i <- i + 1
-    }
+# Different function that should do the same thing. Used to compare.
+sim_get_brts2 <- function(
+  data,
+  l_2
+) {
+  if (!all(data$t == 0)) {
+    stop("times in all clades need to reach 0 before you call this function")
   }
+  brts <- vector("list", length(data$l_1))
 
-})
+  for (clade in seq_along(data$l_1)) {
+    n_0 <- l_2$n_0[clade]
+    done <- 0
+    if (is.null(data$l_1[[clade]]) && done == 0) {
+      brts[clade] <- NULL
+      done <- 1
+    }
+    if (done == 0) {
+      l_0 <- sim_cut_l_matrix(
+        unname(data$l_1[[clade]])
+      )
+    }
+    l_0[l_0[, 5] > 0, 4] <- -1
+    if (nrow(l_0) == 1 && l_0[, 4] == -1) {
+      brts[[clade]] <- l_0[1, 1]
+    } else {
+      brts[[clade]] <- DDD::L2brts(L = l_0)
+      if (n_0 == 1) {
+        brts[[clade]] <- c(l_0[1, 1], brts[[clade]])
+      }
+    }
+    brts[[clade]] <- unname(brts[[clade]])
+  }
+  brts <- unname(brts)
+  brts
+}
 
-test_that("sls_sim - pathological cases", {
-  set.seed(1)
-  l_2 <- sls::sim_get_standard_l_2(crown_age = 10, shift_time = 2)
-  sim <- sls::sls_sim(
-    lambdas = c(0.5399258, 0),
-    mus = c(0.5400, 0),
-    ks = c(Inf, Inf),
-    cond = 3,
+# Test whether the function yields the right amount of tips and
+# whether these branching times are actually included in the data
+test_brts_fun <- function(
+  l_2,
+  data,
+  brts_fun = sim_get_brts
+) {
+  max_clade <- 2
+  out <- rep(0, max_clade)
+  brts <- brts_fun(
+    data = data,
     l_2 = l_2
   )
-  n_clades <- nrow(l_2)
-  testthat::expect_true(
-    length(sim$l_tables) == n_clades
-  )
-  testthat::expect_true(
-    length(sim$brts) == n_clades
-  )
-})
-
-test_that("shift is always recorded in main clade l_0_after and
-          sub clade ids always have the same sign", {
-
-  for (s in 23:25) {
-    set.seed(s)
-    print(s)
-    lambdas <- c(0.3, 0.6)
-    mus <- c(0.2, 0.1)
-    cond <- 3
-    l_2 <- sls::sim_get_standard_l_2(crown_age = 10, shift_time = 4)
-
-    sim <- sls::sls_sim(
-      lambdas = lambdas,
-      mus = mus,
-      cond = cond,
-      l_2 = l_2
-    )
-    testthat::expect_true(
-      # if subclade is not created there should be
-      # no sign of it in the main clade table
-      !is.null(sim$l_tables[[2]]) == any(sim$l_tables[[1]][, 5] == 2)
-    )
-    testthat::expect_true(
-      # in the subclade all the ids have the same sign
-      length(unique(sign(sim_get_pool(sim$l_tables[[2]])))) == 1
-    )
+  for (clade in 1:max_clade) {
+    n_0 <- l_2$n_0[clade]
+    br_ts <- brts[[clade]]
+    tips <- (n_0 - 1) + length(br_ts); tips
+    exp_tips <- (n_0 - 1) + sum(data$l_1[[clade]][, 4] == -1)
+    out[clade] <- (tips == exp_tips) *
+      all(
+        signif(br_ts, digits = 5) %in%
+          signif(data$l_1[[clade]][, 1], digits = 5)
+      )
   }
+  prod(out)
+}
 
-})
+# Simulate the process until the step when the conversion from data to brts
+# is needed
+sim_data <- function(
+  lambdas,
+  mus,
+  ks = c(Inf, Inf),
+  l_2 = sim_get_standard_l_2(
+    crown_age = 5,
+    shift_time = 2
+  ),
+  cond,
+  l_matrix_size = 1e4
+) {
+ # create the parameters
+  pars <- sim_get_pars(
+    lambdas = lambdas,
+    mus = mus,
+    ks = ks
+  )
+  good_sim <- 0
+  while (!good_sim) {
 
-test_that("l_0 matrix size check is working", {
+    # initialize data
+    data <- sim_initialize_data_new_clade(clade = 0, l_2 = l_2); clade <- 1; # nolint internal function
+    for (clade in l_2$clade_id) {
 
+      # initialize data for the clade
+      data <- sim_initialize_data_new_clade(
+        data = data,
+        clade = clade,
+        pars = pars,
+        l_2 = l_2,
+        l_matrix_size = l_matrix_size
+      )
+      while (data$t[[clade]] > 0) {
+
+        # sample delta_n and delta_t
+        deltas <- sim_sample_deltas(
+          data = data,
+          clade = clade,
+          pars = pars
+        ); deltas
+
+        # decide the event
+        event <- sim_decide_event(
+          data = data,
+          clade = clade,
+          l_2 = l_2,
+          deltas = deltas
+        ); event
+
+        # modify data accordingly
+        output <- sim_use_event(
+          data = data,
+          clade = clade,
+          l_2 = l_2,
+          event = event,
+          deltas = deltas
+        ); output
+        data <- output
+      }
+    }
+
+    # is the simulation in agreement with the conditioning?
+    good_sim <- sim_conditioning(
+      data = data,
+      l_2 = l_2,
+      cond = cond
+    ); good_sim
+  }
+  data
+}
+
+test_that("sim_get_brts", {
   lambdas <- c(0.3, 0.6)
   mus <- c(0.2, 0.1)
-  cond <- 3
-  l_2 <- sls::sim_get_standard_l_2(crown_age = 10, shift_time = 4)
-  starting_l_size <- 10
-
-  for (s in 1:30) {
-    set.seed(s)
-    print(s)
-    sim <- sls::sls_sim(
+  l_2 <- sim_get_standard_l_2(
+    crown_age = 5,
+    shift_time = 2
+  )
+  seed_interval <- 1:20
+  brts_funs <- c(
+    sim_get_brts,
+    sim_get_brts2
+  )
+  cond <- sls_conds()[1]
+  brts_list <- outs <- vector("list", length(brts_funs))
+  for (seed in seed_interval) {
+    set.seed(seed)
+    cond <- sls_conds()[1] * (cond == sls_conds()[2]) +
+      sls_conds()[2] * (cond == sls_conds()[1])
+    data <- sim_data(
       lambdas = lambdas,
       mus = mus,
-      cond = cond,
       l_2 = l_2,
-      l_matrix_size = starting_l_size
-    ); sim
-
-    for (i in seq_along(nrow(l_2))) {
+      cond = cond
+    )
+    for (i in seq_along(brts_funs)) {
+      outs[[i]][seed] <- test_brts_fun(
+        brts_fun = brts_funs[[i]],
+        l_2 = l_2,
+        data = data
+      )
       testthat::expect_true(
-        length(sim$brts[[i]]) <= nrow(sim$l_tables[[i]])
+        outs[[i]][seed] == 1
+      )
+      brts_list[[i]][[seed]] <- brts_funs[[i]](
+        l_2 = l_2,
+        data = data
       )
     }
   }
-
+  for (seed in seed_interval) {
+    testthat::expect_true(
+      all.equal(
+        brts_list[[1]][[seed]], brts_list[[2]][[seed]]
+      )
+    )
+  }
 })

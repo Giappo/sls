@@ -25,6 +25,8 @@
 #' the change in number of species
 #' @param delta_t in the Doob-Gillespie algorithm,
 #' the waiting time for the next event to occur
+#' @param dropextinct TRUE if you want to remove the dead species from the
+#' tree. FALSE otherwise.
 #' @param d_0 starting value for BiSSE's D function
 #' @param d_0s starting values for BiSSE's D functions
 #' @param e_0 starting value for BiSSE's E function
@@ -34,6 +36,7 @@
 #' @param fun a function
 #' @param fun1 a function
 #' @param fun2 another function
+#' @param function_names function names
 #' @param k frequencies in the Discrete Fourier Transform (DFT)
 #' @param ks carrying capacities, for all the clades
 #' @param l_0 the l table, for a single clade
@@ -67,6 +70,8 @@
 #' }
 #' @param pars_m parameters for the main clade (lambda, mu)
 #' @param pars_s parameters for the sub clade (lambda, mu)
+#' @param pars_transformed parameters of the likelihood functions, transformed
+#' according to y = x / (1 + x)
 #' @param seed the seed
 #' @param t time
 #' @param t_0 starting time
@@ -120,6 +125,7 @@ default_params_doc <- function(
   pars,
   pars_m,
   pars_s,
+  pars_transformed,
   brts,
   brts_m,
   brts_s,
@@ -133,9 +139,11 @@ default_params_doc <- function(
   times,
   tbar,
   n,
+  dropextinct,
   fun,
   fun1,
   fun2,
+  function_names,
   k,
   vec,
   d_0,
