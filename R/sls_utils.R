@@ -273,3 +273,10 @@ sls_get_model_names <- function(
   }
   model_names
 }
+
+#' Get the names of the parameters used in the MBD model
+#' @author Giovanni Laudanno
+#' @export
+get_sls_param_names <- function() {
+  c("lambda_m", "mu_m", "lambda_s", "mu_s")
+}
