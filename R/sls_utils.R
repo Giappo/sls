@@ -151,6 +151,11 @@ sls_get_function_names <- function(
 ) {
 pkg_name <- sls_pkg_name()
 fun_list <- ls(paste0("package:", pkg_name))
+error_message <- paste0(
+  "This is not a likelihood function provided by ",
+  pkg_name,
+  "!"
+)
 
 if (is.vector(models)) {
   fun_names <- model_names <- which_function <- rep(NA, length(models))
@@ -160,11 +165,7 @@ if (is.vector(models)) {
       if (length(
         (find_function <- which(fun_list == models[m]))
       ) == 0) {
-        stop(paste0(
-          "This is not a likelihood function provided by ",
-          pkg_name,
-          "!"
-        ))
+        stop(error_message)
       }
       which_function[m] <- find_function
     } else {
@@ -175,30 +176,22 @@ if (is.vector(models)) {
       }
     }
     if (is.null(which_function[m]) | is.na(which_function[m])) {
-      stop(paste0(
-        "This is not a likelihood function provided by ",
-        pkg_name,
-        "!"
-      ))
+      stop(error_message)
     }
     fun_names[m] <- toString(fun_list[which_function[m]])
     model_names[m] <- unlist(strsplit(
-      fun_names,
+      fun_names[m],
       split = "loglik_",
       fixed = TRUE
     ))[2]
   }
 } else {
-  fun <- eval(models)[[1]]
+  fun <- eval(models)
   if (is.character(models)) {
     if (length(
       (find_function <- which(fun_list == models))
     ) == 0) {
-      stop(paste0(
-        "This is not a likelihood function provided by ",
-        pkg_name,
-        "!"
-      ))
+      stop(error_message)
     }
     which_function <- find_function
   } else {
@@ -209,11 +202,7 @@ if (is.vector(models)) {
     }
   }
   if (is.null(which_function) | is.na(which_function)) {
-    stop(paste0(
-      "This is not a likelihood function provided by ",
-      pkg_name,
-      "!"
-    ))
+    stop(error_message)
   }
   fun_names <- toString(fun_list[which_function])
   model_names <- unlist(strsplit(
@@ -223,13 +212,8 @@ if (is.vector(models)) {
   ))[2]
 }
 
-
 if (any(is.na(model_names))) {
-  stop(paste0(
-    "This is not a likelihood function provided by ",
-    pkg_name,
-    "!"
-  ))
+  stop(error_message)
 }
 invisible(fun_names)
 }

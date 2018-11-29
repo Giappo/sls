@@ -115,6 +115,29 @@ test_that("sim_initialize_data_new_clade", {
   testthat::expect_true(
     length(data$l_1) == clade
   )
+
+  # it works even if you specify the wrong matrix size
+  clade <- 1
+  data <- sls::sim_initialize_data_new_clade(
+    data = data,
+    pars = pars,
+    clade = 0,
+    l_2 = l_2,
+    l_matrix_size = 2
+  )
+  testthat::expect_true(
+    length(data$l_1) > 0
+  )
+  data <- sim_initialize_data_new_clade(
+    data = data,
+    pars = pars,
+    clade = clade,
+    l_2 = l_2,
+    l_matrix_size = 2
+  )
+  testthat::expect_true(
+    length(data$l_1) > 0
+  )
 })
 
 test_that("sim_sample_deltas", {

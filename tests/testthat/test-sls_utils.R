@@ -30,12 +30,15 @@ test_that("cat2", {
 })
 
 test_that("sls_check_input", {
+
   brts_m <- c(6, 3, 2)
   brts_s <- c(2.5, 1)
   start_pars <- c(0.5, 0.3, 0.5, 0.3)
   cond <- 3
   n_0 <- 2
   n_max <- 1e2
+
+  # use
   testthat::expect_silent(
     sls_check_input(
       brts_m = brts_m,
@@ -45,6 +48,8 @@ test_that("sls_check_input", {
       n_max = n_max
     )
   )
+
+  #abuse
   testthat::expect_error(
     test <- sls_check_input(
       brts_m = c(),
@@ -64,6 +69,26 @@ test_that("sls_check_input", {
       n_max = n_max
     ),
     "sub clade branching times cannot be an empty vector"
+  )
+  testthat::expect_error(
+    test <- sls_check_input(
+      brts_m = c(-2, -1),
+      brts_s = brts_s,
+      cond = cond,
+      n_0 = n_0,
+      n_max = n_max
+    ),
+    "all the branching times for the main clade have to be non negative"
+  )
+  testthat::expect_error(
+    test <- sls_check_input(
+      brts_m = brts_m,
+      brts_s = c(-2, -1),
+      cond = cond,
+      n_0 = n_0,
+      n_max = n_max
+    ),
+    "all the branching times for the sub clade have to be non negative"
   )
   testthat::expect_error(
     test <- sls_check_input(
@@ -136,6 +161,11 @@ test_that("sls_get_function_names & sls_get_model_names", {
       ) == c("loglik_sls_p", "loglik_sls_q")
     )
   )
+  testthat::expect_true(
+    sls_get_function_names(
+      models = loglik_sls_p
+    ) == "loglik_sls_p"
+  )
   testthat::expect_silent(
     sls_get_model_names(
       function_names = sls_logliks_div(),
@@ -150,16 +180,39 @@ test_that("sls_get_function_names & sls_get_model_names", {
     "You are using the functions: sls_p sls_q"
   )
   #abuse
+  error_message <- paste0(
+    "This is not a likelihood function provided by ",
+    sls_pkg_name(),
+    "!"
+  )
   testthat::expect_error(
     sls_get_function_names(
       models = "nonsense"
     ),
-    "This is not a likelihood function provided by sls!"
+    error_message
+  )
+  testthat::expect_error(
+    sls_get_function_names(
+      models = c("nonsense1", "nonsense2")
+    ),
+    error_message
+  )
+  testthat::expect_error(
+    sls_get_function_names(
+      models = sls_check_input
+    ),
+    error_message
+  )
+  testthat::expect_error(
+    sls_get_function_names(
+      models = c(sls_check_input, sls_conds)
+    ),
+    error_message
   )
   testthat::expect_error(
     sls_get_model_names(
       function_names = "nonsense"
     ),
-    "This is not a likelihood function provided by sls!"
+    error_message
   )
 })
