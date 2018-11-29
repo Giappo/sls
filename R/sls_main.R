@@ -20,7 +20,7 @@ sls_main <- function(
   lambdas <- sim_pars[c(1, 3)]
   mus <- sim_pars[c(2, 4)]
   ks <- c(Inf, Inf)
-  pkg_name <- sls_pkg_name()
+  pkg_name <- sls::sls_pkg_name()
 
   function_names <- sls_get_function_names(
     models = models

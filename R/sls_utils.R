@@ -174,7 +174,7 @@ sls_pkg_name <- function() {
 sls_get_function_names <- function(
   models
 ) {
-pkg_name <- sls_pkg_name()
+pkg_name <- sls_pkg_name() # nolint internal function
 fun_list <- ls(paste0("package:", pkg_name))
 error_message <- paste0(
   "This is not a likelihood function provided by ",

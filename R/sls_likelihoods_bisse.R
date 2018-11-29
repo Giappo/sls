@@ -88,9 +88,21 @@ loglik_bisse <- function(
     ds_t   <- rep(NA, l_d)
     for (N in pool) {
       t_0 <- brts1[t]; t_f <- brts1[t - 1]
-      ds_t[N] <- d_t(pars = pars, t_0 = t_0, t_f = t_f, e_0 = e_0, d_0 = d_0[N])
+      ds_t[N] <- sls::d_t(
+        pars = pars,
+        t_0 = t_0,
+        t_f = t_f,
+        e_0 = e_0,
+        d_0 = d_0[N]
+      )
     }
-    es_t    <- e_t(pars = pars, t_0 = t_0, t_f = t_f, e_0 = e_0, d_0 = d_0)
+    es_t <- sls::e_t(
+      pars = pars,
+      t_0 = t_0,
+      t_f = t_f,
+      e_0 = e_0,
+      d_0 = d_0
+    )
     left  <- lefts[t - 1]; right <- rights[t - 1]
 
     if (t_f %in% t_ds) {
@@ -132,7 +144,13 @@ loglik_bisse2 <- function(
 ) {
   lambda <- pars[1]
   brts1 <- c(rep(brts[1], n_0 - 1), brts)
-  prod_d <- prod(d_t(pars = pars, t_f = brts1, t_0 = t_0, e_0 = e_0, d_0 = d_0))
+  prod_d <- prod(sls::d_t(
+    pars = pars,
+    t_f = brts1,
+    t_0 = t_0,
+    e_0 = e_0,
+    d_0 = d_0
+  ))
   prod_d <- prod_d * lambda ^ (length(brts[-1]) * lambdaterms)
   out <- (log_scale) * log(prod_d) + (1 - log_scale) * prod_d
   return(out)

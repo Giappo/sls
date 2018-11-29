@@ -23,7 +23,7 @@ sls_sim <- function(
   while (!good_sim) {
 
     # initialize data
-    data <- sim_initialize_data_new_clade(clade = 0, l_2 = l_2); clade <- 1;
+    data <- sim_initialize_data_new_clade(clade = 0, l_2 = l_2); clade <- 1; # nolint internal function
     for (clade in l_2$clade_id) {
 
       # initialize data for the clade

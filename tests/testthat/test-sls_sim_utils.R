@@ -33,7 +33,7 @@ syntetic_data <- function(
 
   data <- list()
   data$l_1[[clade]] <- l_0
-  data$pools[[clade]] <- sim_get_pool(l_0)
+  data$pools[[clade]] <- sim_get_pool(l_0) # nolint internal function
   data$n_max <- length(
     unique(data$l_1[[clade]][, 3])[unique(data$l_1[[clade]][, 3]) != 0]
   )
@@ -562,7 +562,7 @@ sim_data <- function(
   while (!good_sim) {
 
     # initialize data
-    data <- sim_initialize_data_new_clade(clade = 0, l_2 = l_2); clade <- 1;
+    data <- sim_initialize_data_new_clade(clade = 0, l_2 = l_2); clade <- 1; # nolint internal function
     for (clade in l_2$clade_id) {
 
       # initialize data for the clade

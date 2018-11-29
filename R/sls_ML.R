@@ -16,7 +16,7 @@ sls_ml <- function(
     stop("you cannot start from negative parameters")
   }
   failpars <- rep(-1, length(start_pars))
-  par_names <- get_sls_param_names()
+  par_names <- sls::get_sls_param_names()
   out_names <- c(par_names, "loglik", "df", "conv")
   failout  <- data.frame(t(failpars), loglik = -1, df = -1, conv = -1)
   colnames(failout) <- out_names
@@ -52,7 +52,7 @@ sls_ml <- function(
     out <- subplex::subplex(
       par = pars2,
       fn = function(x) -fun(pars_transform_back(x))
-    ); pars_transform_back(out$par); out[-1]; fun(pars_transform_back(out$par))
+    ); pars_transform_back(out$par); out[-1]; fun(pars_transform_back(out$par)) # nolint
     if (out$conv > 0) {
       cat2(
         "Optimization has not converged. Try again with different initial values.\n", # nolint
