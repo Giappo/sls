@@ -33,7 +33,7 @@ syntetic_data <- function(
 
   data <- list()
   data$l_1[[clade]] <- l_0
-  data$pools[[clade]] <- sim_get_pool(l_0)
+  data$pools[[clade]] <- sim_get_pool(l_0) # nolint internal function
   data$n_max <- length(
     unique(data$l_1[[clade]][, 3])[unique(data$l_1[[clade]][, 3]) != 0]
   )

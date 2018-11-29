@@ -1,3 +1,28 @@
+#' @title Transform parameters
+#' @description Transform parameters according to y = x / (1 + x)
+#' @inheritParams default_params_doc
+#' @details This is not to be called by the user.
+#' @return transformed parameters
+#' @export
+pars_transform_forward <- function(pars) {
+  pars <- as.numeric(unlist(pars))
+  pars_transformed <- pars / (1 + pars)
+  pars_transformed[which(pars == Inf)] <- 1
+  pars_transformed
+}
+
+#' @title Transform parameters back
+#' @description Transform parameters back according to x = y / (1 + y)
+#' @inheritParams default_params_doc
+#' @details This is not to be called by the user.
+#' @return the original parameters
+#' @export
+pars_transform_back <- function(pars_transformed) {
+  pars_transformed <- as.numeric(unlist(pars_transformed))
+  pars <- pars_transformed / (1 - pars_transformed)
+  pars
+}
+
 #' @title Transition matrix builder
 #' @author Giovanni Laudanno
 #' @description Builds the transition matrix to integrate the differential equations of the P-equation
@@ -149,7 +174,7 @@ sls_pkg_name <- function() {
 sls_get_function_names <- function(
   models
 ) {
-pkg_name <- sls_pkg_name()
+pkg_name <- sls_pkg_name() # nolint internal function
 fun_list <- ls(paste0("package:", pkg_name))
 error_message <- paste0(
   "This is not a likelihood function provided by ",
@@ -247,4 +272,11 @@ sls_get_model_names <- function(
     cat("You are using the functions:", model_names)
   }
   model_names
+}
+
+#' Get the names of the parameters used in the MBD model
+#' @author Giovanni Laudanno
+#' @export
+get_sls_param_names <- function() {
+  c("lambda_m", "mu_m", "lambda_s", "mu_s")
 }

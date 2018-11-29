@@ -66,9 +66,9 @@ sim_initialize_data_new_clade <- function(
   }
 
   l_1 <- data$l_1
-  n_0 <- sim_get_n_0(l_2 = l_2, clade = clade)
-  t_0 <- sim_get_t_0(l_2 = l_2, clade = clade)
-  motherclade <- sim_get_motherclade(l_2 = l_2, clade = clade)
+  n_0 <- sim_get_n_0(l_2 = l_2, clade = clade) # nolint internal function
+  t_0 <- sim_get_t_0(l_2 = l_2, clade = clade) # nolint internal function
+  motherclade <- sim_get_motherclade(l_2 = l_2, clade = clade) # nolint internal function
   n_max <- n_0
 
   cladeborn <- 1
@@ -215,7 +215,7 @@ sim_use_event <- function(
   deltas
 ) {
 
-  shifts <- sim_get_shifts_info(l_2 = l_2, clade = clade)
+  shifts <- sim_get_shifts_info(l_2 = l_2, clade = clade) # nolint internal function
   t <- data$t[[clade]] - deltas$delta_t
   l_0 <- data$l_1[[clade]]
   pool <- data$pools[[clade]]; pool
@@ -348,7 +348,7 @@ sim_conditioning <- function(
     if (!is.matrix(l_0) && !is.null(l_0)) {
       dim(l_0) <- c(1, 5)
     }
-    shifts <- sim_get_shifts_info(l_2 = l_2, clade = clade)
+    shifts <- sim_get_shifts_info(l_2 = l_2, clade = clade) # nolint internal function
     shifts_times <- shifts$when
     shifted_id <- l_0[(l_0[, 5] != 0), 3]
 
@@ -450,7 +450,7 @@ sim_get_brts <- function(
         unname(data$l_1[[clade]])
       )
     }
-    brts[[clade]] <- sls_l_2_brts(l_0 = l_0, n_0 = n_0)
+    brts[[clade]] <- sls_l_2_brts(l_0 = l_0, n_0 = n_0) # nolint internal function
     brts[[clade]] <- unname(brts[[clade]])
   }
   brts <- unname(brts)
