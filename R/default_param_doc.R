@@ -70,6 +70,8 @@
 #' }
 #' @param pars_m parameters for the main clade (lambda, mu)
 #' @param pars_s parameters for the sub clade (lambda, mu)
+#' @param pars_transformed parameters of the likelihood functions, transformed
+#' according to y = x / (1 + x)
 #' @param seed the seed
 #' @param t time
 #' @param t_0 starting time
@@ -123,6 +125,7 @@ default_params_doc <- function(
   pars,
   pars_m,
   pars_s,
+  pars_transformed,
   brts,
   brts_m,
   brts_s,
