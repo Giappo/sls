@@ -6,7 +6,7 @@
 \usage{
 sls_main(seed, sim_pars, cond = 3, l_2 = sim_get_standard_l_2(crown_age
   = 5, shift_time = 2), start_pars = c(0.2, 0.1, 0.2, 0.1),
-  models = sls_logliks_div(), verbose = TRUE)
+  models = sls_logliks_div(), verbose = FALSE)
 }
 \arguments{
 \item{seed}{the seed}

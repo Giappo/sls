@@ -14,14 +14,15 @@ sls_main <- function(
   ),
   start_pars = c(0.2, 0.1, 0.2, 0.1),
   models = sls_logliks_div(),
-  verbose = TRUE
+  verbose = FALSE
 ) {
-  # set up
+  # specific set up
   lambdas <- sim_pars[c(1, 3)]
   mus <- sim_pars[c(2, 4)]
   ks <- c(Inf, Inf)
   n_0s <- l_2$n_0
 
+  # generic set up
   pkg_name <- get_pkg_name() # nolint internal function
   function_names <- get_function_names( # nolint internal function
     models = models
