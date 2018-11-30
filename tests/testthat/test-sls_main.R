@@ -72,9 +72,10 @@ test_that("use", {
       length(test$model) > 0
     )
 
+    pkg_name <- get_pkg_name() # nolint internal function
     # test file saving
     if (.Platform$OS.type == "windows") {
-      sim_path  <- system.file("extdata", package = sls_pkg_name())
+      sim_path  <- system.file("extdata", package = pkg_name)
     } else {
       sim_path  <- getwd()
     }
@@ -86,7 +87,7 @@ test_that("use", {
     # check data file existence
     data_file_name <- file.path(
       data_path,
-      paste0(sls_pkg_name(), "_sim_", seed, ".RData")
+      paste0(pkg_name, "_sim_", seed, ".RData")
     )
     testthat::expect_true(
       file.exists(data_file_name)
@@ -94,7 +95,7 @@ test_that("use", {
     # check results file existence
     results_file_name <- file.path(
       sim_path,
-      paste0(sls_pkg_name(), "_mle_", seed, ".txt")
+      paste0(pkg_name, "_mle_", seed, ".txt")
     )
     testthat::expect_true(
       file.exists(results_file_name)
@@ -144,7 +145,7 @@ test_that("abuse", {
     ),
     paste0(
       "This is not a likelihood function provided by ",
-      sls_pkg_name(),
+      get_pkg_name(),
       "!"
     )
   )

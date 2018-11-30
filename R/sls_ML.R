@@ -5,85 +5,113 @@
 #' @export
 sls_ml <- function(
   loglik_function = sls::loglik_sls_p,
-  brts_m,
-  brts_s,
+  brts,
   start_pars = c(0.5, 0.3, 0.5, 0.3),
-  cond = 3,
   n_0 = 2,
-  verbose = TRUE
+  cond = 3,
+  verbose = TRUE,
+  optim_ids = rep(TRUE, length(start_pars)),
+  true_pars = start_pars
 ) {
+  # setup and checks
+  par_names <- get_param_names() # nolint internal function
+  testit::assert(length(optim_ids) == length(start_pars))
+  testit::assert(length(true_pars) == length(start_pars))
   if (any(start_pars < 0)) {
     stop("you cannot start from negative parameters")
   }
-  failpars <- rep(-1, length(start_pars))
-  par_names <- sls::get_sls_param_names()
+  if (any(start_pars * optim_ids != true_pars * optim_ids)) {
+    stop("for fixed parameters start from the true values")
+  }
   out_names <- c(par_names, "loglik", "df", "conv")
+  failpars <- rep(-1, length(start_pars))
   failout  <- data.frame(t(failpars), loglik = -1, df = -1, conv = -1)
   colnames(failout) <- out_names
-  pars <- start_pars
 
-  #Rampal's transformation
-  pars2 <- pars / (1 + pars)
-  pars2[which(pars == Inf)] <- 1
+  # define function to optimize
+  optim_fun <- function(tr_optim_pars) {
+    pars2 <- rep(0, length(start_pars))
+    optim_pars <- pars_transform_back(tr_optim_pars)
+    pars2[optim_ids] <- optim_pars
+    pars2[!optim_ids] <- true_pars[!optim_ids]
 
-  fun <- function(pars) {
-    loglik_function(
-      pars_m = pars[1:2],
-      pars_s = pars[3:4],
-      brts_m = brts_m,
-      brts_s = brts_s,
+    out <- -loglik_function(
+      pars = pars2,
+      brts = brts,
       cond = cond,
       n_0 = n_0
     )
+    if (verbose == TRUE) {
+      printed_values <- paste0(
+        c(par_names, "loglik"),
+        " = ",
+        signif(c(pars2, -out), digits = 5)
+      )
+      print_this <- paste(printed_values, sep = ",")
+      cat(print_this, "\n")
+    }
+    out
   }
 
-  initloglik <- fun(pars); pars; initloglik
-  cat2(
-    message = paste0("The loglikelihood for the initial parameter values is ", initloglik, "\n"), # nolint
-    verbose = verbose
-  )
+  # initial likelihood
+  tr_start_pars <- rep(0, length(start_pars))
+  tr_start_pars <- pars_transform_forward(start_pars[optim_ids])
+  if (rappdirs::app_dir()$os != "win") {
+    sink("/dev/null")
+  } else {
+    sink(rappdirs::user_cache_dir())
+  }
+  initloglik <- -optim_fun(tr_start_pars)
+  sink()
   utils::flush.console()
   if (initloglik == -Inf) {
     cat(
       message = "The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n" # nolint
     )
     out2 <- failout
-  } else {
-    out <- subplex::subplex(
-      par = pars2,
-      fn = function(x) -fun(pars_transform_back(x))
-    ); pars_transform_back(out$par); out[-1]; fun(pars_transform_back(out$par)) # nolint
-    if (out$conv > 0) {
-      cat2(
-        "Optimization has not converged. Try again with different initial values.\n", # nolint
-        verbose = verbose
-      )
-      out2 <- data.frame(
-        t(failpars),
-        loglik = -1,
-        df = -1,
-        conv = unlist(out$conv)
-      )
-      names(out2) <- out_names
-    } else {
-      outpars <- pars_transform_back(
-        as.numeric(unlist(out$par))
-      )
-      names(outpars) <- par_names
-
-      out2 <- data.frame(
-        row.names = "results",
-        lambda_m = outpars[1],
-        mu_m = outpars[2],
-        lambda_s = outpars[3],
-        mu_s = outpars[4],
-        loglik = out$value,
-        df = length(start_pars),
-        conv = unlist(out$conv)
-      )
-      names(out2) <- out_names
-    }
+    return(invisible(out2))
   }
 
-  invisible(out2)
+  # maximum likelihood
+  out <- subplex::subplex(
+    par = tr_start_pars,
+    fn = function(x) optim_fun(x)
+  )
+
+  # report missed convergence
+  if (out$conv > 0) {
+    cat2(
+      "Optimization has not converged. Try again with different initial values.\n", # nolint
+      verbose = verbose
+    )
+    out2 <- data.frame(
+      t(failpars),
+      loglik = -1,
+      df = -1,
+      conv = unlist(out$conv)
+    )
+    names(out2) <- out_names
+    return(invisible(out2))
+  }
+
+  # return mle results
+  outpars <- rep(0, length(start_pars))
+  outpars[optim_ids] <- pars_transform_back(
+    as.numeric(unlist(out$par))
+  )
+  outpars[!optim_ids] <- true_pars[!optim_ids]
+  names(outpars) <- par_names
+
+  out2 <- data.frame(
+    row.names = NULL,
+    outpars[1],
+    outpars[2],
+    outpars[3],
+    outpars[4],
+    -out$value,
+    sum(optim_ids),
+    unlist(out$conv)
+  )
+  names(out2) <- out_names
+  return(out2)
 }

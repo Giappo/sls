@@ -4,19 +4,19 @@
 \alias{sls_ml}
 \title{sls Maximum Likelihood}
 \usage{
-sls_ml(loglik_function = sls::loglik_sls_p, brts_m, brts_s,
-  start_pars = c(0.5, 0.3, 0.5, 0.3), cond = 3, n_0 = 2,
-  verbose = TRUE)
+sls_ml(loglik_function = sls::loglik_sls_p, brts, start_pars = c(0.5,
+  0.3, 0.5, 0.3), n_0 = 2, cond = 3, verbose = TRUE,
+  optim_ids = rep(TRUE, length(start_pars)), true_pars = start_pars)
 }
 \arguments{
 \item{loglik_function}{the loglik function you want to use}
 
-\item{brts_m}{branching times for the Main-clade}
-
-\item{brts_s}{branching times for the Sub-clade}
+\item{brts}{branchin times}
 
 \item{start_pars}{parameters to start from for the search of the likelihood
 maximum}
+
+\item{n_0}{starting number of lineages}
 
 \item{cond}{type of conditioning:
 \itemize{
@@ -29,9 +29,11 @@ maximum}
   both crown descendents in the main clade;
 }}
 
-\item{n_0}{starting number of lineages}
-
 \item{verbose}{set it to TRUE if you want to see the outputs on screen}
+
+\item{optim_ids}{ids of the parameters you want to optimize.}
+
+\item{true_pars}{true parameter values when running the ml process.}
 }
 \value{
 best parameters

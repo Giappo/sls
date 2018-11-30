@@ -4,6 +4,7 @@
 #' @param brts branchin times
 #' @param brts_m branching times for the Main-clade
 #' @param brts_s branching times for the Sub-clade
+#' @param brts_clade branching times for a single clade
 #' @param clade the id of the clade
 #' @param cond type of conditioning:
 #' \itemize{
@@ -61,6 +62,7 @@
 #' @param n number of lineages
 #' @param n_0 starting number of lineages
 #' @param n_max maximum number of lineages to consider
+#' @param optim_ids ids of the parameters you want to optimize.
 #' @param pars parameters of the likelihood functions:
 #' \itemize{
 #'   \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
@@ -70,6 +72,7 @@
 #' }
 #' @param pars_m parameters for the main clade (lambda, mu)
 #' @param pars_s parameters for the sub clade (lambda, mu)
+#' @param pars_clade parameters for a single clade
 #' @param pars_transformed parameters of the likelihood functions, transformed
 #' according to y = x / (1 + x)
 #' @param seed the seed
@@ -86,6 +89,7 @@
 #' @param ts times
 #' @param times times
 #' @param tbar time left from shift time to the present
+#' @param true_pars true parameter values when running the ml process.
 #' @param shift_time the time of the shift
 #' @param sim_pars parameters of the simulation
 #' @param verbose set it to TRUE if you want to see the outputs on screen
@@ -125,10 +129,12 @@ default_params_doc <- function(
   pars,
   pars_m,
   pars_s,
+  pars_clade,
   pars_transformed,
   brts,
   brts_m,
   brts_s,
+  brts_clade,
   n_0,
   n_max,
   cond,
@@ -138,6 +144,8 @@ default_params_doc <- function(
   ts,
   times,
   tbar,
+  true_pars,
+  optim_ids,
   n,
   dropextinct,
   fun,

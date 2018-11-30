@@ -114,20 +114,19 @@ test_that("test bisse alternative functions for the version with shift", {
 
     pars_m1 <- pars_m  ; pars_s1 <- pars_s;
     pars_m2 <- pars_m / 2; pars_s2 <- pars_s * 3 / 4;
+    pars_1 <- c(pars_m1, pars_s1)
+    pars_2 <- c(pars_m2, pars_s2)
+    brts <- list(brts_m, brts_s)
 
     bisse_a1 <- sls::loglik_bisse_shift(
-      pars_m = pars_m1,
-      pars_s = pars_s1,
-      brts_m = brts_m,
-      brts_s = brts_s,
+      pars = pars_1,
+      brts = brts,
       cond = cond,
       n_max = precision
     ); bisse_a1
     bisse_a2 <- sls::loglik_bisse_shift(
-      pars_m = pars_m2,
-      pars_s = pars_s2,
-      brts_m = brts_m,
-      brts_s = brts_s,
+      pars = pars_2,
+      brts = brts,
       cond = cond,
       n_max = precision
     ); bisse_a2

@@ -7,13 +7,14 @@ documentation.}
 \usage{
 default_params_doc(lambda, mu, lambdas, mus, ks, l_0, l_1, l_2,
   l_matrix_size, data, clade, delta_n, delta_t, deltas, event, final_time,
-  l_matrix, pars, pars_m, pars_s, pars_transformed, brts, brts_m, brts_s,
-  n_0, n_max, cond, t, t_c, t_d, ts, times, tbar, n, dropextinct, fun,
-  fun1, fun2, function_names, k, vec, d_0, d_0s, e_0, t_0, tf, t_f, td,
-  t_p, tds, t_ds, shift_time, log_scale, lambdaterms, message, models,
-  verbose, start_pars, loglik_function, matrix_size, sim_pars, lx, ddep,
-  trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift, initparsopt,
-  optimmethod, tolerance, pars2, seed, age, crown_age, missnumspec)
+  l_matrix, pars, pars_m, pars_s, pars_clade, pars_transformed, brts,
+  brts_m, brts_s, brts_clade, n_0, n_max, cond, t, t_c, t_d, ts, times,
+  tbar, true_pars, optim_ids, n, dropextinct, fun, fun1, fun2,
+  function_names, k, vec, d_0, d_0s, e_0, t_0, tf, t_f, td, t_p, tds, t_ds,
+  shift_time, log_scale, lambdaterms, message, models, verbose, start_pars,
+  loglik_function, matrix_size, sim_pars, lx, ddep, trparsopt, trparsfix,
+  idparsopt, idparsfix, idparsnoshift, initparsopt, optimmethod, tolerance,
+  pars2, seed, age, crown_age, missnumspec)
 }
 \arguments{
 \item{lambda}{speciation rate}
@@ -70,6 +71,8 @@ of the species considered in the l table}
 
 \item{pars_s}{parameters for the sub clade (lambda, mu)}
 
+\item{pars_clade}{parameters for a single clade}
+
 \item{pars_transformed}{parameters of the likelihood functions, transformed
 according to y = x / (1 + x)}
 
@@ -78,6 +81,8 @@ according to y = x / (1 + x)}
 \item{brts_m}{branching times for the Main-clade}
 
 \item{brts_s}{branching times for the Sub-clade}
+
+\item{brts_clade}{branching times for a single clade}
 
 \item{n_0}{starting number of lineages}
 
@@ -105,6 +110,10 @@ according to y = x / (1 + x)}
 \item{times}{times}
 
 \item{tbar}{time left from shift time to the present}
+
+\item{true_pars}{true parameter values when running the ml process.}
+
+\item{optim_ids}{ids of the parameters you want to optimize.}
 
 \item{n}{number of lineages}
 

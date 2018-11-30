@@ -20,12 +20,12 @@ sls_main <- function(
   lambdas <- sim_pars[c(1, 3)]
   mus <- sim_pars[c(2, 4)]
   ks <- c(Inf, Inf)
-  pkg_name <- sls::sls_pkg_name()
+  pkg_name <- get_pkg_name() # nolint internal function
 
-  function_names <- sls_get_function_names(
+  function_names <- get_function_names( # nolint internal function
     models = models
   )
-  model_names <- sls_get_model_names(
+  model_names <- get_model_names( # nolint internal function
     function_names = function_names,
     verbose = verbose
   )
@@ -59,8 +59,7 @@ sls_main <- function(
     }
     mle <- sls_ml(
       loglik_function = get(function_names[m]),
-      brts_m = sim$brts[[1]],
-      brts_s = sim$brts[[2]],
+      brts = sim$brts,
       start_pars = start_pars,
       cond = cond,
       n_0 = l_2$n_0[1],
@@ -99,11 +98,18 @@ sls_main <- function(
     colnames(results),
     "model"
   )
+  rownames(out) <- NULL
   out <- data.frame(out)
 
   # save data
   if (.Platform$OS.type == "windows") {
-    sim_path  <- system.file("extdata", package = pkg_name)
+    if (!("extdata" %in% list.files(system.file(package = pkg_name)))) {
+      dir.create(file.path(
+        system.file(package = pkg_name),
+        "extdata"
+      ))
+    }
+    sim_path <- system.file("extdata", package = pkg_name)
     if (!file.exists(sim_path)) {
       dir.create(sim_path, showWarnings = FALSE)
     }

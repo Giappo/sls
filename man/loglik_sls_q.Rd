@@ -4,17 +4,18 @@
 \alias{loglik_sls_q}
 \title{Q-likelihood}
 \usage{
-loglik_sls_q(pars_m, pars_s, brts_m, brts_s, cond, n_0 = 2,
-  n_max = 100)
+loglik_sls_q(pars, brts, cond, n_0 = 2, n_max = 100)
 }
 \arguments{
-\item{pars_m}{parameters for the main clade (lambda, mu)}
+\item{pars}{parameters of the likelihood functions:
+\itemize{
+  \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
+  \item pars[2] is mu_m, i.e. extinction rate of the main clade;
+  \item pars[3] is lambda_s, i.e. speciation rate of the sub clade;
+  \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
+}}
 
-\item{pars_s}{parameters for the sub clade (lambda, mu)}
-
-\item{brts_m}{branching times for the Main-clade}
-
-\item{brts_s}{branching times for the Sub-clade}
+\item{brts}{branchin times}
 
 \item{cond}{type of conditioning:
 \itemize{
