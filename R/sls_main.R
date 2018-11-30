@@ -7,7 +7,7 @@
 sls_main <- function(
   seed,
   sim_pars,
-  cond,
+  cond = 3,
   l_2 = sim_get_standard_l_2(
     crown_age = 5,
     shift_time = 2
@@ -20,8 +20,9 @@ sls_main <- function(
   lambdas <- sim_pars[c(1, 3)]
   mus <- sim_pars[c(2, 4)]
   ks <- c(Inf, Inf)
-  pkg_name <- get_pkg_name() # nolint internal function
+  n_0s <- l_2$n_0
 
+  pkg_name <- get_pkg_name() # nolint internal function
   function_names <- get_function_names( # nolint internal function
     models = models
   )
@@ -39,15 +40,22 @@ sls_main <- function(
     cond = cond,
     l_2 = l_2
   )
-  tips_m <- (l_2[l_2$clade_id == 1, ]$n_0 - 1) + length(sim$brts[[1]])
-  tips_s <- (l_2[l_2$clade_id == 2, ]$n_0 - 1) + length(sim$brts[[2]])
+  brts <- sim$brts
+  if (!is.list(brts)) {
+    tips <- (n_0s[1] - 1) + length(brts)
+  } else {
+    tips <- rep(NA, length(brts))
+    for (i in seq_along(brts)) {
+      tips[i] <- n_0s[i] - 1 + length(brts[[i]])
+    }
+  }
 
   # maximum likelihood
   results <- data.frame(matrix(
     NA,
     nrow = length(models),
-    # ncol must be length pars + (loglik, df, conv) + (tips_m, tips_s, seed)
-    ncol = length(start_pars) + 3 + 3
+    # ncol must be length pars + (loglik, df, conv, seed) + length(tips)
+    ncol = length(start_pars) + 4 + length(tips)
   ))
   for (m in seq_along(models)) {
     if (verbose == FALSE) {
@@ -68,19 +76,16 @@ sls_main <- function(
     if (verbose == FALSE) {
       sink()
     }
+    dim(tips) <- c(1, length(tips))
     results[m, ] <- data.frame(
-      mle,
-      tips_m = tips_m,
-      tips_s = tips_s,
-      seed = seed
+      cbind(mle, tips, seed)
     )
   }
 
   # format output
   colnames(results) <- c(
     colnames(mle),
-    "tips_m",
-    "tips_s",
+    paste0("tips_", 1:length(tips)),
     "seed"
   )
   out <- cbind(

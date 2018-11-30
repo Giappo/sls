@@ -60,10 +60,10 @@ test_that("use", {
       length(test$conv) > 0
     )
     testthat::expect_true(
-      length(test$tips_m) > 0
+      length(test$tips_1) > 0
     )
     testthat::expect_true(
-      length(test$tips_s) > 0
+      length(test$tips_2) > 0
     )
     testthat::expect_true(
       length(test$seed) > 0
