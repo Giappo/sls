@@ -199,13 +199,13 @@ test_that("get_function_names & get_model_names", {
   )
   testthat::expect_error(
     get_function_names(
-      models = sls_check_input
+      models = grepl
     ),
     error_message
   )
   testthat::expect_error(
     get_function_names(
-      models = c(sls_check_input, sls_conds)
+      models = c(exp, grepl)
     ),
     error_message
   )
