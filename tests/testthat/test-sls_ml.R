@@ -4,14 +4,14 @@ test_that("use", {
 
   brts_m <- c(3, 2, 1)
   brts_s <- c(2.5, 1.5)
+  brts <- list(brts_m, brts_s)
   start_pars <- c(0.4, 0.05, 0.3, 0.1)
   cond <- 3
   n_0 <- 2
 
   test <- sls_ml(
     loglik_function = sls::loglik_sls_p,
-    brts_m = brts_m,
-    brts_s = brts_s,
+    brts = brts,
     start_pars = start_pars,
     cond = cond,
     n_0 = n_0,
@@ -45,6 +45,7 @@ test_that("abuse", {
 
   brts_m <- c(3, 2, 1)
   brts_s <- c(2.5, 1.5)
+  brts <- list(brts_m, brts_s)
   start_pars <- c(0.4, 0.05, 0.3, 0.1)
   cond <- 3
   n_0 <- 2
@@ -52,8 +53,7 @@ test_that("abuse", {
   testthat::expect_output(
     sls_ml(
       loglik_function = sls::loglik_sls_p,
-      brts_m = brts_m,
-      brts_s = brts_s,
+      brts = brts,
       start_pars = c(0, 1, 0, 1),
       cond = cond,
       n_0 = n_0,
@@ -64,8 +64,7 @@ test_that("abuse", {
   testthat::expect_error(
     test <- sls_ml(
       loglik_function = sls::loglik_sls_p,
-      brts_m = c(),
-      brts_s = brts_s,
+      brts = list(c(), brts[[2]]),
       start_pars = start_pars,
       cond = cond,
       n_0 = n_0,
@@ -76,8 +75,7 @@ test_that("abuse", {
   testthat::expect_error(
     test <- sls_ml(
       loglik_function = sls::loglik_sls_p,
-      brts_m = brts_m,
-      brts_s = c(),
+      brts = list(brts[[1]], c()),
       start_pars = start_pars,
       cond = cond,
       n_0 = n_0,
@@ -88,8 +86,7 @@ test_that("abuse", {
   testthat::expect_error(
     test <- sls_ml(
       loglik_function = sls::loglik_sls_p,
-      brts_m = brts_m,
-      brts_s = brts_s,
+      brts = brts,
       start_pars = c(-1, start_pars[2:4]),
       cond = cond,
       n_0 = n_0,
@@ -100,8 +97,7 @@ test_that("abuse", {
   testthat::expect_error(
     test <- sls_ml(
       loglik_function = sls::loglik_sls_p,
-      brts_m = brts_m,
-      brts_s = brts_s,
+      brts = brts,
       start_pars = start_pars,
       cond = 15,
       n_0 = n_0,
@@ -112,8 +108,7 @@ test_that("abuse", {
   testthat::expect_error(
     test <- sls_ml(
       loglik_function = sls::loglik_sls_p,
-      brts_m = brts_m,
-      brts_s = brts_s,
+      brts = brts,
       start_pars = start_pars,
       cond = cond,
       n_0 = 3,
