@@ -55,7 +55,7 @@ sls_ml <- function(
 
   # initial likelihood
   tr_start_pars <- rep(0, length(start_pars))
-  tr_start_pars <- pars_transform_forward(start_pars[optim_ids])
+  tr_start_pars <- pars_transform_forward(start_pars[optim_ids]) # nolint internal function
   if (rappdirs::app_dir()$os != "win") {
     sink("/dev/null")
   } else {
@@ -96,7 +96,7 @@ sls_ml <- function(
 
   # return mle results
   outpars <- rep(0, length(start_pars))
-  outpars[optim_ids] <- pars_transform_back(
+  outpars[optim_ids] <- pars_transform_back( # nolint internal function
     as.numeric(unlist(out$par))
   )
   outpars[!optim_ids] <- true_pars[!optim_ids]

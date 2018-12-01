@@ -276,7 +276,7 @@ sim_use_event <- function(
 
   if (event == "end" | length(pool) == 0) {
     t <- 0
-    l_02 <- sim_cut_l_matrix(l_0)
+    l_02 <- sim_cut_l_matrix(l_0) # nolint internal function
     l_0 <- l_02
   }
 
