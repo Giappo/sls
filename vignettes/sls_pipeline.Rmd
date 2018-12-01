@@ -84,12 +84,12 @@ pars_m <- c(0.2, 0.1)
 pars_s <- c(0.5, 0.4)
 brts_m <- sim$brts[[1]]
 brts_s <- sim$brts[[2]]
+pars <- c(pars_m, pars_s)
+brts <- list(brts_m, brts_s)
 
 loglik <- sls::loglik_sls_p(
-  pars_m = pars_m, 
-  pars_s = pars_s, 
-  brts_m = brts_m, 
-  brts_s = brts_s, 
+  pars = pars,
+  brts = brts,
   cond = cond
 )
 loglik
@@ -99,10 +99,8 @@ We have many ways to calculate the same likelihood. For example we can integrate
 
 ```{r}
 loglik <- sls::loglik_sls_q(
-  pars_m = pars_m, 
-  pars_s = pars_s, 
-  brts_m = brts_m, 
-  brts_s = brts_s, 
+  pars = pars,
+  brts = brts,
   cond = cond
 )
 loglik

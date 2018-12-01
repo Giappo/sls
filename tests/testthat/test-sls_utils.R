@@ -146,34 +146,34 @@ test_that("sls_logliks_nodiv", {
   )
 })
 
-test_that("sls_pkg_name", {
+test_that("get_pkg_name", {
   testthat::expect_true(
-    sls_pkg_name() == "sls"
+    get_pkg_name() == "sls"
   )
 })
 
-test_that("sls_get_function_names & sls_get_model_names", {
+test_that("get_function_names & get_model_names", {
   #use
   testthat::expect_true(
     all(
-      sls_get_function_names(
+      get_function_names(
         models = sls_logliks_div()
       ) == c("loglik_sls_p", "loglik_sls_q")
     )
   )
   testthat::expect_true(
-    sls_get_function_names(
+    get_function_names(
       models = loglik_sls_p
     ) == "loglik_sls_p"
   )
   testthat::expect_silent(
-    sls_get_model_names(
+    get_model_names(
       function_names = sls_logliks_div(),
       verbose = FALSE
     )
   )
   testthat::expect_output(
-    sls_get_model_names(
+    get_model_names(
       function_names = sls_logliks_div(),
       verbose = TRUE
     ),
@@ -182,35 +182,35 @@ test_that("sls_get_function_names & sls_get_model_names", {
   #abuse
   error_message <- paste0(
     "This is not a likelihood function provided by ",
-    sls_pkg_name(),
+    get_pkg_name(),
     "!"
   )
   testthat::expect_error(
-    sls_get_function_names(
+    get_function_names(
       models = "nonsense"
     ),
     error_message
   )
   testthat::expect_error(
-    sls_get_function_names(
+    get_function_names(
       models = c("nonsense1", "nonsense2")
     ),
     error_message
   )
   testthat::expect_error(
-    sls_get_function_names(
+    get_function_names(
       models = sls_check_input
     ),
     error_message
   )
   testthat::expect_error(
-    sls_get_function_names(
+    get_function_names(
       models = c(sls_check_input, sls_conds)
     ),
     error_message
   )
   testthat::expect_error(
-    sls_get_model_names(
+    get_model_names(
       function_names = "nonsense"
     ),
     error_message

@@ -5,15 +5,16 @@
 #' @return The likelihood
 #' @export
 loglik_sls_p_nodiv <- function(
-  pars_m,
-  pars_s,
-  brts_m,
-  brts_s,
+  pars,
+  brts,
   cond,
   n_0 = 2,
   n_max = 1e2
 ) {
-
+  pars_m <- pars[1:2]
+  pars_s <- pars[3:4]
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
 
@@ -106,15 +107,16 @@ loglik_sls_p_nodiv <- function(
 #' @return The likelihood
 #' @export
 loglik_sls_q_nodiv <- function(
-  pars_m,
-  pars_s,
-  brts_m,
-  brts_s,
+  pars,
+  brts,
   cond,
   n_0 = 2,
   n_max = 1e2
 ) {
-
+  pars_m <- pars[1:2]
+  pars_s <- pars[3:4]
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
   ks      <- c(Inf, Inf)
@@ -238,14 +240,16 @@ loglik_sls_q_nodiv <- function(
 #' @return The likelihood
 #' @export
 loglik_ddd <- function(
-  pars_m,
-  pars_s,
-  brts_m,
-  brts_s,
+  pars,
+  brts,
   cond,
   n_0 = 2,
   n_max = 1e2
 ) {
+  pars_m <- pars[1:2]
+  pars_s <- pars[3:4]
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
   pars1 <- c(pars_m[1], pars_m[2], Inf, pars_s[1], pars_s[2], Inf, brts_s[1])
   pars2 <- c(
     n_max,  #maximum number of species involved in the computation
@@ -290,15 +294,16 @@ loglik_ddd <- function(
 #' @return loglik
 #' @export
 loglik_bisse_shift <- function(
-  pars_m,
-  pars_s,
-  brts_m,
-  brts_s,
+  pars,
+  brts,
   cond,
   n_0 = 2,
   n_max = 1e2
 ) {
-
+  pars_m <- pars[1:2]
+  pars_s <- pars[3:4]
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
   loglik_s <- sls::loglik_bisse(
     pars = pars_s,
     brts = brts_s,
@@ -346,7 +351,8 @@ loglik_bisse_shift2 <- function(
   brts1 <- brts[brts > t_d]
   brts2 <- sort(c(t_d, brts[brts < t_d]), decreasing = TRUE)
   dd_1 <- sls::loglik_bisse2(
-    pars, brts1,
+    pars,
+    brts1,
     n_0 = n_0,
     t_0 = t_d,
     e_0 = sls::e_t(

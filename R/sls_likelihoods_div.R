@@ -5,14 +5,16 @@
 #' @return The likelihood
 #' @export
 loglik_sls_p <- function(
-  pars_m,
-  pars_s,
-  brts_m,
-  brts_s,
+  pars,
+  brts,
   cond,
   n_0 = 2,
   n_max = 1e2
 ) {
+  pars_m <- pars[1:2]
+  pars_s <- pars[3:4]
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
   if (any(c(pars_m, pars_s) < 0)) {
     return(-Inf)
   }
@@ -122,15 +124,16 @@ loglik_sls_p <- function(
 #' @return The likelihood
 #' @export
 loglik_sls_q <- function(
-  pars_m,
-  pars_s,
-  brts_m,
-  brts_s,
+  pars,
+  brts,
   cond,
   n_0 = 2,
   n_max = 1e2
 ) {
-
+  pars_m <- pars[1:2]
+  pars_s <- pars[3:4]
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
   if (any(c(pars_m, pars_s) < 0)) {
     return(-Inf)
   }

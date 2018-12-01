@@ -11,32 +11,32 @@ test_that("all the likelihoods with division yield the same result", {
   # testthat::skip('I skip it because it is slow. It works, though.') # nolint
 
   diff <- function(
-    pars_m,
-    pars_s,
-    brts_m,
-    brts_s,
+    pars,
+    brts,
     cond,
     fun1,
     fun2,
     precision = 1e2,
     ratios = FALSE
   ) {
+    pars_m <- pars[1:2]
+    pars_s <- pars[3:4]
+    brts_m <- brts[[1]]
+    brts_s <- brts[[2]]
     pars_m1 <- pars_m  ; pars_s1 <- pars_s
+    pars_1 <- c(pars_m1, pars_s1)
+    brts <- list(brts_m, brts_s)
 
     res_1_1 <- fun1(
-      pars_m = pars_m1,
-      pars_s = pars_s1,
-      brts_m = brts_m,
-      brts_s = brts_s,
+      pars = pars_1,
+      brts = brts,
       cond = cond,
       n_max = precision
     ); res_1_1
 
     res_2_1 <- fun2(
-      pars_m = pars_m1,
-      pars_s = pars_s1,
-      brts_m = brts_m,
-      brts_s = brts_s,
+      pars = pars_1,
+      brts = brts,
       cond = cond,
       n_max = precision
     ); res_2_1
@@ -44,21 +44,18 @@ test_that("all the likelihoods with division yield the same result", {
     res_1_2 <- res_2_2 <- 0
     if (ratios == TRUE) {
       pars_m2 <- pars_m / 2; pars_s2 <- pars_s * 3 / 4;
+      pars_2 <- c(pars_m2, pars_s2)
 
       res_1_2 <- fun1(
-        pars_m = pars_m2,
-        pars_s = pars_s2,
-        brts_m = brts_m,
-        brts_s = brts_s,
+        pars = pars_2,
+        brts = brts,
         cond = cond,
         n_max = precision
       ); res_1_2
 
       res_2_2 <- fun2(
-        pars_m = pars_m2,
-        pars_s = pars_s2,
-        brts_m = brts_m,
-        brts_s = brts_s,
+        pars = pars_2,
+        brts = brts,
         cond = cond,
         n_max = precision
       ); res_2_2
@@ -72,10 +69,8 @@ test_that("all the likelihoods with division yield the same result", {
     return(diff)
   }
   test_diff <- function(
-    pars_m,
-    pars_s,
-    brts_m,
-    brts_s,
+    pars,
+    brts,
     cond,
     fun1,
     fun2,
@@ -86,10 +81,8 @@ test_that("all the likelihoods with division yield the same result", {
     while (out > threshold && rep <= max_rep) {
       precision <- precision * 2
       out <- diff(
-        pars_m = pars_m,
-        pars_s = pars_s,
-        brts_m = brts_m,
-        brts_s = brts_s,
+        pars = pars,
+        brts = brts,
         cond = cond,
         fun1 = fun1,
         fun2 = fun2,
@@ -127,16 +120,16 @@ test_that("all the likelihoods with division yield the same result", {
       x <- runif(n = 1, min = 0.1, max = 1),
       runif(n = 1, min = 0.05, max = x * 3 / 4)
     ) * c(2, 0.5)
+    pars <- c(pars_m, pars_s)
+    brts <- list(brts_m, brts_s)
     cond <- c(sls_conds(), sls_conds())[which(cond %in% sls_conds()) + 1]
 
     for (i in 1:(length(models) - 1)) {
       for (j in (i + 1):length(models)) {
         testthat::expect_true(
           test_diff(
-            pars_m = pars_m,
-            pars_s = pars_s,
-            brts_m = brts_m,
-            brts_s = brts_s,
+            pars = pars,
+            brts = brts,
             cond = cond,
             fun1 = models[[i]],
             fun2 = models[[j]],

@@ -4,6 +4,7 @@
 #' @param brts branchin times
 #' @param brts_m branching times for the Main-clade
 #' @param brts_s branching times for the Sub-clade
+#' @param brts_clade branching times for a single clade
 #' @param clade the id of the clade
 #' @param cond type of conditioning:
 #' \itemize{
@@ -36,7 +37,9 @@
 #' @param fun a function
 #' @param fun1 a function
 #' @param fun2 another function
+#' @param function_name function name
 #' @param function_names function names
+#' @param functions_names function names
 #' @param k frequencies in the Discrete Fourier Transform (DFT)
 #' @param ks carrying capacities, for all the clades
 #' @param l_0 the l table, for a single clade
@@ -61,6 +64,7 @@
 #' @param n number of lineages
 #' @param n_0 starting number of lineages
 #' @param n_max maximum number of lineages to consider
+#' @param optim_ids ids of the parameters you want to optimize.
 #' @param pars parameters of the likelihood functions:
 #' \itemize{
 #'   \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
@@ -70,6 +74,7 @@
 #' }
 #' @param pars_m parameters for the main clade (lambda, mu)
 #' @param pars_s parameters for the sub clade (lambda, mu)
+#' @param pars_clade parameters for a single clade
 #' @param pars_transformed parameters of the likelihood functions, transformed
 #' according to y = x / (1 + x)
 #' @param seed the seed
@@ -86,6 +91,7 @@
 #' @param ts times
 #' @param times times
 #' @param tbar time left from shift time to the present
+#' @param true_pars true parameter values when running the ml process.
 #' @param shift_time the time of the shift
 #' @param sim_pars parameters of the simulation
 #' @param verbose set it to TRUE if you want to see the outputs on screen
@@ -105,50 +111,65 @@
 #' @param pars2 see DDD package
 
 default_params_doc <- function(
+  age,
+  brts,
+  brts_m,
+  brts_s,
+  brts_clade,
+  cond,
+  clade,
+  crown_age,
+  d_0,
+  d_0s,
+  data,
+  delta_n,
+  delta_t,
+  deltas,
+  dropextinct,
+  e_0,
+  event,
+  final_time,
+  fun,
+  fun1,
+  fun2,
+  function_name,
+  function_names,
+  functions_names,
+  k,
   lambda,
-  mu,
   lambdas,
+  mu,
   mus,
   ks,
   l_0,
   l_1,
   l_2,
   l_matrix_size,
-  data,
-  clade,
-  delta_n,
-  delta_t,
-  deltas,
-  event,
-  final_time,
   l_matrix,
+  log_scale,
+  lambdaterms,
+  loglik_function,
+  lx,
+  matrix_size,
+  message,
+  missnumspec,
+  models,
+  n,
+  n_0,
+  n_max,
+  optim_ids,
   pars,
   pars_m,
   pars_s,
+  pars_clade,
   pars_transformed,
-  brts,
-  brts_m,
-  brts_s,
-  n_0,
-  n_max,
-  cond,
+  shift_time,
+  sim_pars,
+  start_pars,
   t,
   t_c,
   t_d,
   ts,
-  times,
-  tbar,
-  n,
-  dropextinct,
-  fun,
-  fun1,
-  fun2,
-  function_names,
-  k,
-  vec,
-  d_0,
-  d_0s,
-  e_0,
   t_0,
   tf,
   t_f,
@@ -156,17 +177,11 @@ default_params_doc <- function(
   t_p,
   tds,
   t_ds,
-  shift_time,
-  log_scale,
-  lambdaterms,
-  message,
-  models,
+  times,
+  tbar,
+  true_pars,
+  vec,
   verbose,
-  start_pars,
-  loglik_function,
-  matrix_size,
-  sim_pars,
-  lx,
   ddep,
   trparsopt,
   trparsfix,
@@ -177,10 +192,7 @@ default_params_doc <- function(
   optimmethod,
   tolerance,
   pars2,
-  seed,
-  age,
-  crown_age,
-  missnumspec
+  seed
 ) {
   # Nothing
 }
