@@ -45,7 +45,9 @@ loglik_sls_p <- function(
   ); dim(brts_matrix) <- c(2, length(brts_m1))
   t_d_matrix <- c(t_d, -1); dim(t_d_matrix) <- c(2, 1)
   events_matrix <- (mat <- cbind(brts_matrix, t_d_matrix))[, order(-mat[1, ])]
+  # this is k vector after the events
   kvec_m_after <- (n_0 - 1) + cumsum(events_matrix[2, ])
+  # this is k vector before the events
   kvec_m_before <- c(n_0 - 1, kvec_m_after[-length(kvec_m_after)])
   k_shift <- kvec_m_before[events_matrix[2, ] == -1]
 
@@ -90,7 +92,7 @@ loglik_sls_p <- function(
   loglik_m0 <- log(lik_m_pre_shift) + log(lik_m_post_shift)
   loglik_s0 <- log(lik_s_post_shift)
 
-  logcombinatorics_m <- logcombinatorics_s <- 0 #combinatorics
+  logcombinatorics_m <- logcombinatorics_s <- 0 # combinatorics
 
   # number of speciations in the Main clade
   l_m <- length(brts_m1[brts_m1 != brts_m1[1]])
@@ -114,6 +116,7 @@ loglik_sls_p <- function(
   )
 
   loglik <- loglik_m + loglik_s - log(pc); loglik
+  loglik <- unname(loglik)
   return(loglik)
 }
 
