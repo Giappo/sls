@@ -42,6 +42,7 @@ sls_main <- function(
     l_2 = l_2
   )
   brts <- sim$brts
+  print_info(brts = brts, n_0s = n_0s, cond = cond, verbose = verbose) # nolint internal function
   if (!is.list(brts)) {
     tips <- (n_0s[1] - 1) + length(brts)
   } else {
@@ -72,7 +73,7 @@ sls_main <- function(
       start_pars = start_pars,
       cond = cond,
       n_0 = l_2$n_0[1],
-      verbose = FALSE
+      verbose = verbose
     )
     if (verbose == FALSE) {
       sink()
@@ -141,6 +142,6 @@ sls_main <- function(
     x = out,
     file = results_file_name
   )
-
+  print_info(brts = brts, n_0s = n_0s, cond = cond, verbose = verbose) # nolint internal function
   out
 }

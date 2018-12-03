@@ -31,7 +31,7 @@ sls_ml <- function(
   # define function to optimize
   optim_fun <- function(tr_optim_pars) {
     pars2 <- rep(0, length(start_pars))
-    optim_pars <- pars_transform_back(tr_optim_pars)
+    optim_pars <- pars_transform_back(tr_optim_pars) # nolint internal function
     pars2[optim_ids] <- optim_pars
     pars2[!optim_ids] <- true_pars[!optim_ids]
 
@@ -55,14 +55,8 @@ sls_ml <- function(
 
   # initial likelihood
   tr_start_pars <- rep(0, length(start_pars))
-  tr_start_pars <- pars_transform_forward(start_pars[optim_ids])
-  if (rappdirs::app_dir()$os != "win") {
-    sink("/dev/null")
-  } else {
-    sink(rappdirs::user_cache_dir())
-  }
+  tr_start_pars <- pars_transform_forward(start_pars[optim_ids]) # nolint internal function
   initloglik <- -optim_fun(tr_start_pars)
-  sink()
   utils::flush.console()
   if (initloglik == -Inf) {
     cat(
@@ -96,7 +90,7 @@ sls_ml <- function(
 
   # return mle results
   outpars <- rep(0, length(start_pars))
-  outpars[optim_ids] <- pars_transform_back(
+  outpars[optim_ids] <- pars_transform_back( # nolint internal function
     as.numeric(unlist(out$par))
   )
   outpars[!optim_ids] <- true_pars[!optim_ids]
