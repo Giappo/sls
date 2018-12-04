@@ -18,6 +18,7 @@
 #' }
 #' @param crown_age the age of the phylogeny
 #' @param data contains all the information about the simulated process
+#' @param data_folder The data folder insider the project folder.
 #' @param deltas in the Doob-Gillespie algorithm,
 #' the collection of delta_n and delta_t, which are, respectively,
 #' the change in number of species and
@@ -66,6 +67,7 @@
 #' @param n_0s starting number of lineages for all the clades
 #' @param n_max maximum number of lineages to consider
 #' @param optim_ids ids of the parameters you want to optimize.
+#' @param output the mle output
 #' @param pars parameters of the likelihood functions:
 #' \itemize{
 #'   \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
@@ -78,9 +80,14 @@
 #' @param pars_clade parameters for a single clade
 #' @param pars_transformed parameters of the likelihood functions, transformed
 #' according to y = x / (1 + x)
+#' @param project_folder the folder when you want to save data and results
+#' @param results mle results
+#' @param results_folder The results folder insider the project folder.
 #' @param seed the seed
+#' @param sim the results of a sim run
 #' @param t time
 #' @param t_0 starting time
+#' @param t_0s starting time for each clade
 #' @param tf ending time
 #' @param t_f ending time
 #' @param t_c crown time
@@ -123,6 +130,7 @@ default_params_doc <- function(
   d_0,
   d_0s,
   data,
+  data_folder,
   delta_n,
   delta_t,
   deltas,
@@ -160,12 +168,17 @@ default_params_doc <- function(
   n_0s,
   n_max,
   optim_ids,
+  output,
   pars,
   pars_m,
   pars_s,
   pars_clade,
   pars_transformed,
+  project_folder,
+  results,
+  results_folder,
   shift_time,
+  sim,
   sim_pars,
   start_pars,
   t,
@@ -173,6 +186,7 @@ default_params_doc <- function(
   t_d,
   ts,
   t_0,
+  t_0s,
   tf,
   t_f,
   td,
