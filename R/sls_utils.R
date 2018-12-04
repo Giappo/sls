@@ -353,7 +353,7 @@ main_save_files <- function(
   results
 ) {
   # project folder
-  pkg_name <- get_pkg_name()
+  pkg_name <- get_pkg_name() # nolint internal function
   if (is.null(project_folder)) {
     if (.Platform$OS.type == "windows") {
       if (!("extdata" %in% list.files(system.file(package = pkg_name)))) {
