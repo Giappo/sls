@@ -66,6 +66,7 @@
 #' @param n_0s starting number of lineages for all the clades
 #' @param n_max maximum number of lineages to consider
 #' @param optim_ids ids of the parameters you want to optimize.
+#' @param output the mle output
 #' @param pars parameters of the likelihood functions:
 #' \itemize{
 #'   \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
@@ -78,9 +79,13 @@
 #' @param pars_clade parameters for a single clade
 #' @param pars_transformed parameters of the likelihood functions, transformed
 #' according to y = x / (1 + x)
+#' @param project_folder the folder when you want to save data and results
+#' @param results mle results
 #' @param seed the seed
+#' @param sim the results of a sim run
 #' @param t time
 #' @param t_0 starting time
+#' @param t_0s starting time for each clade
 #' @param tf ending time
 #' @param t_f ending time
 #' @param t_c crown time
@@ -160,12 +165,16 @@ default_params_doc <- function(
   n_0s,
   n_max,
   optim_ids,
+  output,
   pars,
   pars_m,
   pars_s,
   pars_clade,
   pars_transformed,
+  project_folder,
+  results,
   shift_time,
+  sim,
   sim_pars,
   start_pars,
   t,
@@ -173,6 +182,7 @@ default_params_doc <- function(
   t_d,
   ts,
   t_0,
+  t_0s,
   tf,
   t_f,
   td,

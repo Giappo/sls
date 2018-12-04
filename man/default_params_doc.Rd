@@ -11,11 +11,11 @@ default_params_doc(age, brts, brts_m, brts_s, brts_clade, cond, clade,
   functions_names, k, lambda, lambdas, mu, mus, ks, l_0, l_1, l_2,
   l_matrix_size, l_matrix, log_scale, lambdaterms, loglik_function, lx,
   matrix_size, message, missnumspec, models, n, n_0, n_0s, n_max,
-  optim_ids, pars, pars_m, pars_s, pars_clade, pars_transformed,
-  shift_time, sim_pars, start_pars, t, t_c, t_d, ts, t_0, tf, t_f, td, t_p,
-  tds, t_ds, times, tbar, true_pars, vec, verbose, ddep, trparsopt,
-  trparsfix, idparsopt, idparsfix, idparsnoshift, initparsopt, optimmethod,
-  tolerance, pars2, seed)
+  optim_ids, output, pars, pars_m, pars_s, pars_clade, pars_transformed,
+  project_folder, results, shift_time, sim, sim_pars, start_pars, t, t_c,
+  t_d, ts, t_0, t_0s, tf, t_f, td, t_p, tds, t_ds, times, tbar, true_pars,
+  vec, verbose, ddep, trparsopt, trparsfix, idparsopt, idparsfix,
+  idparsnoshift, initparsopt, optimmethod, tolerance, pars2, seed)
 }
 \arguments{
 \item{age}{the age of the phylogeny}
@@ -133,6 +133,8 @@ in the likelihood}
 
 \item{optim_ids}{ids of the parameters you want to optimize.}
 
+\item{output}{the mle output}
+
 \item{pars}{parameters of the likelihood functions:
 \itemize{
   \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
@@ -150,7 +152,13 @@ in the likelihood}
 \item{pars_transformed}{parameters of the likelihood functions, transformed
 according to y = x / (1 + x)}
 
+\item{project_folder}{the folder when you want to save data and results}
+
+\item{results}{mle results}
+
 \item{shift_time}{the time of the shift}
+
+\item{sim}{the results of a sim run}
 
 \item{sim_pars}{parameters of the simulation}
 
@@ -166,6 +174,8 @@ maximum}
 \item{ts}{times}
 
 \item{t_0}{starting time}
+
+\item{t_0s}{starting time for each clade}
 
 \item{tf}{ending time}
 

@@ -11,91 +11,162 @@ test_that("use", {
   for (seed in seed_interval) {
     sim_pars <- c(0.3, 0.2, 0.6, 0.1)
     cond <- 3
+    models <- sls_logliks_div()
+    l_2 <- sim_get_standard_l_2(
+      crown_age = 5,
+      shift_time = 2
+    )
     test <- sls_main(
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,
-      l_2 = sim_get_standard_l_2(
-        crown_age = 5,
-        shift_time = 2
-      ),
+      l_2 = l_2,
       start_pars = c(0.2, 0.1, 0.2, 0.1),
-      models = sls_logliks_div(),
+      models = models,
       verbose = FALSE
     )
     testthat::expect_true(
       is.data.frame(test)
     )
     testthat::expect_true(
-      length(test$sim_lambda_m) > 0
+      length(test$sim_lambda_m) == length(models)
     )
     testthat::expect_true(
-      length(test$sim_mu_m) > 0
+      length(test$sim_mu_m) == length(models)
     )
     testthat::expect_true(
-      length(test$sim_lambda_s) > 0
+      length(test$sim_lambda_s) == length(models)
     )
     testthat::expect_true(
-      length(test$sim_mu_s) > 0
+      length(test$sim_mu_s) == length(models)
     )
     testthat::expect_true(
-      length(test$lambda_m) > 0
+      length(test$lambda_m) == length(models)
     )
     testthat::expect_true(
-      length(test$mu_m) > 0
+      length(test$mu_m) == length(models)
     )
     testthat::expect_true(
-      length(test$lambda_s) > 0
+      length(test$lambda_s) == length(models)
     )
     testthat::expect_true(
-      length(test$mu_s) > 0
+      length(test$mu_s) == length(models)
     )
     testthat::expect_true(
-      length(test$loglik) > 0
+      length(test$loglik) == length(models)
     )
     testthat::expect_true(
-      length(test$df) > 0
+      length(test$df) == length(models)
     )
     testthat::expect_true(
-      length(test$conv) > 0
+      length(test$conv) == length(models)
     )
     testthat::expect_true(
-      length(test$tips_1) > 0
+      length(test$tips_1) == length(models)
     )
     testthat::expect_true(
-      length(test$tips_2) > 0
+      length(test$tips_2) == length(models)
     )
     testthat::expect_true(
-      length(test$seed) > 0
+      length(test$seed) == length(models)
     )
     testthat::expect_true(
-      length(test$model) > 0
+      length(unique(test$seed)) == 1
+    )
+    testthat::expect_true(
+      length(test$tips_1) == length(models)
+    )
+    testthat::expect_true(
+      length(test$tips_2) == length(models)
+    )
+    testthat::expect_true(
+      length(test$cond) == length(models)
+    )
+    testthat::expect_true(
+      all(
+        is.numeric(test$cond)
+      )
+    )
+    testthat::expect_true(
+      all(
+        test$n_0 == l_2$n_0[1]
+      )
+    )
+    testthat::expect_true(
+      all(
+        test$t_0_1 == l_2$birth_time[1]
+      )
+    )
+    testthat::expect_true(
+      all(
+        test$t_0_2 == l_2$birth_time[2]
+      )
+    )
+    testthat::expect_true(
+      length(test$optim_lambda_m) == length(models)
+    )
+    testthat::expect_true(
+      length(test$optim_mu_m) == length(models)
+    )
+    testthat::expect_true(
+      length(test$optim_lambda_s) == length(models)
+    )
+    testthat::expect_true(
+      length(test$optim_mu_s) == length(models)
+    )
+    testthat::expect_true(
+      all(
+        c(
+          test$optim_lambda_m,
+          test$optim_mu_m,
+          test$optim_lambda_s,
+          test$optim_mu_s
+        ) %in% c("TRUE", "FALSE")
+      )
+    )
+    testthat::expect_true(
+      length(test$model) == length(models)
     )
 
     pkg_name <- get_pkg_name() # nolint internal function
     # test file saving
     if (.Platform$OS.type == "windows") {
-      sim_path  <- system.file("extdata", package = pkg_name)
+      project_folder <- system.file("extdata", package = pkg_name)
     } else {
-      sim_path  <- getwd()
+      project_folder <- getwd()
     }
-    # check data_path folder existence
-    data_path <- file.path(sim_path, "data")
+    # check data folder existence
+    data_folder <- file.path(project_folder, "data")
     testthat::expect_true(
-      file.exists(data_path)
+      file.exists(data_folder)
+    )
+    # check results folder existence
+    results_folder <- file.path(project_folder, "results")
+    testthat::expect_true(
+      file.exists(results_folder)
     )
     # check data file existence
     data_file_name <- file.path(
-      data_path,
-      paste0(pkg_name, "_sim_", seed, ".RData")
+      data_folder,
+      paste0(
+        "sls_sim",
+        "-sim_pars=[0,3-0,2-0,6-0,1]-optim_ids=[1-1-1-1]-cond=3-n_0=2-ages=[5-2]-seed=", # nolint
+        seed,
+        ".RData"
+      )
     )
     testthat::expect_true(
       file.exists(data_file_name)
     )
     # check results file existence
     results_file_name <- file.path(
-      sim_path,
-      paste0(pkg_name, "_mle_", seed, ".txt")
+      results_folder,
+      paste0(
+        "sls_mle",
+        "-sim_pars=[0,3-0,2-0,6-0,1]-optim_ids=[1-1-1-1]-cond=3-n_0=2-ages=[5-2]-seed=", # nolint
+        seed,
+        ".txt"
+      )
     )
     testthat::expect_true(
       file.exists(results_file_name)
@@ -109,7 +180,7 @@ test_that("use", {
   # test silent mode and character entry for "models" input
   testthat::expect_silent(
     out <- sls_main(
-      seed = seed,
+      seed = 200,
       sim_pars = sim_pars,
       cond = cond,
       l_2 = sim_get_standard_l_2(

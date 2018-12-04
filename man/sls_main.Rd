@@ -4,13 +4,12 @@
 \alias{sls_main}
 \title{Run the full sls routine}
 \usage{
-sls_main(seed, sim_pars, cond = 3, l_2 = sim_get_standard_l_2(crown_age
-  = 5, shift_time = 2), start_pars = c(0.2, 0.1, 0.2, 0.1),
-  models = sls_logliks_div(), verbose = FALSE)
+sls_main(sim_pars, cond = 3, l_2 = sim_get_standard_l_2(crown_age = 5,
+  shift_time = 2), seed, start_pars = c(0.2, 0.1, 0.2, 0.1),
+  optim_ids = rep(TRUE, length(start_pars)),
+  models = sls_logliks_div(), project_folder = NULL, verbose = FALSE)
 }
 \arguments{
-\item{seed}{the seed}
-
 \item{sim_pars}{parameters of the simulation}
 
 \item{cond}{type of conditioning:
@@ -27,10 +26,16 @@ sls_main(seed, sim_pars, cond = 3, l_2 = sim_get_standard_l_2(crown_age
 \item{l_2}{the matrix containing the information about how the subclades are
 nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
+\item{seed}{the seed}
+
 \item{start_pars}{parameters to start from for the search of the likelihood
 maximum}
 
+\item{optim_ids}{ids of the parameters you want to optimize.}
+
 \item{models}{the models you want to use to define the likelihood}
+
+\item{project_folder}{the folder when you want to save data and results}
 
 \item{verbose}{set it to TRUE if you want to see the outputs on screen}
 }

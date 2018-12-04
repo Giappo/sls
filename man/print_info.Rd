@@ -4,12 +4,12 @@
 \alias{print_info}
 \title{Print information about simulated data}
 \usage{
-print_info(brts, n_0s, cond, verbose)
+print_info(brts, n_0, cond, verbose)
 }
 \arguments{
 \item{brts}{branchin times}
 
-\item{n_0s}{starting number of lineages for all the clades}
+\item{n_0}{starting number of lineages}
 
 \item{cond}{type of conditioning:
 \itemize{

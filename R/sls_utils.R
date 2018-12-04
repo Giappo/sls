@@ -305,11 +305,11 @@ get_model_names <- function(
 #' @export
 print_info <- function(
   brts,
-  n_0s,
+  n_0,
   cond,
   verbose
 ) {
-  testit::assert((length(n_0s) > 1) == (is.list(brts)))
+  n_0s <- c(n_0, rep(1, length(brts) - 1))
   if (verbose == FALSE) {
     return()
   }
@@ -335,4 +335,112 @@ print_info <- function(
     ))
     cat("\n")
   }
+}
+
+#' @title Save data and results
+#' @description Save data and results
+#' @inheritParams default_params_doc
+#' @export
+main_save_files <- function(
+  project_folder,
+  sim_pars,
+  optim_ids,
+  cond,
+  n_0,
+  t_0s,
+  seed,
+  sim,
+  results
+) {
+  # project folder
+  pkg_name <- get_pkg_name()
+  if (is.null(project_folder)) {
+    if (.Platform$OS.type == "windows") {
+      if (!("extdata" %in% list.files(system.file(package = pkg_name)))) {
+        dir.create(file.path(
+          system.file(package = pkg_name),
+          "extdata"
+        ))
+      }
+      project_folder <- system.file("extdata", package = pkg_name)
+      if (!file.exists(project_folder)) {
+        dir.create(project_folder, showWarnings = FALSE)
+      }
+    } else {
+      project_folder <- getwd()
+    }
+  }
+
+  # setting name
+  setting_name <- gsub(
+    x = toString(c(
+      paste0(
+        "sim_pars=[",
+        utils::capture.output(cat(
+          paste(sim_pars, collapse = "-")
+        )),
+        "]"
+      ),
+      paste0(
+        "optim_ids=[",
+        utils::capture.output(cat(
+          paste(as.numeric(optim_ids), collapse = "-")
+        )),
+        "]"
+      ),
+      paste0("cond=", cond),
+      paste0("n_0=", n_0),
+      paste0(
+        "ages=[",
+        utils::capture.output(cat(
+          paste(t_0s, collapse = "-")
+        )),
+        "]"
+      )
+    )),
+    pattern = ", ",
+    replacement = "-"
+  )
+
+  # data
+  data_folder <- file.path(project_folder, "data")
+  if (!dir.exists(data_folder)) {
+    dir.create(data_folder, showWarnings = FALSE)
+  }
+  data_file_name <- file.path(
+    data_folder,
+    paste0(
+      pkg_name,
+      "_sim-",
+      gsub(x = setting_name, pattern = "\\.", replacement = ","),
+      "-",
+      paste0("seed=", seed),
+      ".RData"
+    )
+  )
+  save(sim, file = data_file_name)
+
+  # results
+  results_folder <- file.path(
+    project_folder,
+    "results"
+  )
+  if (!dir.exists(results_folder)) {
+    dir.create(results_folder, showWarnings = FALSE)
+  }
+  results_file_name <- file.path(
+    results_folder,
+    paste0(
+      pkg_name,
+      "_mle-",
+      gsub(x = setting_name, pattern = "\\.", replacement = ","),
+      "-",
+      paste0("seed=", seed),
+      ".txt"
+    )
+  )
+  utils::write.csv(
+    x = results,
+    file = results_file_name
+  )
 }
