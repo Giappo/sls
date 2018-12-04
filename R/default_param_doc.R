@@ -18,6 +18,7 @@
 #' }
 #' @param crown_age the age of the phylogeny
 #' @param data contains all the information about the simulated process
+#' @param data_folder The data folder insider the project folder.
 #' @param deltas in the Doob-Gillespie algorithm,
 #' the collection of delta_n and delta_t, which are, respectively,
 #' the change in number of species and
@@ -81,6 +82,7 @@
 #' according to y = x / (1 + x)
 #' @param project_folder the folder when you want to save data and results
 #' @param results mle results
+#' @param results_folder The results folder insider the project folder.
 #' @param seed the seed
 #' @param sim the results of a sim run
 #' @param t time
@@ -128,6 +130,7 @@ default_params_doc <- function(
   d_0,
   d_0s,
   data,
+  data_folder,
   delta_n,
   delta_t,
   deltas,
@@ -173,6 +176,7 @@ default_params_doc <- function(
   pars_transformed,
   project_folder,
   results,
+  results_folder,
   shift_time,
   sim,
   sim_pars,

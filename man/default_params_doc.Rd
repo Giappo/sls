@@ -6,16 +6,17 @@
 documentation.}
 \usage{
 default_params_doc(age, brts, brts_m, brts_s, brts_clade, cond, clade,
-  crown_age, d_0, d_0s, data, delta_n, delta_t, deltas, dropextinct, e_0,
-  event, final_time, fun, fun1, fun2, function_name, function_names,
-  functions_names, k, lambda, lambdas, mu, mus, ks, l_0, l_1, l_2,
-  l_matrix_size, l_matrix, log_scale, lambdaterms, loglik_function, lx,
-  matrix_size, message, missnumspec, models, n, n_0, n_0s, n_max,
-  optim_ids, output, pars, pars_m, pars_s, pars_clade, pars_transformed,
-  project_folder, results, shift_time, sim, sim_pars, start_pars, t, t_c,
-  t_d, ts, t_0, t_0s, tf, t_f, td, t_p, tds, t_ds, times, tbar, true_pars,
-  vec, verbose, ddep, trparsopt, trparsfix, idparsopt, idparsfix,
-  idparsnoshift, initparsopt, optimmethod, tolerance, pars2, seed)
+  crown_age, d_0, d_0s, data, data_folder, delta_n, delta_t, deltas,
+  dropextinct, e_0, event, final_time, fun, fun1, fun2, function_name,
+  function_names, functions_names, k, lambda, lambdas, mu, mus, ks, l_0,
+  l_1, l_2, l_matrix_size, l_matrix, log_scale, lambdaterms,
+  loglik_function, lx, matrix_size, message, missnumspec, models, n, n_0,
+  n_0s, n_max, optim_ids, output, pars, pars_m, pars_s, pars_clade,
+  pars_transformed, project_folder, results, results_folder, shift_time,
+  sim, sim_pars, start_pars, t, t_c, t_d, ts, t_0, t_0s, tf, t_f, td, t_p,
+  tds, t_ds, times, tbar, true_pars, vec, verbose, ddep, trparsopt,
+  trparsfix, idparsopt, idparsfix, idparsnoshift, initparsopt, optimmethod,
+  tolerance, pars2, seed)
 }
 \arguments{
 \item{age}{the age of the phylogeny}
@@ -48,6 +49,8 @@ default_params_doc(age, brts, brts_m, brts_s, brts_clade, cond, clade,
 \item{d_0s}{starting values for BiSSE's D functions}
 
 \item{data}{contains all the information about the simulated process}
+
+\item{data_folder}{The data folder insider the project folder.}
 
 \item{delta_n}{in the Doob-Gillespie algorithm,
 the change in number of species}
@@ -155,6 +158,8 @@ according to y = x / (1 + x)}
 \item{project_folder}{the folder when you want to save data and results}
 
 \item{results}{mle results}
+
+\item{results_folder}{The results folder insider the project folder.}
 
 \item{shift_time}{the time of the shift}
 
