@@ -87,17 +87,6 @@ test_that("abuse", {
     test <- sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = brts,
-      start_pars = c(-1, start_pars[2:4]),
-      cond = cond,
-      n_0 = n_0,
-      verbose = FALSE
-    ),
-    "you cannot start from negative parameters"
-  )
-  testthat::expect_error(
-    test <- sls_ml(
-      loglik_function = sls::loglik_sls_p,
-      brts = brts,
       start_pars = start_pars,
       cond = 15,
       n_0 = n_0,

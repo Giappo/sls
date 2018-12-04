@@ -71,7 +71,8 @@ sls_main <- function(
       cond = cond,
       n_0 = l_2$n_0[1],
       optim_ids = optim_ids,
-      verbose = verbose
+      verbose = verbose,
+      true_pars = sim_pars
     )
     if (verbose == FALSE) {
       sink()

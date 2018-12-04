@@ -17,11 +17,9 @@ sls_ml <- function(
   par_names <- get_param_names() # nolint internal function
   testit::assert(length(optim_ids) == length(start_pars))
   testit::assert(length(true_pars) == length(start_pars))
+  start_pars[!optim_ids] <- true_pars[!optim_ids]
   if (any(start_pars < 0)) {
-    stop("you cannot start from negative parameters")
-  }
-  if (any(start_pars * optim_ids != true_pars * optim_ids)) {
-    stop("for fixed parameters start from the true values")
+    stop("You cannot start from negative parameters!")
   }
   out_names <- c(par_names, "loglik", "df", "conv")
   failpars <- rep(-1, length(start_pars))
