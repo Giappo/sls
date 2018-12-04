@@ -7,7 +7,7 @@ is_on_ci <- function() {
 }
 
 test_that("use", {
-  seed_interval <- 6:(6 + 9 * is_on_ci()) # 6 is critical
+  seed_interval <- 6:(6 + 5 * is_on_ci()) # 6 is critical
   for (seed in seed_interval) {
     sim_pars <- c(0.3, 0.2, 0.6, 0.1)
     cond <- 3

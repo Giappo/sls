@@ -19,8 +19,6 @@ test_that("all the likelihoods with no division yield the same result", {
   ) {
     pars_m <- pars[1:2]
     pars_s <- pars[3:4]
-    brts_m <- brts[[1]]
-    brts_s <- brts[[2]]
 
     res_1_1 <- fun1(
       pars = pars,
@@ -96,7 +94,7 @@ test_that("all the likelihoods with no division yield the same result", {
                (is_on_ci())  * 1e-3
 
   cond <- 0; s <- 1
-  for (s in 1:(2 + 4 * is_on_ci())) {
+  for (s in 1:(2 + 3 * is_on_ci())) {
     set.seed(s)
     t_0s    <- c(4, 1.5)
     brts_m  <- c(

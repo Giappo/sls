@@ -10,12 +10,12 @@ default_params_doc(age, brts, brts_m, brts_s, brts_clade, cond, clade,
   event, final_time, fun, fun1, fun2, function_name, function_names,
   functions_names, k, lambda, lambdas, mu, mus, ks, l_0, l_1, l_2,
   l_matrix_size, l_matrix, log_scale, lambdaterms, loglik_function, lx,
-  matrix_size, message, missnumspec, models, n, n_0, n_max, optim_ids,
-  pars, pars_m, pars_s, pars_clade, pars_transformed, shift_time, sim_pars,
-  start_pars, t, t_c, t_d, ts, t_0, tf, t_f, td, t_p, tds, t_ds, times,
-  tbar, true_pars, vec, verbose, ddep, trparsopt, trparsfix, idparsopt,
-  idparsfix, idparsnoshift, initparsopt, optimmethod, tolerance, pars2,
-  seed)
+  matrix_size, message, missnumspec, models, n, n_0, n_0s, n_max,
+  optim_ids, pars, pars_m, pars_s, pars_clade, pars_transformed,
+  shift_time, sim_pars, start_pars, t, t_c, t_d, ts, t_0, tf, t_f, td, t_p,
+  tds, t_ds, times, tbar, true_pars, vec, verbose, ddep, trparsopt,
+  trparsfix, idparsopt, idparsfix, idparsnoshift, initparsopt, optimmethod,
+  tolerance, pars2, seed)
 }
 \arguments{
 \item{age}{the age of the phylogeny}
@@ -126,6 +126,8 @@ in the likelihood}
 \item{n}{number of lineages}
 
 \item{n_0}{starting number of lineages}
+
+\item{n_0s}{starting number of lineages for all the clades}
 
 \item{n_max}{maximum number of lineages to consider}
 

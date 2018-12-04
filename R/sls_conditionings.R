@@ -27,12 +27,12 @@ pc_1shift <- function(
     stop("Pc can be calculated only if phylogeny starts with a crown!")
   }
 
-  p_s <- 1 - sls::pn(
-    n = 0,
+  p_s <- sls::pt(
     t = bb,
     lambda = lambdas[2],
     mu = mus[2]
   )
+
   nvec <- 1:n_max
   ns1  <- row(matrix(NA, nrow = n_max, ncol = n_max))
   ns2  <- col(matrix(NA, nrow = n_max, ncol = n_max))

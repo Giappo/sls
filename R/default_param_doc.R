@@ -63,6 +63,7 @@
 #' @param mus extinction rate, for all the clades
 #' @param n number of lineages
 #' @param n_0 starting number of lineages
+#' @param n_0s starting number of lineages for all the clades
 #' @param n_max maximum number of lineages to consider
 #' @param optim_ids ids of the parameters you want to optimize.
 #' @param pars parameters of the likelihood functions:
@@ -156,6 +157,7 @@ default_params_doc <- function(
   models,
   n,
   n_0,
+  n_0s,
   n_max,
   optim_ids,
   pars,
