@@ -1,3 +1,0 @@
-"","sim_lambda_m","sim_mu_m","sim_lambda_s","sim_mu_s","lambda_m","mu_m","lambda_s","mu_s","loglik","df","conv","tips_m","tips_s","seed","model"
-"1",0.3,0.2,0.6,0.1,-1,-1,-1,-1,-1,-1,1,8,1,2,"sls_p"
-"2",0.3,0.2,0.6,0.1,-1,-1,-1,-1,-1,-1,1,8,1,2,"sls_q"

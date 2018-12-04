@@ -9,13 +9,15 @@ test_that("use", {
   cond <- 3
   n_0 <- 2
 
-  test <- sls_ml(
-    loglik_function = sls::loglik_sls_p,
-    brts = brts,
-    start_pars = start_pars,
-    cond = cond,
-    n_0 = n_0,
-    verbose = FALSE
+  output <- capture.output(
+    test <- sls_ml(
+      loglik_function = sls::loglik_sls_p,
+      brts = brts,
+      start_pars = start_pars,
+      cond = cond,
+      n_0 = n_0,
+      verbose = TRUE
+    )
   )
 
   testthat::expect_true(
@@ -38,6 +40,9 @@ test_that("use", {
   )
   testthat::expect_true(
     test$conv == 0
+  )
+  testthat::expect_true(
+    length(output) > 0 & !is.null(output)
   )
 })
 
@@ -87,17 +92,6 @@ test_that("abuse", {
     test <- sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = brts,
-      start_pars = c(-1, start_pars[2:4]),
-      cond = cond,
-      n_0 = n_0,
-      verbose = FALSE
-    ),
-    "you cannot start from negative parameters"
-  )
-  testthat::expect_error(
-    test <- sls_ml(
-      loglik_function = sls::loglik_sls_p,
-      brts = brts,
       start_pars = start_pars,
       cond = 15,
       n_0 = n_0,
@@ -115,5 +109,16 @@ test_that("abuse", {
       verbose = FALSE
     ),
     "this n_0 is not implemented"
+  )
+  testthat::expect_error(
+    test <- sls_ml(
+      loglik_function = sls::loglik_sls_p,
+      brts = brts,
+      start_pars = c(-1, 0.2, 0.3, 0.1),
+      cond = cond,
+      n_0 = 3,
+      verbose = FALSE
+    ),
+    "You cannot start from negative parameters!"
   )
 })
