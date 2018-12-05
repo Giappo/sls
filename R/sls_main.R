@@ -67,12 +67,12 @@ sls_main <- function(
     mle <- sls_ml(
       loglik_function = get(function_names[m]),
       brts = sim$brts,
-      start_pars = start_pars,
       cond = cond,
-      n_0 = l_2$n_0[1],
+      n_0 = n_0,
+      start_pars = start_pars,
       optim_ids = optim_ids,
-      verbose = verbose,
-      true_pars = sim_pars
+      true_pars = sim_pars,
+      verbose = verbose
     )
     if (verbose == FALSE) {
       sink()
