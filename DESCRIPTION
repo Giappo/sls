@@ -21,7 +21,6 @@ Suggests:
   knitr,
   lintr,
   rmarkdown,
-  testthat,
-	xlsx
+  testthat
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
