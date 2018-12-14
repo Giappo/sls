@@ -19,7 +19,11 @@ loglik_sls_p <- function(
     return(-Inf)
   }
 
-  n_min <- is.list(brts) * length(brts) + (n_0 - 1) + 2 * length(unlist(brts))
+  if (is.list(brts)) {
+    n_min <- 2 * ((n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * ((n_0 - 1) + length(brts))
+  }
   if (n_max < n_min) {
     n_max <- n_min
   }
@@ -120,8 +124,11 @@ loglik_sls_p <- function(
     n_0 = n_0
   )
 
-  loglik <- loglik_m + loglik_s - log(pc); loglik
-  loglik <- unname(loglik)
+  loglik <- loglik_m + loglik_s - log(pc)
+  loglik <- as.numeric(unname(loglik))
+  if (is.nan(loglik) | is.na(loglik)) {
+    loglik <- -Inf
+  }
   return(loglik)
 }
 
@@ -265,6 +272,10 @@ loglik_sls_q <- function(
   )
 
   total_loglik <- sum(logliks) - log(pc)
+  total_loglik <- as.numeric(total_loglik)
+  if (is.nan(total_loglik) | is.na(total_loglik)) {
+    total_loglik <- -Inf
+  }
   return(total_loglik)
 }
 

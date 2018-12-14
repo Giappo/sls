@@ -60,5 +60,8 @@ pc_1shift <- function(
     (cond == 3) * pc_3 +
     (cond == 4) * pc_4
 
+  testit::assert(pc >= 0)
+  testit::assert(pc <= 1)
+
   return(pc)
 }

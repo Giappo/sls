@@ -66,7 +66,7 @@ sls_main <- function(
     }
     mle <- sls_ml(
       loglik_function = get(function_names[m]),
-      brts = sim$brts,
+      brts = brts,
       cond = cond,
       n_0 = n_0,
       start_pars = start_pars,
