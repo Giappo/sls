@@ -106,7 +106,7 @@ loglik_sls_p <- function(
   # number of speciations in the Main clade
   l_m <- length(brts_m1[brts_m1 != brts_m1[1]])
 
-  # number of speciations in the Sub clade
+  # number of speciations in the Subclade
   l_s <- length(brts_s1[brts_s1 != brts_s1[1]])
 
   loglik_m <- loglik_m0 +
