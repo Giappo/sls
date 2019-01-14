@@ -20,9 +20,9 @@ loglik_sls_p <- function(
   }
 
   if (is.list(brts)) {
-    n_min <- 2 * ((n_0 - 1) + length(unlist(brts[[1]])))
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
   } else {
-    n_min <- 2 * ((n_0 - 1) + length(brts))
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
   }
   if (n_max < n_min) {
     n_max <- n_min
@@ -38,6 +38,12 @@ loglik_sls_p <- function(
 
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
+  if (any(is.infinite(c(lambdas, mus)))) {
+    return(-Inf)
+  }
+  if (any(lambdas - mus < 0)) {
+    return(-Inf)
+  }
 
   brts_m1 <- sort(brts_m, decreasing = TRUE)
   brts_s1 <- sort(brts_s, decreasing = TRUE)
@@ -129,6 +135,9 @@ loglik_sls_p <- function(
   if (is.nan(loglik) | is.na(loglik)) {
     loglik <- -Inf
   }
+  if (loglik == Inf) {
+   stop("infinite loglik!")
+  }
   return(loglik)
 }
 
@@ -156,6 +165,12 @@ loglik_sls_q <- function(
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
   ks      <- c(Inf, Inf)
+  if (any(is.infinite(c(lambdas, mus)))) {
+    return(-Inf)
+  }
+  if (any(lambdas - mus < 0)) {
+    return(-Inf)
+  }
 
   n_min <- is.list(brts) * length(brts) + (n_0 - 1) + 2 * length(unlist(brts))
   if (n_max < n_min) {
