@@ -19,7 +19,7 @@ test_that("use", {
   optim_ids <- c(TRUE, TRUE, TRUE, TRUE)
   seed_interval <- 6:(6 + 5 * is_on_ci())
   for (seed in seed_interval) {
-    # seed = 6 is critical
+    # seed = 6 is critical!
     test <- sls_main(
       seed = seed,
       sim_pars = sim_pars,
