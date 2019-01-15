@@ -19,7 +19,11 @@ loglik_sls_p <- function(
     return(-Inf)
   }
 
-  n_min <- is.list(brts) * length(brts) + (n_0 - 1) + 2 * length(unlist(brts))
+  if (is.list(brts)) {
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
+  }
   if (n_max < n_min) {
     n_max <- n_min
   }
@@ -34,6 +38,12 @@ loglik_sls_p <- function(
 
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
+  if (any(is.infinite(c(lambdas, mus)))) {
+    return(-Inf)
+  }
+  if (any(lambdas - mus < 0)) {
+    return(-Inf)
+  }
 
   brts_m1 <- sort(brts_m, decreasing = TRUE)
   brts_s1 <- sort(brts_s, decreasing = TRUE)
@@ -102,7 +112,7 @@ loglik_sls_p <- function(
   # number of speciations in the Main clade
   l_m <- length(brts_m1[brts_m1 != brts_m1[1]])
 
-  # number of speciations in the Sub clade
+  # number of speciations in the Subclade
   l_s <- length(brts_s1[brts_s1 != brts_s1[1]])
 
   loglik_m <- loglik_m0 +
@@ -120,8 +130,14 @@ loglik_sls_p <- function(
     n_0 = n_0
   )
 
-  loglik <- loglik_m + loglik_s - log(pc); loglik
-  loglik <- unname(loglik)
+  loglik <- loglik_m + loglik_s - log(pc)
+  loglik <- as.numeric(unname(loglik))
+  if (is.nan(loglik) | is.na(loglik)) {
+    loglik <- -Inf
+  }
+  if (loglik == Inf) {
+   stop("infinite loglik!")
+  }
   return(loglik)
 }
 
@@ -149,6 +165,12 @@ loglik_sls_q <- function(
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
   ks      <- c(Inf, Inf)
+  if (any(is.infinite(c(lambdas, mus)))) {
+    return(-Inf)
+  }
+  if (any(lambdas - mus < 0)) {
+    return(-Inf)
+  }
 
   n_min <- is.list(brts) * length(brts) + (n_0 - 1) + 2 * length(unlist(brts))
   if (n_max < n_min) {
@@ -265,6 +287,10 @@ loglik_sls_q <- function(
   )
 
   total_loglik <- sum(logliks) - log(pc)
+  total_loglik <- as.numeric(total_loglik)
+  if (is.nan(total_loglik) | is.na(total_loglik)) {
+    total_loglik <- -Inf
+  }
   return(total_loglik)
 }
 

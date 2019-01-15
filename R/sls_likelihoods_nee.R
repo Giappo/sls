@@ -17,6 +17,25 @@ pt  <- function(lambda, mu, t) {
   return(unname(out))
 }
 
+#' @title 1 - Pt
+#' @author Giovanni Laudanno
+#' @description Nee's function: 1 - pt
+#' @inheritParams default_params_doc
+#' @return 1 - pt
+#' @export
+one_minus_pt  <- function(lambda, mu, t) {
+  time <- t
+  exp_term <- exp(
+    (mu - lambda) * time
+  )
+  out    <- (lambda == mu) * (lambda * time / (1 + lambda * time)) +
+    (lambda != mu) * (
+      (mu - mu * exp_term + (lambda == mu)) /
+        (lambda - mu * exp_term + (lambda == mu))
+    )
+  return(unname(out))
+}
+
 #' @title ut
 #' @author Giovanni Laudanno
 #' @description Nee's function: ut
@@ -36,6 +55,25 @@ ut  <- function(lambda, mu, t) {
   return(unname(out))
 }
 
+#' @title 1 - ut
+#' @author Giovanni Laudanno
+#' @description Nee's function: 1 - ut
+#' @inheritParams default_params_doc
+#' @return 1 - ut
+#' @export
+one_minus_ut  <- function(lambda, mu, t) {
+  time <- t
+  exp_term <- exp(
+    (mu - lambda) * time
+  )
+  out    <- (lambda == mu) * (1 / (1 + lambda * time)) +
+    (lambda != mu) * (
+      (0 + (lambda == mu) + (lambda - mu) * exp_term) /
+        (lambda - mu * exp_term + (lambda == mu))
+    )
+  return(unname(out))
+}
+
 #' @title Pn
 #' @author Giovanni Laudanno
 #' @description Nee's function: pn
@@ -44,9 +82,9 @@ ut  <- function(lambda, mu, t) {
 #' @export
 pn <- function(lambda, mu, t, n) {
   out <- (n > 0) * sls::pt(t = t, lambda = lambda, mu = mu) *
-    (1 - sls::ut(t = t, lambda = lambda, mu = mu)) *
+    sls::one_minus_ut(t = t, lambda = lambda, mu = mu) *
     sls::ut(t = t, lambda = lambda, mu = mu) ^ (n - 1 + 2 * (n == 0)) +
-    (n == 0) * (1 - sls::pt(t = t, lambda = lambda, mu = mu))
+    (n == 0) * (sls::one_minus_pt(t = t, lambda = lambda, mu = mu))
   return(out)
 }
 
@@ -58,10 +96,10 @@ pn <- function(lambda, mu, t, n) {
 #' @export
 pn_bar <- function(lambda, mu, t, n, tbar = 0) {
   out <- (n > 0) * sls::pt(t = t, lambda = lambda, mu = mu) *
-    (1 - sls::ut(t = t, lambda = lambda, mu = mu)) *
+    (sls::one_minus_ut(t = t, lambda = lambda, mu = mu)) *
     n *
     sls::ut(t = t, lambda = lambda, mu = mu) ^ (n - 1) *
-    (1 - sls::pt(t = tbar, lambda = lambda, mu = mu)) ^ (n - 1 + (n == 0)) +
-    (n == 0) * (1 - sls::pt(t = t, lambda = lambda, mu = mu))
+    sls::one_minus_pt(t = tbar, lambda = lambda, mu = mu) ^ (n - 1 + (n == 0)) +
+    (n == 0) * (sls::one_minus_pt(t = t, lambda = lambda, mu = mu))
   return(out)
 }

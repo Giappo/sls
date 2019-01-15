@@ -18,6 +18,12 @@ sls_main <- function(
   project_folder = NULL,
   verbose = FALSE
 ) {
+  # check formats
+  sim_pars <- as.numeric(sim_pars)
+  start_pars <- as.numeric(start_pars)
+  cond <- as.numeric(cond)
+  seed <- as.numeric(seed)
+
   # specific set up
   lambdas <- sim_pars[c(1, 3)]
   mus <- sim_pars[c(2, 4)]
@@ -66,7 +72,7 @@ sls_main <- function(
     }
     mle <- sls_ml(
       loglik_function = get(function_names[m]),
-      brts = sim$brts,
+      brts = brts,
       cond = cond,
       n_0 = n_0,
       start_pars = start_pars,
