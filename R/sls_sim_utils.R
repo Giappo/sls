@@ -490,6 +490,11 @@ sim_get_standard_l_2 <- function(
   n_0 = 2,
   shift_time = 4
 ) {
+  # check formats
+  crown_age <- as.numeric(crown_age)
+  shift_time <- as.numeric(shift_time)
+  n_0 <- as.numeric(n_0)
+
   testit::assert(crown_age > shift_time)
   l_2 <- as.data.frame(matrix(0, nrow = 2, ncol = 4))
   l_2[, 1] <- c(0, shift_time)

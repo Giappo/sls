@@ -4,4 +4,5 @@
 ^appveyor\.yml$
 ^scripts$
 ^results$
+^pics$
 ^cluster_scripts$

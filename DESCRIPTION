@@ -13,7 +13,8 @@ Imports:
   expoRkit,
   subplex,
   testit,
-  rappdirs
+  rappdirs,
+  utils
 Suggests:
   ape,
   devtools,
