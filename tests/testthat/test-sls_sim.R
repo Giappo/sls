@@ -78,14 +78,16 @@ test_that("sls_sim", {
       (200 + 700 * (time > "23:00:00" && time < "9:30:00"))
   )
   seed_interval <- 1:(maxsims + maxtravis)
-  conds <- c(3, 4)
+  conds <- sls_conds(); conds <- conds[conds != 0]
+  conds <- rep(conds, max(seed_interval))
+  cond <- conds[1]
   i <- 1
   out <- vector(
     "list",
-    length(conds) * (maxsims + maxtravis)
+    length(unique(conds)) * (maxsims + maxtravis)
   ); seed <- 1; cond <- conds[1]
   for (seed in seed_interval) {
-    for (cond in conds) {
+    for (cond in unique(conds)) {
       if (seed <= maxsims + maxtravis / 2) {
         set.seed(seed)
       } else {
@@ -114,14 +116,14 @@ test_that("sls_sim", {
       )
       survivors_m <- l_0_1[l_0_1[, 4] == -1, 3]
       survivors_s <- l_0_2[l_0_2[, 4] == -1, 3]
-      if (cond == 3) {
+      if (cond == 2) {
         testthat::expect_true(
           # at least one survivor for M and one for S
           length(survivors_m) > 0,
           length(survivors_s) > 0
         )
       }
-      if (cond == 4) {
+      if (cond == 3) {
         testthat::expect_true(
           # does M survive?
           surv_m <- length(survivors_m) > 0,

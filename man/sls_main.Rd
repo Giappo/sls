@@ -7,7 +7,8 @@
 sls_main(sim_pars, cond = 3, l_2 = sim_get_standard_l_2(crown_age = 5,
   shift_time = 2), seed, start_pars = c(0.2, 0.1, 0.2, 0.1),
   optim_ids = rep(TRUE, length(start_pars)),
-  models = sls_logliks_div(), project_folder = NULL, verbose = FALSE)
+  loglik_functions = sls_logliks_div(), project_folder = NULL,
+  verbose = FALSE)
 }
 \arguments{
 \item{sim_pars}{parameters of the simulation}
@@ -16,10 +17,9 @@ sls_main(sim_pars, cond = 3, l_2 = sim_get_standard_l_2(crown_age = 5,
 \itemize{
   \item cond = 0 no conditiong;
   \item cond = 1 conditions on the survival of crown descendents;
-  \item cond = 2 not available;
-  \item cond = 3 conditions on the survival of subclade and
+  \item cond = 2 conditions on the survival of subclade and
   on the other crown descendents in the main clade;
-  \item cond = 4 conditions on the survival of the subclade and
+  \item cond = 3 conditions on the survival of the subclade and
   both crown descendents in the main clade;
 }}
 
@@ -33,7 +33,7 @@ maximum}
 
 \item{optim_ids}{ids of the parameters you want to optimize.}
 
-\item{models}{the models you want to use to define the likelihood}
+\item{loglik_functions}{the loglik_functions you want to use}
 
 \item{project_folder}{the folder when you want to save data and results}
 
