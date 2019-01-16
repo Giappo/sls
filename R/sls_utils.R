@@ -18,7 +18,7 @@ p_transition_matrix <- function(
     mu * (nvec[2:matrix_size])
   m[row(m) == col(m)] <- m[row(m) == col(m)] -
     (lambda + mu) * (nvec[1:matrix_size])
-  m[matrix_size, matrix_size] <- - m[matrix_size - 1, matrix_size]; m
+  m[matrix_size, matrix_size] <- -m[matrix_size - 1, matrix_size]; m
   testit::assert(colSums(m) < 1e-10)
   return(m)
 }
@@ -66,7 +66,7 @@ sls_check_input <- function(
 #' @return the conditionings
 #' @export
 sls_conds <- function() {
-  conds <- c(3, 4)
+  conds <- c(0, 1, 2, 3)
   conds
 }
 
@@ -111,6 +111,21 @@ sls_logliks_nodiv <- function() {
       any(grepl("nodiv", x))
   )]
   nodiv_funs
+}
+
+#' @title Logliks for the experiment
+#' @author Giovanni Laudanno
+#' @description Get the loglik functions to use for the experiment
+#' @inheritParams default_params_doc
+#' @return loglik functions to use for the experiment
+#' @export
+sls_logliks_experiment <- function() {
+  fun_list <- ls(paste0("package:", get_pkg_name())) # nolint internal function
+  sls_p_funs <- fun_list[sapply(
+    fun_list, function(x)
+      any(grepl("sls_p", x))
+  )]
+  sls_p_funs
 }
 
 #' @title Get package name
@@ -206,7 +221,7 @@ cut_loglik_from_name <- function(
 #' @return function names
 #' @export
 get_function_names <- function(
-  models
+  loglik_functions
 ) {
   pkg_name <- get_pkg_name() # nolint internal function
   fun_list <- ls(paste0("package:", pkg_name))
@@ -216,13 +231,14 @@ get_function_names <- function(
     "!"
   )
 
-  if (is.vector(models)) {
-    function_names <- model_names <- which_function <- rep(NA, length(models))
-    for (m in seq_along(models)) {
-      fun <- eval(models[m])[[1]]
-      if (is.character(models[m])) {
+  if (is.vector(loglik_functions)) {
+    function_names <- rep(NA, length(loglik_functions))
+    model_names <- which_function <- function_names
+    for (m in seq_along(loglik_functions)) {
+      fun <- eval(loglik_functions[m])[[1]]
+      if (is.character(loglik_functions[m])) {
         if (length(
-          (find_function <- which(fun_list == models[m]))
+          (find_function <- which(fun_list == loglik_functions[m]))
         ) == 0) {
           stop(error_message)
         }
@@ -241,10 +257,10 @@ get_function_names <- function(
       model_names[m] <- cut_loglik_from_name(function_names[m]) # nolint internal function
     }
   } else {
-    fun <- eval(models)
-    if (is.character(models)) {
+    fun <- eval(loglik_functions)
+    if (is.character(loglik_functions)) {
       if (length(
-        (find_function <- which(fun_list == models))
+        (find_function <- which(fun_list == loglik_functions))
       ) == 0) {
         stop(error_message)
       }

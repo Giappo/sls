@@ -121,14 +121,14 @@ test_that("If lambda2=mu2=0 (inert subclade), pc1 equal to pc3 (PS = 1)", {
     pars_s = pars_s,
     cond = 1
   )
-  pc3 <- sls::pc_1shift(
+  pc2 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
-    cond = 3
+    cond = 2
   )
-  testthat::expect_true(pc1 == pc3)
+  testthat::expect_true(pc1 == pc2)
 
   #test2
   brts_m  <- c(13, 8, 3)
@@ -145,14 +145,14 @@ test_that("If lambda2=mu2=0 (inert subclade), pc1 equal to pc3 (PS = 1)", {
     pars_s = pars_s,
     cond = 1
   )
-  pc3 <- sls::pc_1shift(
+  pc2 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
-    cond = 3
+    cond = 2
   )
-  testthat::expect_true(pc1 == pc3)
+  testthat::expect_true(pc1 == pc2)
 
   #test3
   brts_m  <- c(10, 9, 6, 4, 1)
@@ -169,14 +169,14 @@ test_that("If lambda2=mu2=0 (inert subclade), pc1 equal to pc3 (PS = 1)", {
     pars_s = pars_s,
     cond = 1
   )
-  pc3 <- sls::pc_1shift(
+  pc2 <- sls::pc_1shift(
     brts_m = brts_m,
     brts_s = brts_s,
     pars_m = pars_m,
     pars_s = pars_s,
-    cond = 3
+    cond = 2
   )
-  testthat::expect_true(pc1 == pc3)
+  testthat::expect_true(pc1 == pc2)
 })
 
 test_that("sls algorithm yields the same pc1 provided by DDD", {
@@ -269,13 +269,9 @@ test_that("sls algorithm yields the same pc1 provided by DDD", {
     test < precision_threshold || is.infinite(test)
   )
 
-  skip("this doesn't work (yet)")
-
   if (packageVersion(pkg = "DDD") >= 3.8) {
-
-    # test cond == 4
     test <- diff_pc_vs_ddd(
-      cond = 4,
+      cond = 1,
       seed = 2,
       pars_m = pars_m,
       pars_s = pars_s,

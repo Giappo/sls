@@ -10,10 +10,9 @@
 #' \itemize{
 #'   \item cond = 0 no conditiong;
 #'   \item cond = 1 conditions on the survival of crown descendents;
-#'   \item cond = 2 not available;
-#'   \item cond = 3 conditions on the survival of subclade and
+#'   \item cond = 2 conditions on the survival of subclade and
 #'   on the other crown descendents in the main clade;
-#'   \item cond = 4 conditions on the survival of the subclade and
+#'   \item cond = 3 conditions on the survival of the subclade and
 #'   both crown descendents in the main clade;
 #' }
 #' @param crown_age the age of the phylogeny
@@ -56,6 +55,7 @@
 #' in the likelihood
 #' @param log_scale set it to TRUE if you desire the output in log form
 #' @param loglik_function the loglik function you want to use
+#' @param loglik_functions the loglik_functions you want to use
 #' @param lx size of the matrix
 #' @param matrix_size size of the matrix
 #' @param message the message to print
@@ -158,6 +158,7 @@ default_params_doc <- function(
   log_scale,
   lambdaterms,
   loglik_function,
+  loglik_functions,
   lx,
   matrix_size,
   message,
