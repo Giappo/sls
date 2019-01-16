@@ -53,16 +53,16 @@ pc_1shift <- function(
   p_2   <- sum(aux2) #both branches 1 and 2 survive till the present
 
   pc_1  <- 2 * p_s * p_1 + 2 * (1 - p_s) * p_2
-  pc_4  <- 2 * p_s * p_2
-  pc_3  <- 2 * p_s * p_1
+  pc_2  <- 2 * p_s * p_1
+  pc_3  <- 2 * p_s * p_2
 
   pc <- (cond == 0) * 1 +
     (cond == 1) * pc_1 +
-    (cond == 3) * pc_3 +
-    (cond == 4) * pc_4
+    (cond == 2) * pc_2 +
+    (cond == 3) * pc_3
 
   if (pc == 0) {
-    print("pippobaudo")
+    print("Conditional probability is equal to zero!")
   }
   testit::assert(pc > 0)
   testit::assert(pc <= 1)

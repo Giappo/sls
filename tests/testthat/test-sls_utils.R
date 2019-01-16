@@ -146,6 +146,12 @@ test_that("sls_logliks_nodiv", {
   )
 })
 
+test_that("sls_logliks_experiment", {
+  testthat::expect_true(
+    length(sls_logliks_experiment()) > 0
+  )
+})
+
 test_that("get_pkg_name", {
   testthat::expect_true(
     get_pkg_name() == "sls"
@@ -157,13 +163,13 @@ test_that("get_function_names & get_model_names", {
   testthat::expect_true(
     all(
       get_function_names(
-        models = sls_logliks_div()
+        loglik_functions = sls_logliks_div()
       ) == c("loglik_sls_p", "loglik_sls_q")
     )
   )
   testthat::expect_true(
     get_function_names(
-      models = loglik_sls_p
+      loglik_functions = loglik_sls_p
     ) == "loglik_sls_p"
   )
   testthat::expect_silent(
@@ -187,25 +193,25 @@ test_that("get_function_names & get_model_names", {
   )
   testthat::expect_error(
     get_function_names(
-      models = "nonsense"
+      loglik_functions = "nonsense"
     ),
     error_message
   )
   testthat::expect_error(
     get_function_names(
-      models = c("nonsense1", "nonsense2")
+      loglik_functions = c("nonsense1", "nonsense2")
     ),
     error_message
   )
   testthat::expect_error(
     get_function_names(
-      models = grepl
+      loglik_functions = grepl
     ),
     error_message
   )
   testthat::expect_error(
     get_function_names(
-      models = c(exp, grepl)
+      loglik_functions = c(exp, grepl)
     ),
     error_message
   )

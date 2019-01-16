@@ -9,7 +9,7 @@ is_on_ci <- function() {
 test_that("use", {
   sim_pars <- c(0.3, 0.2, 0.6, 0.1)
   cond <- 3
-  models <- sls_logliks_div()
+  loglik_functions <- sls_logliks_div()
   l_2 <- sim_get_standard_l_2(
     crown_age = 5,
     shift_time = 2
@@ -26,7 +26,7 @@ test_that("use", {
       cond = cond,
       l_2 = l_2,
       start_pars = c(0.2, 0.1, 0.2, 0.1),
-      models = models,
+      loglik_functions = loglik_functions,
       optim_ids = optim_ids,
       verbose = FALSE
     )
@@ -34,58 +34,58 @@ test_that("use", {
       is.data.frame(test)
     )
     testthat::expect_true(
-      length(test$sim_lambda_m) == length(models)
+      length(test$sim_lambda_m) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$sim_mu_m) == length(models)
+      length(test$sim_mu_m) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$sim_lambda_s) == length(models)
+      length(test$sim_lambda_s) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$sim_mu_s) == length(models)
+      length(test$sim_mu_s) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$lambda_m) == length(models)
+      length(test$lambda_m) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$mu_m) == length(models)
+      length(test$mu_m) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$lambda_s) == length(models)
+      length(test$lambda_s) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$mu_s) == length(models)
+      length(test$mu_s) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$loglik) == length(models)
+      length(test$loglik) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$df) == length(models)
+      length(test$df) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$conv) == length(models)
+      length(test$conv) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$tips_1) == length(models)
+      length(test$tips_1) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$tips_2) == length(models)
+      length(test$tips_2) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$seed) == length(models)
+      length(test$seed) == length(loglik_functions)
     )
     testthat::expect_true(
       length(unique(test$seed)) == 1
     )
     testthat::expect_true(
-      length(test$tips_1) == length(models)
+      length(test$tips_1) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$tips_2) == length(models)
+      length(test$tips_2) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$cond) == length(models)
+      length(test$cond) == length(loglik_functions)
     )
     testthat::expect_true(
       all(
@@ -108,16 +108,16 @@ test_that("use", {
       )
     )
     testthat::expect_true(
-      length(test$optim_lambda_m) == length(models)
+      length(test$optim_lambda_m) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$optim_mu_m) == length(models)
+      length(test$optim_mu_m) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$optim_lambda_s) == length(models)
+      length(test$optim_lambda_s) == length(loglik_functions)
     )
     testthat::expect_true(
-      length(test$optim_mu_s) == length(models)
+      length(test$optim_mu_s) == length(loglik_functions)
     )
     testthat::expect_true(
       all(
@@ -130,7 +130,7 @@ test_that("use", {
       )
     )
     testthat::expect_true(
-      length(test$model) == length(models)
+      length(test$model) == length(loglik_functions)
     )
 
     # test file saving
@@ -184,7 +184,7 @@ test_that("use", {
     )
     suppressWarnings(file.remove(results_file_name))
   }
-  # test silent mode and character entry for "models" input
+  # test silent mode and character entry for "loglik_functions" input
   seed <- 99
   testthat::expect_silent(
     test <- sls_main(
@@ -193,7 +193,7 @@ test_that("use", {
       cond = cond,
       l_2 = l_2,
       start_pars = c(0.2, 0.1, 0.2, 0.1),
-      models = "loglik_sls_p",
+      loglik_functions = "loglik_sls_p",
       optim_ids = optim_ids,
       verbose = FALSE
     )
@@ -246,7 +246,7 @@ test_that("it works also for a subset of parameters", {
   )
   n_0 <- l_2$n_0[1]
   t_0s <- l_2$birth_time
-  models <- sls_logliks_div()
+  loglik_functions <- sls_logliks_div()
   optim_ids <- c(TRUE, FALSE, FALSE, FALSE)
 
   test <- sls_main(
@@ -255,7 +255,7 @@ test_that("it works also for a subset of parameters", {
     cond = cond,
     l_2 = l_2,
     start_pars = c(0.2, 0.1, 0.2, 0.1),
-    models = models,
+    loglik_functions = loglik_functions,
     verbose = FALSE,
     optim_ids = optim_ids
   )
@@ -332,7 +332,7 @@ test_that("abuse", {
         shift_time = 2
       ),
       start_pars = c(0.2, 0.1, 0.2, 0.1),
-      models = "nonsense",
+      loglik_functions = "nonsense",
       verbose = FALSE
     ),
     paste0(

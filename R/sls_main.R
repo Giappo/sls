@@ -14,7 +14,7 @@ sls_main <- function(
   seed,
   start_pars = c(0.2, 0.1, 0.2, 0.1),
   optim_ids = rep(TRUE, length(start_pars)),
-  models = sls_logliks_div(),
+  loglik_functions = sls_logliks_div(),
   project_folder = NULL,
   verbose = FALSE
 ) {
@@ -34,7 +34,7 @@ sls_main <- function(
 
   # generic set up
   function_names <- get_function_names( # nolint internal function
-    models = models
+    loglik_functions = loglik_functions
   )
   model_names <- get_model_names( # nolint internal function
     function_names = function_names,
@@ -62,7 +62,7 @@ sls_main <- function(
   }
 
   # maximum likelihood
-  for (m in seq_along(models)) {
+  for (m in seq_along(loglik_functions)) {
     if (verbose == FALSE) {
       if (rappdirs::app_dir()$os != "win") {
         sink(file.path(rappdirs::user_cache_dir(), "ddd"))
@@ -89,7 +89,7 @@ sls_main <- function(
   results <- cbind(
     matrix(
       sim_pars,
-      nrow = length(models),
+      nrow = length(loglik_functions),
       ncol = length(start_pars),
       byrow = TRUE
     ),
@@ -99,19 +99,19 @@ sls_main <- function(
     n_0,
     matrix(
       t_0s,
-      nrow = length(models),
+      nrow = length(loglik_functions),
       ncol = length(t_0s),
       byrow = TRUE
     ),
     matrix(
       tips,
-      nrow = length(models),
+      nrow = length(loglik_functions),
       ncol = length(tips),
       byrow = TRUE
     ),
     matrix(
       optim_ids,
-      nrow = length(models),
+      nrow = length(loglik_functions),
       ncol = length(optim_ids),
       byrow = TRUE
     ),

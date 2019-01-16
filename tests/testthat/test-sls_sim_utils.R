@@ -447,7 +447,7 @@ test_that("sim_check_conditioning", {
   ); sim_read_l_1(data$l_1)
   tshift <- l_2[2, 1]
 
-  conds <- c(1, 3, 4)
+  conds <- sls_conds()
   out <- rep(NA, length(conds))
   for (i in seq_along(conds)) {
     out[i] <- sim_conditioning(
@@ -488,25 +488,29 @@ sim_get_brts2 <- function(
   for (clade in seq_along(data$l_1)) {
     n_0 <- l_2$n_0[clade]
     done <- 0
-    if (is.null(data$l_1[[clade]]) && done == 0) {
-      brts[clade] <- NULL
+    empty_clade <- is.null(data$l_1[[clade]]) ||
+      all(
+        data$l_1[[clade]][, 4] > 0 & data$l_1[[clade]][, 5] == 0
+      )
+    if (empty_clade && done == 0) {
+      brts[clade] <- list(NULL)
       done <- 1
     }
     if (done == 0) {
       l_0 <- sim_cut_l_matrix(
         unname(data$l_1[[clade]])
       )
-    }
-    l_0[l_0[, 5] > 0, 4] <- -1
-    if (nrow(l_0) == 1 && l_0[, 4] == -1) {
-      brts[[clade]] <- l_0[1, 1]
-    } else {
-      brts[[clade]] <- DDD::L2brts(L = l_0)
-      if (n_0 == 1) {
-        brts[[clade]] <- c(l_0[1, 1], brts[[clade]])
+      l_0[l_0[, 5] > 0, 4] <- -1
+      if (nrow(l_0) == 1 && l_0[, 4] == -1) {
+        brts[[clade]] <- l_0[1, 1]
+      } else {
+        brts[[clade]] <- DDD::L2brts(L = l_0)
+        if (n_0 == 1) {
+          brts[[clade]] <- c(l_0[1, 1], brts[[clade]])
+        }
       }
+      brts[[clade]] <- unname(brts[[clade]])
     }
-    brts[[clade]] <- unname(brts[[clade]])
   }
   brts <- unname(brts)
   brts
@@ -519,7 +523,7 @@ test_brts_fun <- function(
   data,
   brts_fun = sim_get_brts
 ) {
-  max_clade <- 2
+  max_clade <- nrow(l_2)
   out <- rep(0, max_clade)
   brts <- brts_fun(
     data = data,
@@ -530,11 +534,15 @@ test_brts_fun <- function(
     br_ts <- brts[[clade]]
     tips <- (n_0 - 1) + length(br_ts); tips
     exp_tips <- (n_0 - 1) + sum(data$l_1[[clade]][, 4] == -1)
-    out[clade] <- (tips == exp_tips) *
-      all(
-        signif(br_ts, digits = 5) %in%
-          signif(data$l_1[[clade]][, 1], digits = 5)
-      )
+    if (is.null(br_ts)) {
+      out[clade] <- (tips == exp_tips) * all(data$l_1[[clade]][, 4] > 0)
+    } else {
+      out[clade] <- (tips == exp_tips) *
+        all(
+          signif(br_ts, digits = 5) %in%
+            signif(data$l_1[[clade]][, 1], digits = 5)
+        )
+    }
   }
   prod(out)
 }
@@ -624,12 +632,13 @@ test_that("sim_get_brts", {
     sim_get_brts,
     sim_get_brts2
   )
-  cond <- sls_conds()[1]
+  conds <- sls_conds(); conds <- conds[conds != 0]
+  conds <- rep(conds, max(seed_interval))
+  cond <- conds[1]
   brts_list <- outs <- vector("list", length(brts_funs))
   for (seed in seed_interval) {
     set.seed(seed)
-    cond <- sls_conds()[1] * (cond == sls_conds()[2]) +
-      sls_conds()[2] * (cond == sls_conds()[1])
+    cond <- conds[seed]
     data <- sim_data(
       lambdas = lambdas,
       mus = mus,

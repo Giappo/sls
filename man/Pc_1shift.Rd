@@ -19,10 +19,9 @@ pc_1shift(pars_m, pars_s, brts_m, brts_s, cond, n_max = 100, n_0 = 2)
 \itemize{
   \item cond = 0 no conditiong;
   \item cond = 1 conditions on the survival of crown descendents;
-  \item cond = 2 not available;
-  \item cond = 3 conditions on the survival of subclade and
+  \item cond = 2 conditions on the survival of subclade and
   on the other crown descendents in the main clade;
-  \item cond = 4 conditions on the survival of the subclade and
+  \item cond = 3 conditions on the survival of the subclade and
   both crown descendents in the main clade;
 }}
 

@@ -338,8 +338,8 @@ sim_conditioning <- function(
   if (nrow(l_2) > 2) {
     stop("Currently this only works for 1 shift!")
   }
-  if (cond == 2) {
-    stop("Cond 2 is not supported!")
+  if (!(cond %in% sls_conds())) {
+    stop(paste0("Cond ", cond, " is not supported!"))
   }
 
   l_1 <- data$l_1; clade <- 1
@@ -409,18 +409,18 @@ sim_conditioning <- function(
     }
   }
 
+  cond0 <- 1
   cond1 <- (surv_left_cp && surv_right_cs && surv_s) ||
     (surv_left_cp && surv_right_cp)
-  cond2 <- 1
-  cond3 <- (surv_left_cp && surv_right_cs && surv_s)
-  cond4 <- (surv_left_cp && surv_right_cp && surv_s)
+  cond2 <- (surv_left_cp && surv_right_cs && surv_s)
+  cond3 <- (surv_left_cp && surv_right_cp && surv_s)
 
   #conditioning
-  keep_the_sim <- (cond == 0) * 1 +
+  keep_the_sim <- (cond == 0) * cond0 +
     (cond == 1) * cond1 +
     (cond == 2) * cond2 +
-    (cond == 3) * cond3 +
-    (cond == 4) * cond4
+    (cond == 3) * cond3
+  keep_the_sim
 }
 
 #' @title Extract the branching times from data
@@ -441,17 +441,21 @@ sim_get_brts <- function(
   for (clade in seq_along(data$l_1)) {
     n_0 <- l_2$n_0[clade]
     done <- 0
-    if (is.null(data$l_1[[clade]]) && done == 0) {
-      brts[clade] <- NULL
+    empty_clade <- is.null(data$l_1[[clade]]) ||
+      all(
+        data$l_1[[clade]][, 4] > 0 & data$l_1[[clade]][, 5] == 0
+      )
+    if (empty_clade && done == 0) {
+      brts[clade] <- list(NULL)
       done <- 1
     }
     if (done == 0) {
       l_0 <- sim_cut_l_matrix(
         unname(data$l_1[[clade]])
       )
+      brts[[clade]] <- sls_l_2_brts(l_0 = l_0, n_0 = n_0) # nolint internal function
+      brts[[clade]] <- unname(brts[[clade]])
     }
-    brts[[clade]] <- sls_l_2_brts(l_0 = l_0, n_0 = n_0) # nolint internal function
-    brts[[clade]] <- unname(brts[[clade]])
   }
   brts <- unname(brts)
   brts
