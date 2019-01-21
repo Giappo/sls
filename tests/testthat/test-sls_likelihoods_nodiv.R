@@ -93,8 +93,10 @@ test_that("all the likelihoods with no division yield the same result", {
   threshold <- (!is_on_ci()) * 1e-2 +
                (is_on_ci())  * 1e-3
 
+  max_seed <- (2 + 3 * is_on_ci())
+  conds <- rep(sls::sls_conds(), max_seed)
   cond <- 0; s <- 1
-  for (s in 1:(2 + 3 * is_on_ci())) {
+  for (s in 1:max_seed) {
     set.seed(s)
     t_0s    <- c(4, 1.5)
     brts_m  <- c(
@@ -115,7 +117,7 @@ test_that("all the likelihoods with no division yield the same result", {
     ) * c(2, 0.5)
     pars <- c(pars_m, pars_s)
     brts <- list(brts_m, brts_s)
-    cond   <- (cond == 0) * 1 + (cond == 1) * 0
+    cond <- conds[s]
 
     tests <- 0
     for (i in 1:(length(models) - 1)) {
