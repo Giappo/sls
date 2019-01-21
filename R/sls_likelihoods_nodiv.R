@@ -151,9 +151,36 @@ loglik_sls_q_nodiv <- function(
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
+  if (any(c(pars_m, pars_s) < 0)) {
+    return(-Inf)
+  }
+
+  if (is.list(brts)) {
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
+  }
+  if (n_max < n_min) {
+    n_max <- n_min
+  }
+
+  sls_check_input(
+    brts_m = brts_m,
+    brts_s = brts_s,
+    cond = cond,
+    n_0 = n_0,
+    n_max = n_max
+  )
+
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
   ks      <- c(Inf, Inf)
+  if (any(is.infinite(c(lambdas, mus)))) {
+    return(-Inf)
+  }
+  if (any(lambdas - mus < 0)) {
+    return(-Inf)
+  }
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
@@ -264,6 +291,10 @@ loglik_sls_q_nodiv <- function(
   )
 
   total_loglik <- sum(logliks) - log(pc)
+  total_loglik <- as.numeric(total_loglik)
+  if (is.nan(total_loglik) | is.na(total_loglik)) {
+    total_loglik <- -Inf
+  }
   return(total_loglik)
 }
 
