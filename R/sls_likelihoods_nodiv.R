@@ -15,11 +15,38 @@ loglik_sls_p_nodiv <- function(
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
+  if (any(c(pars_m, pars_s) < 0)) {
+    return(-Inf)
+  }
+
+  if (is.list(brts)) {
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
+  }
+  if (n_max < n_min) {
+    n_max <- n_min
+  }
+
+  sls_check_input(
+    brts_m = brts_m,
+    brts_s = brts_s,
+    cond = cond,
+    n_0 = n_0,
+    n_max = n_max
+  )
+
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
+  if (any(is.infinite(c(lambdas, mus)))) {
+    return(-Inf)
+  }
+  if (any(lambdas - mus < 0)) {
+    return(-Inf)
+  }
 
-  brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
-  brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
+  brts_m1 <- sort(brts_m, decreasing = TRUE)
+  brts_s1 <- sort(brts_s, decreasing = TRUE)
   t_d <- brts_s1[1]
 
   testit::assert(all(sign(brts_m1) == sign(brts_s1[1])))
@@ -39,7 +66,7 @@ loglik_sls_p_nodiv <- function(
     brts_m2 <- brts_m1
   }
   ts_m_pre_shift  <- brts_m2[brts_m2 > t_d] - t_d; ts_m_pre_shift
-  ts_m_post_shift <- brts_m2[brts_m2 < t_d]; ts_m_post_shift
+  ts_m_post_shift <- brts_m2[brts_m2 < t_d] ; ts_m_post_shift
   if (length(ts_m_post_shift) == 0) {
     ts_m_post_shift <- 0
   }
@@ -48,12 +75,12 @@ loglik_sls_p_nodiv <- function(
   }
 
   lik_m_pre_shift  <- sls::combine_pns_nodiv(
-    lambda = lambdas[1],
-    mu = mus[1],
-    times = ts_m_pre_shift,
-    tbar = t_d,
-    n_max = n_max
-  ); log(lik_m_pre_shift)
+      lambda = lambdas[1],
+      mu = mus[1],
+      times = ts_m_pre_shift,
+      tbar = t_d,
+      n_max = n_max
+    ); log(lik_m_pre_shift)
   lik_m_post_shift <- prod(
     sls::pn(
       n = 1,
@@ -68,23 +95,23 @@ loglik_sls_p_nodiv <- function(
     mu = mus[1]
   ) ^ (length(ts_m_pre_shift) - 1); log(lik_m_post_shift)
   lik_s_post_shift <- prod(
-    sls::pn(
-      n = 1,
-      lambda = lambdas[2],
-      mu = mus[2],
-      t = brts_s1
-    )
+    sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brts_s1)
   ); log(lik_s_post_shift)
   loglik_m0 <- log(lik_m_pre_shift) + log(lik_m_post_shift)
   loglik_s0 <- log(lik_s_post_shift)
 
-  logcombinatorics_m <- logcombinatorics_s <- 0 #combinatorics
-  len_m <- length(brts_m1[brts_m1 != brts_m1[1]]) #speciations in the Main clade
-  len_s <- length(brts_s1[brts_s1 != brts_s1[1]]) #speciations in the Sub clade
+  logcombinatorics_m <- logcombinatorics_s <- 0 # combinatorics
+
+  # number of speciations in the Main clade
+  l_m <- length(brts_m1[brts_m1 != brts_m1[1]])
+
+  # number of speciations in the Subclade
+  l_s <- length(brts_s1[brts_s1 != brts_s1[1]])
+
   loglik_m <- loglik_m0 +
-    logcombinatorics_m + log(lambdas[1] + (length(brts_m) == 0)) * len_m
+    logcombinatorics_m + log(lambdas[1] + (length(brts_m) == 0)) * l_m
   loglik_s <- loglik_s0 +
-    logcombinatorics_s + log(lambdas[2] + (length(brts_s) == 0)) * len_s
+    logcombinatorics_s + log(lambdas[2] + (length(brts_s) == 0)) * l_s
 
   pc <- sls::pc_1shift(
     pars_m = pars_m,
@@ -96,7 +123,14 @@ loglik_sls_p_nodiv <- function(
     n_0 = n_0
   )
 
-  loglik <- loglik_m + loglik_s - log(pc); loglik
+  loglik <- loglik_m + loglik_s - log(pc)
+  loglik <- as.numeric(unname(loglik))
+  if (is.nan(loglik) | is.na(loglik)) {
+    loglik <- -Inf
+  }
+  if (loglik == Inf) {
+   stop("infinite loglik!")
+  }
   return(loglik)
 }
 
@@ -117,9 +151,36 @@ loglik_sls_q_nodiv <- function(
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
+  if (any(c(pars_m, pars_s) < 0)) {
+    return(-Inf)
+  }
+
+  if (is.list(brts)) {
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
+  }
+  if (n_max < n_min) {
+    n_max <- n_min
+  }
+
+  sls_check_input(
+    brts_m = brts_m,
+    brts_s = brts_s,
+    cond = cond,
+    n_0 = n_0,
+    n_max = n_max
+  )
+
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
   ks      <- c(Inf, Inf)
+  if (any(is.infinite(c(lambdas, mus)))) {
+    return(-Inf)
+  }
+  if (any(lambdas - mus < 0)) {
+    return(-Inf)
+  }
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
@@ -230,6 +291,10 @@ loglik_sls_q_nodiv <- function(
   )
 
   total_loglik <- sum(logliks) - log(pc)
+  total_loglik <- as.numeric(total_loglik)
+  if (is.nan(total_loglik) | is.na(total_loglik)) {
+    total_loglik <- -Inf
+  }
   return(total_loglik)
 }
 
