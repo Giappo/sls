@@ -1,4 +1,4 @@
-context("sls_likelihooods_nee")
+context("likelihooods - nee")
 
 test_that("1 minus functions work", {
   lambda <- 0.25

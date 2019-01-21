@@ -162,6 +162,23 @@ loglik_sls_q <- function(
     return(-Inf)
   }
 
+  if (is.list(brts)) {
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
+  }
+  if (n_max < n_min) {
+    n_max <- n_min
+  }
+
+  sls_check_input(
+    brts_m = brts_m,
+    brts_s = brts_s,
+    cond = cond,
+    n_0 = n_0,
+    n_max = n_max
+  )
+
   lambdas <- c(pars_m[1], pars_s[1])
   mus     <- c(pars_m[2], pars_s[2])
   ks      <- c(Inf, Inf)
@@ -170,11 +187,6 @@ loglik_sls_q <- function(
   }
   if (any(lambdas - mus < 0)) {
     return(-Inf)
-  }
-
-  n_min <- is.list(brts) * length(brts) + (n_0 - 1) + 2 * length(unlist(brts))
-  if (n_max < n_min) {
-    n_max <- n_min
   }
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
