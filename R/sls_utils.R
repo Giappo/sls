@@ -347,7 +347,7 @@ read_results <- function(project_folder = NULL) {
       dir_results,
       files_results[as.numeric(x)]
     )
-  )
+  )[, -1]
   data <- get(load(file.path(
     dir_data,
     files_data[as.numeric(x)]
