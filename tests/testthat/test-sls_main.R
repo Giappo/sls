@@ -17,7 +17,7 @@ test_that("use", {
   n_0 <- l_2$n_0[1]
   t_0s <- l_2$birth_time
   optim_ids <- c(TRUE, TRUE, TRUE, TRUE)
-  seed_interval <- 6:(6 + 5 * is_on_ci())
+  seed_interval <- 6:(6 + 5 * is_on_ci()); seed <- seed_interval[1]
   for (seed in seed_interval) {
     # seed = 6 is critical!
     test <- sls_main(
@@ -234,6 +234,72 @@ test_that("use", {
     test
   )
   suppressWarnings(file.remove(results_file_name))
+})
+
+test_that("it saves only once", {
+
+  if (!is_on_ci()) {
+    testthat::expect_equal(1, 1)
+  } else {
+    seed <- 1
+    sim_pars <- c(0.27, 0.15, 0.5, 0.1)
+    cond <- 3
+    crown_age <- 2.5
+    shift_time <- 1.8
+    project_folder <- tempdir()
+    results_folder <- file.path(
+      project_folder,
+      "results"
+    )
+
+    fn <- create_results_file_name(
+      results_folder = results_folder,
+      sim_pars = sim_pars,
+      optim_ids = rep(TRUE, length(sim_pars)),
+      cond = cond,
+      n_0 = 2,
+      t_0s = c(crown_age, shift_time),
+      seed = seed
+    ); fn
+
+    test_p <- sls_main(
+      seed = seed,
+      sim_pars = sim_pars,
+      cond = cond,
+      start_pars = sim_pars,
+      loglik_functions = loglik_sls_p,
+      l_2 = sim_get_standard_l_2(
+        crown_age = crown_age,
+        shift_time = shift_time
+      ),
+      verbose = FALSE,
+      project_folder = project_folder
+    )
+    x <- read.csv(
+      file = fn
+    )[, -1]
+
+    test_p2 <- sls_main(
+      seed = seed,
+      sim_pars = sim_pars,
+      cond = cond,
+      start_pars = sim_pars,
+      loglik_functions = loglik_sls_p,
+      l_2 = sim_get_standard_l_2(
+        crown_age = crown_age,
+        shift_time = shift_time
+      ),
+      verbose = FALSE,
+      project_folder = project_folder
+    )
+    y <- read.csv(
+      file = fn
+    )[, -1]
+
+    testthat::expect_equal(
+      x, y
+    )
+  }
 })
 
 test_that("it works also for a subset of parameters", {
