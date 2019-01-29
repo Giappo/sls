@@ -62,6 +62,12 @@ sls_main <- function(
   }
 
   # maximum likelihood
+  mle <- data.frame(matrix(
+    NA,
+    nrow = length(loglik_functions),
+    # ncol must be length pars + (loglik, df, conv)
+    ncol = length(start_pars) + 3
+  ))
   for (m in seq_along(loglik_functions)) {
     if (verbose == FALSE) {
       if (rappdirs::app_dir()$os != "win") {
@@ -70,7 +76,7 @@ sls_main <- function(
         sink(rappdirs::user_cache_dir())
       }
     }
-    mle <- sls_ml(
+    mle_out <- sls_ml(
       loglik_function = get(function_names[m]),
       brts = brts,
       cond = cond,
@@ -80,6 +86,8 @@ sls_main <- function(
       true_pars = sim_pars,
       verbose = verbose
     )
+    mle[m, ] <- mle_out
+    colnames(mle) <- names(mle_out)
     if (verbose == FALSE) {
       sink()
     }
