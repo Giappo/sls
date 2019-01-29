@@ -387,7 +387,9 @@ test_that("it works also for a subset of parameters", {
 test_that("from different likelihoods, different results", {
 
   skip("This is long")
-  if (!is_on_ci()) {skip("This test should run only on ci")}
+  if (!is_on_ci()) {
+    skip("This test should run only on ci")
+  }
 
   seed <- 5
   sim_pars <- c(0.4, 0.2, 0.6, 0.15)
