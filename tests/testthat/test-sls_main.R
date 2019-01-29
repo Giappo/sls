@@ -394,7 +394,10 @@ test_that("from different likelihoods different results", {
   cond <- 2
   crown_age  <- 10
   shift_time <- 6
-  l_2 <- sls::sim_get_standard_l_2(crown_age = crown_age , shift_time = shift_time)
+  l_2 <- sls::sim_get_standard_l_2(
+    crown_age = crown_age,
+    shift_time = shift_time
+  )
 
   # test p-equation
   test <- sls_main(
