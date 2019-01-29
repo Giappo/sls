@@ -8,7 +8,7 @@ main_save_files(project_folder, sim_pars, optim_ids, cond, n_0, t_0s, seed,
   sim, results)
 }
 \arguments{
-\item{project_folder}{the folder when you want to save data and results}
+\item{project_folder}{the folder where you want to save data and results}
 
 \item{sim_pars}{parameters of the simulation}
 

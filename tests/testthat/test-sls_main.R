@@ -384,6 +384,44 @@ test_that("it works also for a subset of parameters", {
   suppressWarnings(file.remove(results_file_name))
 })
 
+test_that("from different likelihoods different results", {
+
+  skip("This is long")
+  if (!is_on_ci()) {skip("This test should run only on ci")}
+
+  seed <- 5
+  sim_pars <- c(0.4, 0.2, 0.6, 0.15)
+  cond <- 2
+  crown_age  <- 10
+  shift_time <- 6
+  l_2 <- sls::sim_get_standard_l_2(crown_age = crown_age , shift_time = shift_time)
+
+  # test p-equation
+  test <- sls_main(
+    seed = seed,
+    sim_pars = sim_pars,
+    cond = cond,
+    start_pars = sim_pars,
+    loglik_functions = c(
+      loglik_sls_p,
+      loglik_sls_p_nodiv,
+      loglik_sls_q,
+      loglik_sls_q_nodiv
+      ),
+    l_2 = l_2,
+    verbose = TRUE
+  )
+
+  testthat::expect_true(
+    length(unique(unlist(
+      test[, (length(sim_pars) + 1):(length(sim_pars) + 2)]
+    ))) ==
+      length(unlist(
+        test[, (length(sim_pars) + 1):(length(sim_pars) + 2)]
+      ))
+  )
+})
+
 test_that("abuse", {
   seed <- 1
   sim_pars <- c(0.3, 0.2, 0.6, 0.1)

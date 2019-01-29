@@ -80,7 +80,7 @@
 #' @param pars_clade parameters for a single clade
 #' @param pars_transformed parameters of the likelihood functions, transformed
 #' according to y = x / (1 + x)
-#' @param project_folder the folder when you want to save data and results
+#' @param project_folder the folder where you want to save data and results
 #' @param results mle results
 #' @param results_folder The results folder insider the project folder.
 #' @param seed the seed
