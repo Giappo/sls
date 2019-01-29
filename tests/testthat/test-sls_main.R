@@ -384,7 +384,7 @@ test_that("it works also for a subset of parameters", {
   suppressWarnings(file.remove(results_file_name))
 })
 
-test_that("from different likelihoods different results", {
+test_that("from different likelihoods, different results", {
 
   skip("This is long")
   if (!is_on_ci()) {skip("This test should run only on ci")}
