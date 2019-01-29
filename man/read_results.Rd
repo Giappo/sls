@@ -7,7 +7,7 @@
 read_results(project_folder = NULL)
 }
 \arguments{
-\item{project_folder}{the folder when you want to save data and results}
+\item{project_folder}{the folder where you want to save data and results}
 }
 \value{
 results

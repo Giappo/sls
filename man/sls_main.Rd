@@ -35,7 +35,7 @@ maximum}
 
 \item{loglik_functions}{the loglik_functions you want to use}
 
-\item{project_folder}{the folder when you want to save data and results}
+\item{project_folder}{the folder where you want to save data and results}
 
 \item{verbose}{set it to TRUE if you want to see the outputs on screen}
 }

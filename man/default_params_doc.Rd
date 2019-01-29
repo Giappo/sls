@@ -156,7 +156,7 @@ in the likelihood}
 \item{pars_transformed}{parameters of the likelihood functions, transformed
 according to y = x / (1 + x)}
 
-\item{project_folder}{the folder when you want to save data and results}
+\item{project_folder}{the folder where you want to save data and results}
 
 \item{results}{mle results}
 
