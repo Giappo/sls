@@ -239,7 +239,7 @@ test_that("use", {
 test_that("it saves only once", {
 
   if (!is_on_ci()) {
-    testthat::expect_equal(1, 1)
+    skip("This only runs on CI")
   } else {
     seed <- 1
     sim_pars <- c(0.27, 0.15, 0.5, 0.1)

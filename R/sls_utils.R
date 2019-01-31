@@ -332,30 +332,19 @@ read_results <- function(project_folder = NULL) {
     stop(paste0(project_folder, " is empty."))
   }
   dir_results <- file.path(project_folder, "results")
-  dir_data <- file.path(project_folder, "data")
-
   files_results <- list.files(dir_results)
   if (length(files_results) == 0) {
     stop(paste0(dir_results, " is empty."))
   }
-  files_data <- list.files(dir_data)
-  print("Saved results are:")
-  print(files_results)
-  x <- readline("Which one do you want to read?")
-  result <- utils::read.csv(
-    file.path(
-      dir_results,
-      files_results[as.numeric(x)]
-    )
-  )[, -1]
-  data <- get(load(file.path(
-    dir_data,
-    files_data[as.numeric(x)]
-  )))
-  return(
-    list(
-      data = data,
-      result = result
-    )
-  )
+  all_results <- data.frame()
+  for (file_results in files_results) {
+    x <- read.csv(
+      file.path(
+        dir_results,
+        file_results
+      )
+    )[, -1]
+    all_results <- rbind(all_results, x)
+  }
+  return(all_results)
 }
