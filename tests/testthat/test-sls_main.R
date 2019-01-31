@@ -275,7 +275,7 @@ test_that("it saves only once", {
       verbose = FALSE,
       project_folder = project_folder
     )
-    x <- read.csv(
+    x <- utils::read.csv(
       file = fn
     )[, -1]
 
@@ -292,7 +292,7 @@ test_that("it saves only once", {
       verbose = FALSE,
       project_folder = project_folder
     )
-    y <- read.csv(
+    y <- utils::read.csv(
       file = fn
     )[, -1]
 

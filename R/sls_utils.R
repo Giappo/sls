@@ -338,7 +338,7 @@ read_results <- function(project_folder = NULL) {
   }
   all_results <- data.frame()
   for (file_results in files_results) {
-    x <- read.csv(
+    x <- utils::read.csv(
       file.path(
         dir_results,
         file_results
