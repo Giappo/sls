@@ -306,4 +306,3 @@ test_that("read_results", {
     test
   )
 })
-
