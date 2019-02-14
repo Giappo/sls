@@ -312,39 +312,3 @@ get_model_names <- function(
   }
   model_names
 }
-
-#' @title Read saved results
-#' @author Giovanni Laudanno
-#' @description Read saved results
-#' @inheritParams default_params_doc
-#' @return results
-#' @export
-read_results <- function(project_folder = NULL) {
-  if (is.null(project_folder)) {
-    if (.Platform$OS.type == "windows") {
-      project_folder <- system.file("extdata", package = get_pkg_name())
-    }
-  }
-  if (!dir.exists(project_folder)) {
-    stop("This directory does not exist")
-  }
-  if (length(list.files(project_folder)) == 0) {
-    stop(paste0(project_folder, " is empty."))
-  }
-  dir_results <- file.path(project_folder, "results")
-  files_results <- list.files(dir_results)
-  if (length(files_results) == 0) {
-    stop(paste0(dir_results, " is empty."))
-  }
-  all_results <- data.frame()
-  for (file_results in files_results) {
-    x <- utils::read.csv(
-      file.path(
-        dir_results,
-        file_results
-      )
-    )[, -1]
-    all_results <- rbind(all_results, x)
-  }
-  return(all_results)
-}

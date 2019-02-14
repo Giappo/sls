@@ -5,7 +5,7 @@ test_that("1 minus functions work", {
   mu <- 0.1
   t <- 6
   expect_equal(
-    1 - sls::pt(t = t, lambda = lambda, mu = mu),
+    1 - sls::p_t(t = t, lambda = lambda, mu = mu),
     sls::one_minus_pt(t = t, lambda = lambda, mu = mu)
   )
   expect_equal(
@@ -17,7 +17,7 @@ test_that("1 minus functions work", {
   mu <- 0.25
   t <- 7
   expect_equal(
-    1 - sls::pt(t = t, lambda = lambda, mu = mu),
+    1 - sls::p_t(t = t, lambda = lambda, mu = mu),
     sls::one_minus_pt(t = t, lambda = lambda, mu = mu)
   )
   expect_equal(
