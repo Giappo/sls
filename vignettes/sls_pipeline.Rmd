@@ -16,32 +16,10 @@ Legenda:
 This is the pipeline to follow for the sls project. 
 The aim of the project is to correctly estimate the likelihood for a process with a rate shift occurring on a single lineage at a given time.
 
-## Folder structure
-
-
-Filename|Description|Created by
--------------|---------------------------------------|--------------------------
-
-Update our dependencies:
-
-```{r message=FALSE}
-if (1 == 2) {
-
-}
-```
-
 Load the library:
 
 ```{r}
 library(sls, quietly = TRUE)
-```
-
-We will work in this folder:
-
-```{r}
-super_folder_name <- tempdir()
-project_folder_name <- file.path(super_folder_name, "razzo_project") 
-dir.create(path = project_folder_name, recursive = TRUE)
 ```
 
 ## Step 1: Simulations
@@ -52,8 +30,10 @@ First we simulate the process
 lambdas <- c(0.3, 0.6)
 mus <- c(0.2, 0.1)
 cond <- 3
+seed <- 42
+sim_pars <- c(lambdas[1], mus[1], lambdas[2], mus[2])
 l_2 <- sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2)
-set.seed(1)
+set.seed(seed)
 sim <- sls::sls_sim(
   lambdas = lambdas, 
   mus = mus, 
@@ -104,4 +84,69 @@ loglik <- sls::loglik_sls_q(
   cond = cond
 )
 loglik
+```
+
+The idea of the project is to provide a correct likelihood as opposed to the ones currently available to solve these kind of problems, namely calculating the likelihood for a tree where a rate shift occurs on a specific lineage at some point in time.
+You can verify that the likelihood functions provided by older methods do actually yield different values for the same tree.
+
+```{r}
+# Nee et al.
+loglik <- sls::loglik_sls_q_nodiv(
+  pars = pars,
+  brts = brts,
+  cond = cond
+)
+loglik
+
+# Bisse
+loglik <- sls::loglik_bisse_shift(
+  pars = pars,
+  brts = brts,
+  cond = cond
+)
+loglik
+
+# DDD
+loglik <- sls::loglik_ddd(
+  pars = pars,
+  brts = brts,
+  cond = cond
+)
+loglik
+```
+
+## Step 3: maximizing the likelihood
+
+The final goal is to illustrate how the new likelihood can improve the parameter inference using maximum likelihood
+
+```{r}
+# This might take some time to run
+if (1 == 2) {
+  mle <- sls::sls_ml(
+    loglik_function = loglik_sls_p,
+    brts = brts,
+    cond = cond,
+    verbose = FALSE
+  )
+  mle
+}
+```
+
+## Step 4: simplifying the process
+
+The entire routine can be easily executed using the function sls_main. This function can accommodate for the use of multiple likelihood functions. For example here we can directly compare the old Nee likelihood with the new sls one.
+
+```{r}
+# This might take some time to run
+if (1 == 2) {
+  mle <- sls::sls_main(
+    sim_pars = sim_pars,
+    l_2 = l_2,
+    seed = seed, 
+    loglik_functions = c(loglik_sls_p, loglik_sls_p_nodiv),
+    cond = cond,
+    verbose = FALSE
+  )
+  mle
+}
 ```

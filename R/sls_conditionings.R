@@ -27,7 +27,7 @@ pc_1shift <- function(
     stop("Pc can be calculated only if phylogeny starts with a crown!")
   }
 
-  p_s <- sls::pt(
+  p_s <- sls::p_t(
     t = bb,
     lambda = lambdas[2],
     mu = mus[2]
@@ -36,11 +36,11 @@ pc_1shift <- function(
   nvec <- 1:n_max
   ns1  <- row(matrix(NA, nrow = n_max, ncol = n_max))
   ns2  <- col(matrix(NA, nrow = n_max, ncol = n_max))
-  p_a   <- sls::pt(t = aa, lambda = lambdas[1], mu = mus[1]); p_a
+  p_a   <- sls::p_t(t = aa, lambda = lambdas[1], mu = mus[1]); p_a
   u_a   <- sls::ut(t = aa, lambda = lambdas[1], mu = mus[1]); u_a
-  p_b1  <- sls::pt(t = bb, lambda = lambdas[1], mu = mus[1]); p_b1
+  p_b1  <- sls::p_t(t = bb, lambda = lambdas[1], mu = mus[1]); p_b1
   one_minus_p_b1  <- sls::one_minus_pt(t = bb, lambda = lambdas[1], mu = mus[1])
-  p_b2  <- sls::pt(t = bb, lambda = lambdas[2], mu = mus[2]); p_b2
+  p_b2  <- sls::p_t(t = bb, lambda = lambdas[2], mu = mus[2]); p_b2
   p_ns1 <- sls::pn(n = ns1, t = aa, lambda = lambdas[1], mu = mus[1])
   rownames(p_ns1) <- paste0("ns1=", nvec)
   colnames(p_ns1) <- paste0("ns2=", nvec)

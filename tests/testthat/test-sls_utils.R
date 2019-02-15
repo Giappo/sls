@@ -1,5 +1,11 @@
 context("sls_utils")
 
+is_on_ci <- function() {
+  is_it_on_appveyor <- Sys.getenv("APPVEYOR") != ""
+  is_it_on_travis <- Sys.getenv("TRAVIS") != ""
+  is_it_on_appveyor || is_it_on_travis # nolint internal function
+}
+
 test_that("p_transition_matrix", {
   lambda <- 0.5
   mu <- 0.1

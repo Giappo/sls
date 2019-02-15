@@ -305,30 +305,3 @@ loglik_sls_q <- function(
   }
   return(total_loglik)
 }
-
-#' #' @title P-likelihood
-#' #' @author Giovanni Laudanno
-#' #' @description Calculates the likelihood convoluting Nee's functions
-#' #' @inheritParams default_params_doc
-#' #' @return The likelihood
-#' #' @export
-#' loglik_sls_pbeta <- function(
-#'   pars_m,
-#'   pars_s,
-#'   brts_m,
-#'   brts_s,
-#'   cond,
-#'   n_0 = 2,
-#'   n_max = 1e2
-#' ) {
-#'   alpha <- function(lambda, mu, brts_m, brts_s) {
-#'     A <- brts_m[1] - brts_s[1]
-#'     out <- sls::pt(lambda = lambda, mu = mu, t = A) *
-#'       (1 - sls::ut(lambda = lambda, mu = mu, t = A))
-#'   }
-#'   beta <- function(lambda, mu, brts_m, brts_s) {
-#'     A <- brts_m[1] - brts_s[1]
-#'     out <- sls::ut(lambda = lambda, mu = mu, t = A) *
-#'       (1 - sls::pt(lambda = lambda, mu = mu, t = B))
-#'   }
-#' }
