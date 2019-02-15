@@ -4,7 +4,7 @@
 #' @inheritParams default_params_doc
 #' @return pt
 #' @export
-pt  <- function(lambda, mu, t) {
+p_t  <- function(lambda, mu, t) {
   time <- t
   exp_term <- exp(
     (mu - lambda) * time
@@ -81,7 +81,7 @@ one_minus_ut  <- function(lambda, mu, t) {
 #' @return pn
 #' @export
 pn <- function(lambda, mu, t, n) {
-  out <- (n > 0) * sls::pt(t = t, lambda = lambda, mu = mu) *
+  out <- (n > 0) * sls::p_t(t = t, lambda = lambda, mu = mu) *
     sls::one_minus_ut(t = t, lambda = lambda, mu = mu) *
     sls::ut(t = t, lambda = lambda, mu = mu) ^ (n - 1 + 2 * (n == 0)) +
     (n == 0) * (sls::one_minus_pt(t = t, lambda = lambda, mu = mu))
@@ -90,12 +90,13 @@ pn <- function(lambda, mu, t, n) {
 
 #' @title Pn accounting for extinctions after the shifts
 #' @author Giovanni Laudanno
-#' @description Combine pn from Nee et al. and imposes the extinction before the present of all species not visible in the phylogeny
+#' @description Combine pn from Nee et al. and imposes the extinction
+#'  before the present of all species not visible in the phylogeny
 #' @inheritParams default_params_doc
 #' @return pn times probability of extinction for n-1 species after the shift
 #' @export
 pn_bar <- function(lambda, mu, t, n, tbar = 0) {
-  out <- (n > 0) * sls::pt(t = t, lambda = lambda, mu = mu) *
+  out <- (n > 0) * sls::p_t(t = t, lambda = lambda, mu = mu) *
     (sls::one_minus_ut(t = t, lambda = lambda, mu = mu)) *
     n *
     sls::ut(t = t, lambda = lambda, mu = mu) ^ (n - 1) *

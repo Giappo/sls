@@ -1,7 +1,8 @@
 #---- package specific functions
 #' @title Transition matrix builder
 #' @author Giovanni Laudanno
-#' @description Builds the transition matrix to integrate the differential equations of the P-equation
+#' @description Builds the transition matrix to integrate
+#'  the differential equations of the P-equation
 #' @inheritParams default_params_doc
 #' @return The transition matrix
 #' @export
@@ -311,51 +312,4 @@ get_model_names <- function(
     cat("You are using the functions:", model_names)
   }
   model_names
-}
-
-#' @title Read saved results
-#' @author Giovanni Laudanno
-#' @description Read saved results
-#' @inheritParams default_params_doc
-#' @return results
-#' @export
-read_results <- function(project_folder = NULL) {
-  if (is.null(project_folder)) {
-    if (.Platform$OS.type == "windows") {
-      project_folder <- system.file("extdata", package = get_pkg_name())
-    }
-  }
-  if (!dir.exists(project_folder)) {
-    stop("This directory does not exist")
-  }
-  if (length(list.files(project_folder)) == 0) {
-    stop(paste0(project_folder, " is empty."))
-  }
-  dir_results <- file.path(project_folder, "results")
-  dir_data <- file.path(project_folder, "data")
-
-  files_results <- list.files(dir_results)
-  if (length(files_results) == 0) {
-    stop(paste0(dir_results, " is empty."))
-  }
-  files_data <- list.files(dir_data)
-  print("Saved results are:")
-  print(files_results)
-  x <- readline("Which one do you want to read?")
-  result <- utils::read.csv(
-    file.path(
-      dir_results,
-      files_results[as.numeric(x)]
-    )
-  )[, -1]
-  data <- get(load(file.path(
-    dir_data,
-    files_data[as.numeric(x)]
-  )))
-  return(
-    list(
-      data = data,
-      result = result
-    )
-  )
 }
