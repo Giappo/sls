@@ -270,39 +270,3 @@ test_that("print_info", {
     )
   )
 })
-
-test_that("read_results", {
-
-  if (!is_on_ci()) {
-    skip("This only runs on CI")
-  }
-
-  seed <- 101
-  sim_pars <- c(0.4, 0.2, 0.6, 0.15)
-  cond <- 2
-  crown_age  <- 10
-  shift_time <- 6
-  l_2 <- sls::sim_get_standard_l_2(
-    crown_age = crown_age,
-    shift_time = shift_time
-  )
-  project_folder <- tempdir()
-  dir.create(path = project_folder, showWarnings = FALSE)
-  loglik_functions <- loglik_sls_p
-
-  test <- sls_main(
-    seed = seed,
-    sim_pars = sim_pars,
-    cond = cond,
-    start_pars = sim_pars,
-    loglik_functions = loglik_functions,
-    l_2 = l_2,
-    verbose = FALSE,
-    project_folder = project_folder
-  )
-
-  testthat::expect_equal(
-    read_results(project_folder = project_folder),
-    test
-  )
-})
