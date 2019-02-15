@@ -90,7 +90,8 @@ pn <- function(lambda, mu, t, n) {
 
 #' @title Pn accounting for extinctions after the shifts
 #' @author Giovanni Laudanno
-#' @description Combine pn from Nee et al. and imposes the extinction before the present of all species not visible in the phylogeny
+#' @description Combine pn from Nee et al. and imposes the extinction
+#'  before the present of all species not visible in the phylogeny
 #' @inheritParams default_params_doc
 #' @return pn times probability of extinction for n-1 species after the shift
 #' @export

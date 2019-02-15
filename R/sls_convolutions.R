@@ -52,7 +52,9 @@ idft <- function(vec) {
 
 #' @title Combine pn
 #' @author Giovanni Laudanno
-#' @description Convolutes all the processes before the shift and imposes the death before the present of all species that are not visible in the phylogeny
+#' @description Convolutes all the processes before the shift and
+#'  imposes the death before the present of all species that
+#'  are not visible in the phylogeny
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
 #' @export
@@ -130,7 +132,10 @@ combine_pns0 <- function(
 
 #' @title Combine pn in the old wrong way
 #' @author Giovanni Laudanno
-#' @description Convolutes all the processes before the shift and imposes the death before the present of all species that are not visible in the phylogeny. It doesn't divide by N. Used to check on old models.
+#' @description Convolutes all the processes before the shift and
+#'  imposes the death before the present of all species that
+#'  are not visible in the phylogeny.
+#'  It doesn't divide by N. Used to check on old models.
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
 #' @export
