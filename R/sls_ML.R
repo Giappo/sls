@@ -9,9 +9,9 @@ sls_ml <- function(
   start_pars = c(0.5, 0.3, 0.5, 0.3),
   n_0 = 2,
   cond = 3,
-  verbose = TRUE,
   optim_ids = rep(TRUE, length(start_pars)),
-  true_pars = start_pars
+  true_pars = start_pars,
+  verbose = TRUE
 ) {
   # setup and checks
   par_names <- get_param_names() # nolint internal function

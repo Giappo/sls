@@ -1,7 +1,8 @@
 #---- package specific functions
 #' @title Transition matrix builder
 #' @author Giovanni Laudanno
-#' @description Builds the transition matrix to integrate the differential equations of the P-equation
+#' @description Builds the transition matrix to integrate
+#'  the differential equations of the P-equation
 #' @inheritParams default_params_doc
 #' @return The transition matrix
 #' @export

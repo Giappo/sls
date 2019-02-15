@@ -1,6 +1,7 @@
 #' @title P-likelihood (with no division)
 #' @author Giovanni Laudanno
-#' @description Calculates the likelihood convoluting Nee's functions. There is no division. It should yield the same likelihood as DDD.
+#' @description Calculates the likelihood convoluting Nee's functions.
+#'  There is no division. It should yield the same likelihood as DDD.
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
@@ -136,7 +137,8 @@ loglik_sls_p_nodiv <- function(
 
 #' @title Q-likelihood
 #' @author Giovanni Laudanno
-#' @description Calculates the likelihood integrating the Q-equation. There is no division.
+#' @description Calculates the likelihood integrating the Q-equation.
+#'  There is no division term.
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
@@ -300,7 +302,8 @@ loglik_sls_q_nodiv <- function(
 
 #' @title DDD-likelihood
 #' @author Giovanni Laudanno
-#' @description Calculates the likelihood calling the routine from the DDD package
+#' @description Calculates the likelihood calling the routine from
+#'  the DDD package
 #' @inheritParams default_params_doc
 #' @return The likelihood
 #' @export
@@ -398,7 +401,8 @@ loglik_bisse_shift <- function(
 
 #' @title BISSE loglik shift
 #' @author Giovanni Laudanno
-#' @description Provides BISSE loglik shift function (alternative version). Yields the old (wrong) BISSE result for the Main Clade only.
+#' @description Provides BISSE loglik shift function (alternative version).
+#'  Yields the old (wrong) BISSE result for the Main Clade only.
 #' @inheritParams default_params_doc
 #' @return loglik
 #' @export
