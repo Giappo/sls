@@ -5,8 +5,8 @@
 \title{sls Maximum Likelihood}
 \usage{
 sls_ml(loglik_function = sls::loglik_sls_p, brts, start_pars = c(0.5,
-  0.3, 0.5, 0.3), n_0 = 2, cond = 3, verbose = TRUE,
-  optim_ids = rep(TRUE, length(start_pars)), true_pars = start_pars)
+  0.3, 0.5, 0.3), n_0 = 2, cond = 3, optim_ids = rep(TRUE,
+  length(start_pars)), true_pars = start_pars, verbose = TRUE)
 }
 \arguments{
 \item{loglik_function}{the loglik function you want to use}
@@ -28,11 +28,11 @@ maximum}
   both crown descendents in the main clade;
 }}
 
-\item{verbose}{set it to TRUE if you want to see the outputs on screen}
-
 \item{optim_ids}{ids of the parameters you want to optimize.}
 
 \item{true_pars}{true parameter values when running the ml process.}
+
+\item{verbose}{set it to TRUE if you want to see the outputs on screen}
 }
 \value{
 best parameters

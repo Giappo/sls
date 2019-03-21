@@ -21,7 +21,8 @@ pn_bar(lambda, mu, t, n, tbar = 0)
 pn times probability of extinction for n-1 species after the shift
 }
 \description{
-Combine pn from Nee et al. and imposes the extinction before the present of all species not visible in the phylogeny
+Combine pn from Nee et al. and imposes the extinction
+ before the present of all species not visible in the phylogeny
 }
 \author{
 Giovanni Laudanno
