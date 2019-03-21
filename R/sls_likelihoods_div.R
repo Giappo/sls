@@ -237,7 +237,7 @@ loglik_sls_q <- function(
       if (lambda == 0 && mu == 0) {
         q_t[t, ] <- q_t[(t - 1), ]
       } else {
-        transition_matrix <- DDD::dd_loglik_M_aux(
+        transition_matrix <- DDD:::dd_loglik_M_aux(
           pars = c(lambda, mu, kappa),
           lx = n_max + 1,
           k = k,
