@@ -23,7 +23,9 @@ combine_pns(lambda, mu, times, tbar, n_max = 100, fun = sls::pn_bar)
 Convolution of the probabilities for all the processes
 }
 \description{
-Convolutes all the processes before the shift and imposes the death before the present of all species that are not visible in the phylogeny
+Convolutes all the processes before the shift and
+ imposes the death before the present of all species that
+ are not visible in the phylogeny
 }
 \author{
 Giovanni Laudanno

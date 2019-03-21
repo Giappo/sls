@@ -35,7 +35,8 @@ loglik_sls_q_nodiv(pars, brts, cond, n_0 = 2, n_max = 100)
 The likelihood
 }
 \description{
-Calculates the likelihood integrating the Q-equation. There is no division.
+Calculates the likelihood integrating the Q-equation.
+ There is no division term.
 }
 \author{
 Giovanni Laudanno

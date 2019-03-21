@@ -35,7 +35,8 @@ loglik_ddd(pars, brts, cond, n_0 = 2, n_max = 100)
 The likelihood
 }
 \description{
-Calculates the likelihood calling the routine from the DDD package
+Calculates the likelihood calling the routine from
+ the DDD package
 }
 \author{
 Giovanni Laudanno

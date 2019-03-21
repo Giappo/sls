@@ -17,7 +17,8 @@ p_transition_matrix(lambda, mu, matrix_size)
 The transition matrix
 }
 \description{
-Builds the transition matrix to integrate the differential equations of the P-equation
+Builds the transition matrix to integrate
+ the differential equations of the P-equation
 }
 \author{
 Giovanni Laudanno
