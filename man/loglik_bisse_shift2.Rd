@@ -33,7 +33,8 @@ in the likelihood}
 loglik
 }
 \description{
-Provides BISSE loglik shift function (alternative version). Yields the old (wrong) BISSE result for the Main Clade only.
+Provides BISSE loglik shift function (alternative version).
+ Yields the old (wrong) BISSE result for the Main Clade only.
 }
 \author{
 Giovanni Laudanno

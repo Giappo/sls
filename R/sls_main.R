@@ -70,11 +70,7 @@ sls_main <- function(
   ))
   for (m in seq_along(loglik_functions)) {
     if (verbose == FALSE) {
-      if (rappdirs::app_dir()$os != "win") {
-        sink(file.path(rappdirs::user_cache_dir(), "ddd"))
-      } else {
-        sink(rappdirs::user_cache_dir())
-      }
+      sink(rappdirs::user_cache_dir())
     }
     mle_out <- sls_ml(
       loglik_function = get(function_names[m]),

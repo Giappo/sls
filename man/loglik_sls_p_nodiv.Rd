@@ -35,7 +35,8 @@ loglik_sls_p_nodiv(pars, brts, cond, n_0 = 2, n_max = 100)
 The likelihood
 }
 \description{
-Calculates the likelihood convoluting Nee's functions. There is no division. It should yield the same likelihood as DDD.
+Calculates the likelihood convoluting Nee's functions.
+ There is no division. It should yield the same likelihood as DDD.
 }
 \author{
 Giovanni Laudanno
