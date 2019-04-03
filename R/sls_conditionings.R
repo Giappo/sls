@@ -18,10 +18,10 @@ pc_1shift <- function(
 
   brts_m1 <- sort(abs(brts_m), decreasing = TRUE)
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
-  t_d <- brts_s1[1]
+  t_s <- brts_s1[1]
   t_c <- brts_m1[1]
   t_p <- 0
-  aa <- abs(t_d - t_c); bb <- abs(t_p - t_d)
+  aa <- abs(t_s - t_c); bb <- abs(t_p - t_s)
 
   if (n_0 != 2) {
     stop("Pc can be calculated only if phylogeny starts with a crown!")
@@ -33,28 +33,37 @@ pc_1shift <- function(
     mu = mus[2]
   )
 
-  nvec <- 1:n_max
-  ns1  <- row(matrix(NA, nrow = n_max, ncol = n_max))
-  ns2  <- col(matrix(NA, nrow = n_max, ncol = n_max))
-  p_a   <- sls::p_t(t = aa, lambda = lambdas[1], mu = mus[1]); p_a
-  u_a   <- sls::ut(t = aa, lambda = lambdas[1], mu = mus[1]); u_a
-  p_b1  <- sls::p_t(t = bb, lambda = lambdas[1], mu = mus[1]); p_b1
-  one_minus_p_b1  <- sls::one_minus_pt(t = bb, lambda = lambdas[1], mu = mus[1])
-  p_b2  <- sls::p_t(t = bb, lambda = lambdas[2], mu = mus[2]); p_b2
-  p_ns1 <- sls::pn(n = ns1, t = aa, lambda = lambdas[1], mu = mus[1])
-  rownames(p_ns1) <- paste0("ns1=", nvec)
-  colnames(p_ns1) <- paste0("ns2=", nvec)
-  p_ns2 <- sls::pn(n = ns2, t = aa, lambda = lambdas[1], mu = mus[1])
-  rownames(p_ns2) <- paste0("ns1=", nvec)
-  colnames(p_ns2) <- paste0("ns2=", nvec)
-  aux1 <- p_ns1 * p_ns2 * (ns1 / (ns1 + ns2)) * (1 - (one_minus_p_b1) ^ ns2)
-  p_1   <- sum(aux1) #branch 2 survives till the present
-  aux2 <- aux1 * (1 - (one_minus_p_b1) ^ (ns1 - 1))
-  p_2   <- sum(aux2) #both branches 1 and 2 survive till the present
+  # the shift happens on the right (r) branch
+  # legend: r = right; l = left
+  # legend: c = crown; s = shift; p = present
+  # legend: a = t_s - t_c; b = t_p - t_s
+  # legend: ns = number of species at the shift point
+  # legend: n_l = ns for left branch; n_r = ns for right branch;
 
-  pc_1  <- 2 * p_s * p_1 + 2 * (1 - p_s) * p_2
-  pc_2  <- 2 * p_s * p_1
-  pc_3  <- 2 * p_s * p_2
+  nvec <- 1:n_max
+  n_r  <- row(matrix(NA, nrow = n_max, ncol = n_max))
+  n_l  <- col(matrix(NA, nrow = n_max, ncol = n_max))
+  p_a_1   <- sls::p_t(t = aa, lambda = lambdas[1], mu = mus[1]); p_a_1
+  u_a_1   <- sls::ut(t = aa, lambda = lambdas[1], mu = mus[1]); u_a_1
+  p_b_1  <- sls::p_t(t = bb, lambda = lambdas[1], mu = mus[1]); p_b_1
+  one_minus_p_b_1  <-
+    sls::one_minus_pt(t = bb, lambda = lambdas[1], mu = mus[1])
+  p_b_2  <- sls::p_t(t = bb, lambda = lambdas[2], mu = mus[2]); p_b_2
+  p_n_r <- sls::pn(n = n_r, t = aa, lambda = lambdas[1], mu = mus[1])
+  rownames(p_n_r) <- paste0("n_r=", nvec)
+  colnames(p_n_r) <- paste0("n_l=", nvec)
+  p_n_l <- sls::pn(n = n_l, t = aa, lambda = lambdas[1], mu = mus[1])
+  rownames(p_n_l) <- paste0("n_r=", nvec)
+  colnames(p_n_l) <- paste0("n_l=", nvec)
+  p_r_cs_l_cp <-
+    p_n_r * p_n_l * (n_r / (n_r + n_l)) * (1 - (one_minus_p_b_1) ^ n_l)
+  p_l   <- sum(p_r_cs_l_cp) # branch 2 survives till the present
+  p_r_cp_l_cp <- p_r_cs_l_cp * (1 - (one_minus_p_b_1) ^ (n_r - 1))
+  p_rl   <- sum(p_r_cp_l_cp) # both branches 1 and 2 survive till the present
+
+  pc_1  <- 2 * p_s * p_l + 2 * (1 - p_s) * p_rl
+  pc_2  <- 2 * p_s * p_l
+  pc_3  <- 2 * p_s * p_rl
 
   pc <- (cond == 0) * 1 +
     (cond == 1) * pc_1 +
