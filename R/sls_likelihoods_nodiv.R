@@ -75,7 +75,7 @@ loglik_sls_p_nodiv <- function(
     cat("There are no branching times before the shift"); return(-Inf)
   }
 
-  lik_m_pre_shift  <- sls::combine_pns_nodiv(
+  lik_m_pre_shift <- sls::combine_pns_nodiv(
       lambda = lambdas[1],
       mu = mus[1],
       times = ts_m_pre_shift,
