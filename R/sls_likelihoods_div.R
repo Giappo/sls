@@ -88,24 +88,32 @@ loglik_sls_p <- function(
       tbar = t_d,
       n_max = n_max
     ); log(lik_m_pre_shift)
-  lik_m_post_shift <- prod(
-    sls::pn(
-      n = 1,
-      lambda = lambdas[1],
-      mu = mus[1],
-      t = ts_m_post_shift
+  log_lik_m_post_shift <- sum(
+    log(
+      sls::pn(
+        n = 1,
+        lambda = lambdas[1],
+        mu = mus[1],
+        t = ts_m_post_shift
+      )
     )
-  ) * sls::pn(
-    n = 1,
-    t = t_d,
-    lambda = lambdas[1],
-    mu = mus[1]
-  ) ^ (length(ts_m_pre_shift) - 1); log(lik_m_post_shift)
-  lik_s_post_shift <- prod(
-    sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brts_s1)
-  ); log(lik_s_post_shift)
-  loglik_m0 <- log(lik_m_pre_shift) + log(lik_m_post_shift)
-  loglik_s0 <- log(lik_s_post_shift)
+  ) +
+    (length(ts_m_pre_shift) - 1) *
+    log(
+      sls::pn(
+        n = 1,
+        t = t_d,
+        lambda = lambdas[1],
+        mu = mus[1]
+      )
+    )
+  log_lik_s_post_shift <- sum(
+    log(
+      sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brts_s1)
+    )
+  ); log_lik_s_post_shift
+  loglik_m0 <- log(lik_m_pre_shift) + log_lik_m_post_shift
+  loglik_s0 <- log_lik_s_post_shift
 
   logcombinatorics_m <- logcombinatorics_s <- 0 # combinatorics
 
@@ -136,7 +144,7 @@ loglik_sls_p <- function(
     loglik <- -Inf
   }
   if (loglik == Inf) {
-   stop("infinite loglik!")
+    stop("infinite loglik!")
   }
   return(loglik)
 }

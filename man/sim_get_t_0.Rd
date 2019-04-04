@@ -8,7 +8,7 @@ sim_get_t_0(l_2 = sls::sim_get_standard_l_2(), clade)
 }
 \arguments{
 \item{l_2}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
+nested into the main clade. See \link{sim_get_standard_l_2} for more info.}
 
 \item{clade}{the id of the clade}
 }

@@ -24,7 +24,7 @@ sls_main(sim_pars, cond = 3, l_2 = sim_get_standard_l_2(crown_age = 5,
 }}
 
 \item{l_2}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
+nested into the main clade. See \link{sim_get_standard_l_2} for more info.}
 
 \item{seed}{the seed}
 
