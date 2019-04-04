@@ -78,14 +78,18 @@ combine_pns <- function(
       tbar = tbar
     )
   }
-  pippo <- matrix(
+  dft_p_t_n <- matrix(
     unlist(lapply(p_t_n, FUN = sls::dft)),
     nrow = n_t,
-    byrow = T
+    byrow = TRUE
   )
-  rownames(pippo) <- paste0("t", 1:n_t)
+  rownames(dft_p_t_n) <- paste0("t", 1:n_t)
+  # I take the product of "dft_p_t_n" over all the branching times.
+  # I transform back the result (which is a vector of length n_max)
+  # using inverse dft. Finally I take the real part of the sum of
+  # the back-transformed vector times the factor 1/n
   Re(sum(
-    (nvec ^ -1) * sls::idft(apply(pippo, MARGIN = 2, "prod"))
+    (nvec ^ -1) * sls::idft(apply(dft_p_t_n, MARGIN = 2, "prod"))
   )) # awesome!
 }
 
@@ -159,7 +163,7 @@ combine_pns_nodiv <- function(
       tbar = tbar
     )
   }
-  pippo <- matrix(unlist(lapply(p_t_n, FUN = sls::dft)), nrow = n_t, byrow = T)
-  rownames(pippo) <- paste0("t", 1:n_t)
-  Re(sum(sls::idft(apply(pippo, MARGIN = 2, "prod")))) #awesome!
+  dft_p_t_n <- matrix(unlist(lapply(p_t_n, FUN = sls::dft)), nrow = n_t, byrow = T)
+  rownames(dft_p_t_n) <- paste0("t", 1:n_t)
+  Re(sum(sls::idft(apply(dft_p_t_n, MARGIN = 2, "prod")))) #awesome!
 }

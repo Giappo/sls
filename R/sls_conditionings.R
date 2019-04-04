@@ -34,11 +34,11 @@ pc_1shift <- function(
   )
 
   # the shift happens on the right (r) branch
-  # legend: r = right; l = left
-  # legend: c = crown; s = shift; p = present
-  # legend: a = t_s - t_c; b = t_p - t_s
-  # legend: ns = number of species at the shift point
-  # legend: n_l = ns for left branch; n_r = ns for right branch;
+  # legend: "r" is right; "l" is left
+  # legend: "c" is crown; "s" is shift; "p" is present
+  # legend: "aa" is t_s - t_c; "bb" is t_p - t_s
+  # legend: "ns" is the number of species at the shift point
+  # legend: "n_l" is "ns" for left branch; "n_r" is "ns" for right branch;
 
   nvec <- 1:n_max
   n_r  <- row(matrix(NA, nrow = n_max, ncol = n_max))
