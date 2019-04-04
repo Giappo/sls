@@ -12,7 +12,7 @@ sim_use_event(data, clade, l_2, event, deltas)
 \item{clade}{the id of the clade}
 
 \item{l_2}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
+nested into the main clade. See \link{sim_get_standard_l_2} for more info.}
 
 \item{event}{the event occurring in the simulated process at a given time}
 

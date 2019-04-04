@@ -45,7 +45,7 @@
 #' @param l_0 the l table, for a single clade
 #' @param l_1 the collection of all the l tables, for all the clades
 #' @param l_2 the matrix containing the information about how the subclades are
-#' nested into the main clade. See sls_sim.get_standard_l_2() for more info.
+#' nested into the main clade. See \link{sim_get_standard_l_2} for more info.
 #' @param l_matrix the l table
 #' @param l_matrix_size the initial length of the l matrix. It will be
 #' increased if necessary

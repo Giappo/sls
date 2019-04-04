@@ -10,7 +10,7 @@ sim_get_brts(data, l_2)
 \item{data}{contains all the information about the simulated process}
 
 \item{l_2}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
+nested into the main clade. See \link{sim_get_standard_l_2} for more info.}
 }
 \value{
 the branching times
