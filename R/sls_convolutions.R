@@ -163,7 +163,11 @@ combine_pns_nodiv <- function(
       tbar = tbar
     )
   }
-  dft_p_t_n <- matrix(unlist(lapply(p_t_n, FUN = sls::dft)), nrow = n_t, byrow = T)
+  dft_p_t_n <- matrix(
+    unlist(lapply(p_t_n, FUN = sls::dft)),
+    nrow = n_t,
+    byrow = TRUE
+  )
   rownames(dft_p_t_n) <- paste0("t", 1:n_t)
   Re(sum(sls::idft(apply(dft_p_t_n, MARGIN = 2, "prod")))) #awesome!
 }
