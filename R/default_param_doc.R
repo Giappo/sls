@@ -15,6 +15,7 @@
 #'   \item cond = 3 conditions on the survival of the subclade and
 #'   both crown descendents in the main clade;
 #' }
+#' @param convolve_function function used to calculate the convolution
 #' @param crown_age the age of the phylogeny
 #' @param data contains all the information about the simulated process
 #' @param data_folder The data folder insider the project folder.
@@ -125,6 +126,7 @@ default_params_doc <- function(
   brts_s,
   brts_clade,
   cond,
+  convolve_function,
   clade,
   crown_age,
   d_0,

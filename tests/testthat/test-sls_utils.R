@@ -168,9 +168,10 @@ test_that("get_function_names & get_model_names", {
   #use
   testthat::expect_true(
     all(
+      c("loglik_sls_p", "loglik_sls_q") %in%
       get_function_names(
         loglik_functions = sls_logliks_div()
-      ) == c("loglik_sls_p", "loglik_sls_q")
+      )
     )
   )
   testthat::expect_true(
@@ -188,8 +189,7 @@ test_that("get_function_names & get_model_names", {
     get_model_names(
       function_names = sls_logliks_div(),
       verbose = TRUE
-    ),
-    "You are using the functions: sls_p sls_q"
+    )
   )
   #abuse
   error_message <- paste0(

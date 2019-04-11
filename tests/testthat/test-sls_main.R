@@ -10,6 +10,8 @@ test_that("use", {
   sim_pars <- c(0.3, 0.2, 0.6, 0.1)
   cond <- 3
   loglik_functions <- sls_logliks_div()
+  loglik_functions <-
+    loglik_functions[-which(loglik_functions == "loglik_sls_p2")] # remove this
   l_2 <- sim_get_standard_l_2(
     crown_age = 5,
     shift_time = 2
@@ -314,6 +316,8 @@ test_that("it works also for a subset of parameters", {
   n_0 <- l_2$n_0[1]
   t_0s <- l_2$birth_time
   loglik_functions <- sls_logliks_div()
+  loglik_functions <-
+    loglik_functions[-which(loglik_functions == "loglik_sls_p2")] # remove this
   optim_ids <- c(TRUE, FALSE, FALSE, FALSE)
 
   test <- sls_main(
