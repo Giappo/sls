@@ -175,9 +175,9 @@ combine_pns_nodiv <- function(
 
 #' @title Combine pn
 #' @author Giovanni Laudanno
-#' @description Uses the function DDD::conv to convolve all the processes before the shift and
-#'  imposes the death before the present of all species that
-#'  are not visible in the phylogeny
+#' @description Uses the function DDD::conv to convolve
+#'  all the processes before the shift and imposes the death before the present
+#'  of all species that are not visible in the phylogeny
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
 #' @export
@@ -207,7 +207,7 @@ combine_ddd <- function(
     convol <- DDD::conv(p_t_n[[1]], p_t_n[[2]])
   }
   if (n_t > 2) {
-x <- p_t_n
+    x <- p_t_n
     while (length(x) > 1) {
       n1 <- length(x)
       n2 <- ceiling(n1 / 2)
@@ -233,9 +233,9 @@ x <- p_t_n
 
 #' @title Combine pn in the old wrong way
 #' @author Giovanni Laudanno
-#' @description Uses the function DDD::conv to convolve all the processes before the shift and
-#'  imposes the death before the present of all species that
-#'  are not visible in the phylogeny
+#' @description Uses the function DDD::conv to convolve all the processes before
+#'  the shift and imposes the death before the present of all species that
+#'  are not visible in the phylogeny.
 #'  It doesn't divide by N. Used to check on old models.
 #' @inheritParams default_params_doc
 #' @return Convolution of the probabilities for all the processes
@@ -332,8 +332,9 @@ loglik_preshift <- function(
   nvec <- 1:n_max
   p_t_n <- vector("list", k_shift)
   for (t in 1:k_shift) {
-    p_t_n[[t]] <- nvec * (u_s_i[t] ^ (nvec - 1))
-    #it should AT LEAST work with this p_t_n[[t]] <- (u_s_i[t] ^ (nvec - 1))
+    # p_t_n[[t]] <- nvec * (u_s_i[t] ^ (nvec - 1))
+    #it should AT LEAST work with this
+    p_t_n[[t]] <- (u_s_i[t] ^ (nvec - 1))
   }
   dft_p_t_n <- matrix(
     unlist(lapply(p_t_n, FUN = sls::dft)),
@@ -341,7 +342,7 @@ loglik_preshift <- function(
     byrow = TRUE
   )
   rownames(dft_p_t_n) <- paste0("t=", 1:k_shift)
-  colnames(dft_p_t_n) <- paste0("n=", nvec)
+  colnames(dft_p_t_n) <- paste0("k=", nvec)
   convolution <- sls::idft(apply(dft_p_t_n, MARGIN = 2, "prod"))
   testit::assert(length(convolution) == n_max)
   testit::assert(all(Re(convolution) <= 1))
