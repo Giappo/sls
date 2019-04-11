@@ -111,7 +111,7 @@ loglik_sls_p <- function(
     log(
       sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brts_s1)
     )
-  ); log_lik_s_post_shift
+  )
   loglik_m0 <- log(lik_m_pre_shift) + log_lik_m_post_shift
   loglik_s0 <- log_lik_s_post_shift
 
