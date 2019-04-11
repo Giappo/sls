@@ -101,6 +101,6 @@ pn_bar <- function(lambda, mu, t, n, tbar = 0) {
     n *
     sls::ut(t = t, lambda = lambda, mu = mu) ^ (n - 1) *
     sls::one_minus_pt(t = tbar, lambda = lambda, mu = mu) ^ (n - 1 + (n == 0)) +
-    (n == 0) * (sls::one_minus_pt(t = t, lambda = lambda, mu = mu))
+    (n == 0) * (sls::one_minus_pt(t = t, lambda = lambda, mu = mu)) * n
   return(out)
 }

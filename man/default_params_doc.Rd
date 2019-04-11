@@ -5,18 +5,18 @@
 \title{This function does nothing. It is intended to inherit is parameters'
 documentation.}
 \usage{
-default_params_doc(age, brts, brts_m, brts_s, brts_clade, cond, clade,
-  crown_age, d_0, d_0s, data, data_folder, delta_n, delta_t, deltas,
-  dropextinct, e_0, event, final_time, fun, fun1, fun2, function_name,
-  function_names, functions_names, k, lambda, lambdas, mu, mus, ks, l_0,
-  l_1, l_2, l_matrix_size, l_matrix, log_scale, lambdaterms,
-  loglik_function, loglik_functions, lx, matrix_size, message, missnumspec,
-  models, n, n_0, n_0s, n_max, optim_ids, output, pars, pars_m, pars_s,
-  pars_clade, pars_transformed, project_folder, results, results_folder,
-  shift_time, sim, sim_pars, start_pars, t, t_c, t_d, ts, t_0, t_0s, tf,
-  t_f, td, t_p, tds, t_ds, times, tbar, true_pars, vec, verbose, ddep,
-  trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift, initparsopt,
-  optimmethod, tolerance, pars2, seed)
+default_params_doc(age, brts, brts_m, brts_s, brts_clade, cond,
+  convolve_function, clade, crown_age, d_0, d_0s, data, data_folder,
+  delta_n, delta_t, deltas, dropextinct, e_0, event, final_time, fun, fun1,
+  fun2, function_name, function_names, functions_names, k, lambda, lambdas,
+  mu, mus, ks, l_0, l_1, l_2, l_matrix_size, l_matrix, log_scale,
+  lambdaterms, loglik_function, loglik_functions, lx, matrix_size, message,
+  missnumspec, models, n, n_0, n_0s, n_max, optim_ids, output, pars,
+  pars_m, pars_s, pars_clade, pars_transformed, project_folder, results,
+  results_folder, shift_time, sim, sim_pars, start_pars, t, t_c, t_d, ts,
+  t_0, t_0s, tf, t_f, td, t_p, tds, t_ds, times, tbar, true_pars, vec,
+  verbose, ddep, trparsopt, trparsfix, idparsopt, idparsfix, idparsnoshift,
+  initparsopt, optimmethod, tolerance, pars2, seed)
 }
 \arguments{
 \item{age}{the age of the phylogeny}
@@ -38,6 +38,8 @@ default_params_doc(age, brts, brts_m, brts_s, brts_clade, cond, clade,
   \item cond = 3 conditions on the survival of the subclade and
   both crown descendents in the main clade;
 }}
+
+\item{convolve_function}{function used to calculate the convolution}
 
 \item{clade}{the id of the clade}
 
