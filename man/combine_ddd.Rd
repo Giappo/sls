@@ -21,9 +21,9 @@ combine_ddd(lambda, mu, times, tbar, n_max = 100)
 Convolution of the probabilities for all the processes
 }
 \description{
-Uses the function DDD::conv to convolve all the processes before the shift and
- imposes the death before the present of all species that
- are not visible in the phylogeny
+Uses the function DDD::conv to convolve
+ all the processes before the shift and imposes the death before the present
+ of all species that are not visible in the phylogeny
 }
 \author{
 Giovanni Laudanno

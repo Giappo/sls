@@ -98,8 +98,8 @@ test_that("all the likelihoods with division yield the same result", {
                (is_on_ci())  * (1 / 2) * 1e-3
 
   cond <- sls_conds()[1]
-  for (s in 1:(4 + 4 * is_on_ci())) {
-    set.seed(s)
+  for (seed in 1:(4 + 4 * is_on_ci())) {
+    set.seed(seed)
     t_0s    <- c(6, 2)
     brts_m  <- c(
       t_0s[1],
@@ -141,8 +141,6 @@ test_that("all the likelihoods with division yield the same result", {
 
 test_that("faster likelihood gives the same results", {
 
-  skip("It doesn't work (yet)")
-
   models <- c(
     sls::loglik_sls_p,
     sls::loglik_sls_p2
@@ -151,12 +149,12 @@ test_that("faster likelihood gives the same results", {
                (is_on_ci())  * (1 / 2) * 1e-3
 
   cond <- sls_conds()[1]
-  for (s in 1:2) {
-    set.seed(s)
-    t_0s    <- c(6, 2)
+  for (seed in 1:(2 + 2 * is_on_ci())) {
+    set.seed(seed)
+    t_0s    <- c(6, 3)
     brts_m  <- c(
       t_0s[1],
-      sort(runif(n = 20, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
+      sort(runif(n = 30, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
     )
     pars_m  <- c(
       x <- runif(n = 1, min = 0.1, max = 1),
