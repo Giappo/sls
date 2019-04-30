@@ -125,7 +125,8 @@ sls_logliks_experiment <- function() {
   fun_list <- ls(paste0("package:", get_pkg_name())) # nolint internal function
   sls_p_funs <- fun_list[sapply(
     fun_list, function(x)
-      any(grepl("sls_p", x))
+      any(grepl("sls_p", x)) &
+      !any(grepl("2", x))
   )]
   sls_p_funs
 }
