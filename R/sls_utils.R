@@ -109,7 +109,8 @@ sls_logliks_nodiv <- function() {
   nodiv_funs <- fun_list[sapply(
     fun_list, function(x)
       any(grepl("loglik", x)) &
-      any(grepl("nodiv", x))
+      any(grepl("nodiv", x)) &
+      !any(grepl("logliks", x))
   )]
   nodiv_funs
 }

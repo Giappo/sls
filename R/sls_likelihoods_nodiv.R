@@ -59,6 +59,149 @@ loglik_sls_p_nodiv <- function(
     brts_m1,
     rep(1, length(brts_m1))
   ); dim(brts_matrix) <- c(2, length(brts_m1))
+
+  if (n_0 == 2) {
+    brts_m2 <- c(brts_m1[1], brts_m1)
+  } else {
+    brts_m2 <- brts_m1
+  }
+  ts_m_pre_shift  <- brts_m2[brts_m2 > t_d] - t_d; ts_m_pre_shift
+  ts_m_post_shift <- brts_m2[brts_m2 < t_d] ; ts_m_post_shift
+  if (length(ts_m_post_shift) == 0) {
+    ts_m_post_shift <- 0
+  }
+  if (length(ts_m_pre_shift) == 0) {
+    cat("There are no branching times before the shift"); return(-Inf)
+  }
+
+  log_lik_m_pre_shift <- loglik_preshift_nodiv(
+    lambdas = lambdas,
+    mus = mus,
+    brts = brts,
+    n_0 = n_0,
+    n_max = n_max
+  )
+  log_lik_m_post_shift <- sum(
+    log(
+      sls::pn(
+        n = 1,
+        lambda = lambdas[1],
+        mu = mus[1],
+        t = ts_m_post_shift
+      )
+    )
+  ) +
+    (length(ts_m_pre_shift) - 1) *
+    log(
+      sls::pn(
+        n = 1,
+        t = t_d,
+        lambda = lambdas[1],
+        mu = mus[1]
+      )
+    )
+  log_lik_s_post_shift <- sum(
+    log(sls::pn(n = 1, lambda = lambdas[2], mu = mus[2], t = brts_s1))
+  ); log_lik_s_post_shift
+  loglik_m0 <- log_lik_m_pre_shift + log_lik_m_post_shift
+  loglik_s0 <- log_lik_s_post_shift
+
+  logcombinatorics_m <- logcombinatorics_s <- 0 # combinatorics
+
+  # number of speciations in the Main clade
+  l_m <- length(brts_m1[brts_m1 != brts_m1[1]])
+
+  # number of speciations in the Subclade
+  l_s <- length(brts_s1[brts_s1 != brts_s1[1]])
+
+  loglik_m <- loglik_m0 +
+    logcombinatorics_m + log(lambdas[1] + (length(brts_m) == 0)) * l_m
+  loglik_s <- loglik_s0 +
+    logcombinatorics_s + log(lambdas[2] + (length(brts_s) == 0)) * l_s
+
+  pc <- sls::pc_1shift(
+    pars_m = pars_m,
+    pars_s = pars_s,
+    brts_m = brts_m,
+    brts_s = brts_s,
+    cond = cond,
+    n_max = n_max,
+    n_0 = n_0
+  )
+
+  loglik <- loglik_m + loglik_s - log(pc)
+  loglik <- as.numeric(unname(loglik))
+  if (is.nan(loglik) | is.na(loglik)) {
+    loglik <- -Inf
+  }
+  if (loglik == Inf) {
+    stop("infinite loglik!")
+  }
+  return(loglik)
+}
+
+#' @title P-likelihood (with no division)
+#' @author Giovanni Laudanno
+#' @description Calculates the likelihood convoluting Nee's functions.
+#'  There is no division. It should yield the same likelihood as DDD.
+#'  It works in a less efficient way.
+#' @inheritParams default_params_doc
+#' @return The likelihood
+#' @export
+loglik_sls_p2_nodiv <- function(
+  pars,
+  brts,
+  cond,
+  n_0 = 2,
+  n_max = 1e2
+) {
+  pars_m <- pars[1:2]
+  pars_s <- pars[3:4]
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
+  if (any(c(pars_m, pars_s) < 0)) {
+    return(-Inf)
+  }
+
+  if (is.list(brts)) {
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
+  }
+  if (n_max < n_min) {
+    n_max <- n_min
+  }
+
+  sls_check_input(
+    brts_m = brts_m,
+    brts_s = brts_s,
+    cond = cond,
+    n_0 = n_0,
+    n_max = n_max
+  )
+
+  lambdas <- c(pars_m[1], pars_s[1])
+  mus     <- c(pars_m[2], pars_s[2])
+  if (any(is.infinite(c(lambdas, mus)))) {
+    return(-Inf)
+  }
+  if (any(lambdas - mus < 0)) {
+    return(-Inf)
+  }
+
+  brts_m1 <- sort(brts_m, decreasing = TRUE)
+  brts_s1 <- sort(brts_s, decreasing = TRUE)
+  t_d <- brts_s1[1]
+
+  testit::assert(all(sign(brts_m1) == sign(brts_s1[1])))
+  testit::assert(
+    all(sign(brts_s1 * !is.null(brts_s1)) == sign(t_d * !is.null(brts_s1)))
+  )
+
+  brts_matrix <- rbind(
+    brts_m1,
+    rep(1, length(brts_m1))
+  ); dim(brts_matrix) <- c(2, length(brts_m1))
   t_d_matrix <- c(t_d, -1); dim(t_d_matrix) <- c(2, 1)
 
   if (n_0 == 2) {
