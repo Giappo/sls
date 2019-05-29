@@ -126,7 +126,8 @@ sls_logliks_experiment <- function() {
   sls_p_funs <- fun_list[sapply(
     fun_list, function(x)
       any(grepl("sls_p", x)) &
-      !any(grepl("2", x))
+      !any(grepl("2", x)) &
+      !any(grepl("dummy", x))
   )]
   sls_p_funs
 }

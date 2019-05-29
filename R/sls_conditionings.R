@@ -73,8 +73,11 @@ pc_1shift <- function(
   if (pc == 0) {
     print("Conditional probability is equal to zero!")
   }
+  # there might be small numerical errors
+  if (pc > 1 && pc < (1 + 1e13)) {
+    pc <- 1
+  }
   testit::assert(pc > 0)
   testit::assert(pc <= 1)
-
   return(pc)
 }
