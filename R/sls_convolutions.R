@@ -468,3 +468,212 @@ loglik_preshift_nodiv <- function(
   loglik <- const_term + log(sum_term) + fixed_term
   loglik
 }
+
+#' @title Calculates the preshift loglik using convolutions
+#' @author Giovanni Laudanno
+#' @description Calculates the preshift loglik using convolutions as an
+#'  unobserved shift occurs
+#' @inheritParams default_params_doc
+#' @return Loglik preshift for main clade and unobserved shift
+#' @export
+loglik_preshift_unobs <- function(
+  lambdas,
+  mus,
+  brts,
+  n_0 = 2,
+  n_max = 1e2
+) {
+  # formula
+  # sum_{M} M / (k + M) # vec_one_over_n (different from obs)
+  # sums_{m_i} prod_{i = 1} ^ {k}
+  # {
+  # (m_i + 1) u(i,s) ^ m_i # vec_convolution # nolint
+  # (1 - p(s,p)) ^ (m_i - delta(i,j) # vec_one_minus_p (different from obs) # nolint
+  # p(i,s)(1 - u(i,s)) # const_term # nolint
+  # }
+  #
+  # p(s,p)(1 - u(s,p) ^ (k) # this goes in postshift (different from obs)
+  # prod_{j = k + 1} ^ {k_{p}} p(j,p) (1 - u(j,p)) # this goes in postshift
+  #
+  # setup
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
+  brts_m1 <- sort(brts_m, decreasing = TRUE)
+  brts_s1 <- sort(brts_s, decreasing = TRUE)
+  t_d <- brts_s1[1]
+  if (n_0 == 2) {
+    brts_m2 <- c(brts_m1[1], brts_m1)
+  } else {
+    brts_m2 <- brts_m1
+  }
+
+  if (is.list(brts)) {
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
+  }
+  if (n_max < n_min) {
+    n_max <- n_min
+  }
+
+  delta_s_i <- brts_m2[brts_m2 > t_d] - t_d
+  k_shift <- length(delta_s_i)
+  delta_p_s <- t_d
+
+  one_minus_p_p_s <-
+    one_minus_pt(lambda = lambdas[1], mu = mus[1], t = delta_p_s)
+  p_s_i <-
+    p_t(lambda = lambdas[1], mu = mus[1], t = delta_s_i)
+  one_minus_u_s_i <-
+    one_minus_ut(lambda = lambdas[1], mu = mus[1], t = delta_s_i)
+  u_s_i <-
+    ut(lambda = lambdas[1], mu = mus[1], t = delta_s_i)
+  names(one_minus_u_s_i) <- names(p_s_i) <- names(u_s_i) <-
+    paste0("t=", 1:k_shift)
+
+  const_term <- sum(log(p_s_i) + log(one_minus_u_s_i))
+
+  mvec <- 0:n_max
+  p_t_n <- vector("list", k_shift)
+  for (t in 1:k_shift) {
+    p_t_n[[t]] <- (mvec + 1) * (u_s_i[t] ^ mvec)
+  }
+  convolution2 <- p_t_n[[1]]
+  fixed_term <- 0
+  for (i in 2:k_shift) {
+    convolution2 <- DDD::conv(p_t_n[[i]], convolution2[mvec])
+    norm_term <- sum(convolution2)
+    convolution2 <- convolution2 / norm_term
+    fixed_term <- fixed_term + log(norm_term)
+  }
+  convolution4 <- convolution2[1:length(mvec)]
+  norm_term <- sum(convolution4)
+  convolution <- convolution4 / norm_term
+  fixed_term <- fixed_term + log(norm_term)
+
+  vec_one_over_n <- mvec / (k_shift + mvec)
+  vec_one_minus_p <- (one_minus_p_p_s ^ (mvec - 1))
+  vec_convolution <- convolution
+
+  find_exp <- function(n_max) {
+    300 * (1 - exp(-n_max / 1000))
+  }
+
+  safe_term_1 <- 2 ^ -find_exp(n_max)
+  vec_one_over_n <- vec_one_over_n / safe_term_1
+  fixed_term <- fixed_term + log(safe_term_1)
+
+  vec_one_minus_p <- vec_one_minus_p / safe_term_1
+  fixed_term <- fixed_term + log(safe_term_1)
+
+  sum_term <- sum(
+    (vec_one_over_n * vec_one_minus_p * vec_convolution)
+  ) # awesome!
+
+  loglik <- log(k_shift) + const_term + log(sum_term) + fixed_term
+  loglik
+}
+
+#' @title Calculates the preshift loglik using convolutions
+#' @author Giovanni Laudanno
+#' @description Calculates the preshift loglik using convolutions
+#' @inheritParams default_params_doc
+#' @return Loglik preshift for main clade
+#' @export
+loglik_preshift2 <- function(
+  lambdas,
+  mus,
+  brts,
+  n_0 = 2,
+  n_max = 1e2
+) {
+  # formula
+  # sum_{M} 1 / (k + M) # vec_one_over_n
+  # sums_{m_i} prod_{i = 1} ^ {k}
+  # {
+  # (m_i + 1) u(i,s) ^ m_i # vec_convolution # nolint
+  # (1 - p(s,p)) ^ m_i # vec_one_minus_p # nolint
+  # p(i,s)(1 - u(i,s)) # const_term # nolint
+  # }
+  #
+  # p(s,p)(1 - u(s,p) ^ (k - 1) # this goes in postshift
+  # prod_{j = k + 1} ^ {k_{p}} p(j,p) (1 - u(j,p)) # this goes in postshift
+  #
+  # setup
+  brts_m <- brts[[1]]
+  brts_s <- brts[[2]]
+  brts_m1 <- sort(brts_m, decreasing = TRUE)
+  brts_s1 <- sort(brts_s, decreasing = TRUE)
+  t_d <- brts_s1[1]
+  if (n_0 == 2) {
+    brts_m2 <- c(brts_m1[1], brts_m1)
+  } else {
+    brts_m2 <- brts_m1
+  }
+
+  if (is.list(brts)) {
+    n_min <- 2 * (0 + (n_0 - 1) + length(unlist(brts[[1]])))
+  } else {
+    n_min <- 2 * (0 + (n_0 - 1) + length(brts))
+  }
+  if (n_max < n_min) {
+    n_max <- n_min
+  }
+
+  delta_s_i <- brts_m2[brts_m2 > t_d] - t_d
+  k_shift <- length(delta_s_i)
+  delta_p_s <- t_d
+
+  one_minus_p_p_s <-
+    one_minus_pt(lambda = lambdas[1], mu = mus[1], t = delta_p_s)
+  p_s_i <-
+    p_t(lambda = lambdas[1], mu = mus[1], t = delta_s_i)
+  one_minus_u_s_i <-
+    one_minus_ut(lambda = lambdas[1], mu = mus[1], t = delta_s_i)
+  u_s_i <-
+    ut(lambda = lambdas[1], mu = mus[1], t = delta_s_i)
+  names(one_minus_u_s_i) <- names(p_s_i) <- names(u_s_i) <-
+    paste0("t=", 1:k_shift)
+
+  const_term <- sum(log(p_s_i) + log(one_minus_u_s_i))
+
+  mvec <- 0:n_max
+  p_t_n <- vector("list", k_shift)
+  for (t in 1:k_shift) {
+    p_t_n[[t]] <- (mvec + 1) * (u_s_i[t] ^ mvec)
+  }
+  convolution2 <- p_t_n[[1]]
+  fixed_term <- 0
+  for (i in 2:k_shift) {
+    convolution2 <- DDD::conv(p_t_n[[i]], convolution2[mvec])
+    norm_term <- sum(convolution2)
+    convolution2 <- convolution2 / norm_term
+    fixed_term <- fixed_term + log(norm_term)
+  }
+  convolution4 <- convolution2[1:length(mvec)]
+  norm_term <- sum(convolution4)
+  convolution <- convolution4 / norm_term
+  fixed_term <- fixed_term + log(norm_term)
+
+  vec_one_over_n <- (k_shift + mvec) ^ -1
+  vec_one_minus_p <- one_minus_p_p_s ^ mvec
+  vec_convolution <- convolution
+
+  find_exp <- function(n_max) {
+    300 * (1 - exp(-n_max / 1000))
+  }
+
+  safe_term_1 <- 2 ^ -find_exp(n_max)
+  vec_one_over_n <- vec_one_over_n / safe_term_1
+  fixed_term <- fixed_term + log(safe_term_1)
+
+  vec_one_minus_p <- vec_one_minus_p / safe_term_1
+  fixed_term <- fixed_term + log(safe_term_1)
+
+  sum_term <- sum(
+    (vec_one_over_n * vec_one_minus_p * vec_convolution)
+  ) # awesome!
+
+  loglik <- log(k_shift) + const_term + log(sum_term) + fixed_term
+  loglik
+}
