@@ -57,7 +57,7 @@ test_that("main", {
   sim_pars <- c(0.2, 0.1, 0.6, 0.1)
   cond <- 2
   l_2 <- sls::sim_get_standard_l_2(crown_age = 6, shift_time = 4)
-  test_main_dummy <- sls::sls_main_dummy(
+  test <- sls::sls_main_dummy(
     seed = seed,
     sim_pars = sim_pars,
     cond = cond,
