@@ -66,6 +66,7 @@ loglik_sls_p <- function(
   }
   ts_m_pre_shift  <- brts_m2[brts_m2 > t_d] - t_d; ts_m_pre_shift
   ts_m_post_shift <- brts_m2[brts_m2 < t_d] ; ts_m_post_shift
+  k_shift <- length(ts_m_pre_shift)
   if (length(ts_m_post_shift) == 0) {
     ts_m_post_shift <- 0
   }
@@ -90,7 +91,7 @@ loglik_sls_p <- function(
       )
     )
   ) +
-    (length(ts_m_pre_shift) - 1) *
+    (k_shift - 1) *
     log(
       sls::pn(
         n = 1,

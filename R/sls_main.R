@@ -98,7 +98,7 @@ sls_main <- function(
     matrix(
       sim_pars,
       nrow = length(loglik_functions),
-      ncol = length(start_pars),
+      ncol = length(sim_pars),
       byrow = TRUE
     ),
     mle,
@@ -136,7 +136,7 @@ sls_main <- function(
     tips_label <- "tips"
   }
   colnames(results) <- c(
-    paste0("sim_", colnames(mle[1:length(start_pars)])),
+    paste0("sim_", colnames(mle[1:length(sim_pars)])),
     colnames(mle),
     "seed",
     "cond",
