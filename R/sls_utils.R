@@ -129,7 +129,7 @@ sls_logliks_experiment <- function() {
       !any(grepl("2", x)) &
       !any(grepl("dummy", x))
   )]
-  sls_p_funs
+  paste0(get_pkg_name(), "::", sls_p_funs)
 }
 
 #' @title Get package name
