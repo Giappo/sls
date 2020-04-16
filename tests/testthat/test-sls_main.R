@@ -9,10 +9,10 @@ is_on_ci <- function() {
 test_that("use", {
   sim_pars <- c(0.3, 0.2, 0.6, 0.1)
   cond <- 3
-  loglik_functions <- sls_logliks_div()
+  loglik_functions <- sls::sls_logliks_div()
   loglik_functions <-
     loglik_functions[-which(loglik_functions == "loglik_sls_p2")] # remove this
-  l_2 <- sim_get_standard_l_2(
+  l_2 <- sls::sim_get_standard_l_2(
     crown_age = 5,
     shift_time = 2
   )
@@ -22,7 +22,7 @@ test_that("use", {
   seed_interval <- 6:(6 + 5 * is_on_ci()); seed <- seed_interval[1]
   for (seed in seed_interval) {
     # seed = 6 is critical!
-    test <- sls_main(
+    test <- sls::sls_main(
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,
@@ -189,7 +189,7 @@ test_that("use", {
   # test silent mode and character entry for "loglik_functions" input
   seed <- 99
   testthat::expect_silent(
-    test <- sls_main(
+    test <- sls::sls_main(
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,
@@ -204,7 +204,7 @@ test_that("use", {
     is.data.frame(test)
   )
   # check data file existence
-  data_file_name <- create_data_file_name( # nolint internal function
+  data_file_name <- sls::create_data_file_name( # nolint internal function
     data_folder = data_folder,
     sim_pars = sim_pars,
     optim_ids = optim_ids,

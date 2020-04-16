@@ -4,11 +4,17 @@
 \alias{sls_main}
 \title{Run the full sls routine}
 \usage{
-sls_main(sim_pars, cond = 3, l_2 = sim_get_standard_l_2(crown_age = 5,
-  shift_time = 2), seed, start_pars = c(0.2, 0.1, 0.2, 0.1),
+sls_main(
+  sim_pars,
+  cond = 3,
+  l_2 = sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2),
+  seed,
+  start_pars = c(0.2, 0.1, 0.2, 0.1),
   optim_ids = rep(TRUE, length(start_pars)),
-  loglik_functions = sls_logliks_div(), project_folder = NULL,
-  verbose = FALSE)
+  loglik_functions = sls::sls_logliks_div(),
+  project_folder = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{sim_pars}{parameters of the simulation}

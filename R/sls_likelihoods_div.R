@@ -28,7 +28,7 @@ loglik_sls_p <- function(
     n_max <- n_min
   }
 
-  sls_check_input(
+  sls::sls_check_input(
     brts_m = brts_m,
     brts_s = brts_s,
     cond = cond,
@@ -322,7 +322,7 @@ loglik_sls_q <- function(
     n_max <- n_min
   }
 
-  sls_check_input(
+  sls::sls_check_input(
     brts_m = brts_m,
     brts_s = brts_s,
     cond = cond,
@@ -380,7 +380,7 @@ loglik_sls_q <- function(
     dimnames(q_t)[[2]] <- paste0("Q", 0:n_max)
     k <- soc
     t <- 2
-    D <- C <- rep(1, max_t)
+    sumvec2 <- sumvec1 <- rep(1, max_t)
 
     #EVOLVING THE INITIAL STATE TO THE LAST BRANCHING POINT
     while (t <= max_t) {
@@ -394,15 +394,22 @@ loglik_sls_q <- function(
           k = k,
           ddep = 1
         )
-        q_t[t, ] <- abs(expoRkit::expv(
-          v = q_t[(t - 1), ],
-          x = transition_matrix,
-          t = abs(brts[t] - brts[t - 1])
-        ))
+        # q_t[t, ] <- abs(expoRkit::expv( # nolint
+        #   v = q_t[(t - 1), ], # nolint
+        #   x = transition_matrix, # nolint
+        #   t = abs(brts[t] - brts[t - 1]) # nolint
+        # )) # nolint
+        transition_matrix <- as.matrix(transition_matrix)
+        q_t[t, ] <- abs(deSolve::ode(
+          y = q_t[(t - 1), ],
+          parms = transition_matrix,
+          times = c(0, abs(brts[t] - brts[t - 1])),
+          func = sls::sls_loglik_rhs
+        )[2, -1])
       }
 
-      #Applying C operator (this is a trick to avoid precision issues)
-      C[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * C[t]
+      #Applying sumvec1 operator (this is a trick to avoid precision issues)
+      sumvec1[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * sumvec1[t]
 
       #Applying B operator
       if (t < max_t) {
@@ -414,8 +421,8 @@ loglik_sls_q <- function(
           k <- k - 1
         }
 
-        #Applying D operator (this works exactly like C)
-        D[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * D[t]
+        #Applying sumvec2 operator (this works exactly like sumvec1)
+        sumvec2[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * sumvec2[t]
 
         #Updating running parameters
         t <- t + 1
@@ -428,8 +435,8 @@ loglik_sls_q <- function(
     vm <- choose(k + missnumspec[clade], k) ^ -1
     p_m  <- vm * q_t[t, (missnumspec[clade] + 1)]
 
-    #Removing C and D effects from the LL
-    loglik <- log(p_m) - sum(log(C)) - sum(log(D))
+    #Removing sumvec1 and sumvec2 effects from the LL
+    loglik <- log(p_m) - sum(log(sumvec1)) - sum(log(sumvec2))
 
     #Various checks
     loglik <- as.numeric(loglik)

@@ -235,55 +235,40 @@ get_function_names <- function(
     "!"
   )
 
-  if (is.vector(loglik_functions)) {
-    function_names <- rep(NA, length(loglik_functions))
-    model_names <- which_function <- function_names
-    for (m in seq_along(loglik_functions)) {
-      fun <- eval(loglik_functions[m])[[1]]
-      if (is.character(loglik_functions[m])) {
-        if (length(
-          (find_function <- which(fun_list == loglik_functions[m]))
-        ) == 0) {
-          stop(error_message)
-        }
-        which_function[m] <- find_function
-      } else {
-        for (i in seq_along(fun_list)) {
-          if (all.equal(get(fun_list[i]), fun) == TRUE) {
-            which_function[m] <- i
-          }
-        }
-      }
-      if (is.null(which_function[m]) | is.na(which_function[m])) {
-        stop(error_message)
-      }
-      function_names[m] <- toString(fun_list[which_function[m]])
-      model_names[m] <- cut_loglik_from_name(function_names[m]) # nolint internal function
+  if (!is.list(loglik_functions)) {
+    if (length(loglik_functions) == 1) {
+      loglik_functions <- list(loglik_functions)
     }
-  } else {
-    fun <- eval(loglik_functions)
-    if (is.character(loglik_functions)) {
+  }
+
+  function_names <- rep(NA, length(loglik_functions))
+  model_names <- which_function <- function_names
+  for (m in seq_along(loglik_functions)) {
+    if (is.character(loglik_functions[[m]])) {
       if (length(
-        (find_function <- which(fun_list == loglik_functions))
+        (find_function <- which(fun_list == loglik_functions[[m]]))
       ) == 0) {
         stop(error_message)
       }
-      which_function <- find_function
+      which_function[m] <- find_function
     } else {
-      which_function <- 0
+      fun <- eval(loglik_functions[m])[[1]]
       for (i in seq_along(fun_list)) {
         if (all.equal(get(fun_list[i]), fun) == TRUE) {
-          which_function <- i
+          which_function[m] <- i
         }
       }
     }
-    if (is.null(which_function) | is.na(which_function)) {
+    if (is.null(which_function[m]) | is.na(which_function[m])) {
       stop(error_message)
     }
-    function_names <- toString(fun_list[which_function])
-    model_names <- cut_loglik_from_name(function_names) # nolint internal function
+    function_names[m] <- toString(fun_list[which_function[m]])
+    model_names[m] <- cut_loglik_from_name(function_names[m])
   }
-
+  function_names <- fun_list[which_function]
+  model_names <- unname(
+    sapply(function_names, FUN = cut_loglik_from_name) # nolint internal function
+  )
   if (any(is.na(model_names))) {
     stop(error_message)
   }
@@ -302,7 +287,7 @@ get_model_names <- function(
 ) {
   model_names <- function_names
   for (m in seq_along(function_names)) {
-    model_names[m] <- cut_loglik_from_name(function_names[m]) # nolint internal function
+    model_names[m] <- cut_loglik_from_name(function_names[m])
     if (is.null(model_names[m]) | is.na(model_names[m])) {
       stop(paste0(
         "This is not a likelihood function provided by ",
@@ -315,4 +300,16 @@ get_model_names <- function(
     cat("You are using the functions:", model_names)
   }
   model_names
+}
+
+#' @title Builds the right hand side of the ODE set
+#' @description Builds the right hand side of the ODE set
+#' @param time time
+#' @param x vector to integrate
+#' @param params transition matrix
+#' @details This is not to be called by the user.
+#' @author Giovanni Laudanno
+#' @export
+sls_loglik_rhs <- function(t, x, params) {
+  list(params %*% x)
 }

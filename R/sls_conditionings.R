@@ -41,14 +41,14 @@ pc_1shift <- function(
   # legend: "n_l" is "ns" for left branch; "n_r" is "ns" for right branch;
 
   nvec <- 1:n_max
-  n_r  <- row(matrix(NA, nrow = n_max, ncol = n_max))
-  n_l  <- col(matrix(NA, nrow = n_max, ncol = n_max))
-  p_a_1   <- sls::p_t(t = aa, lambda = lambdas[1], mu = mus[1]); p_a_1
-  u_a_1   <- sls::ut(t = aa, lambda = lambdas[1], mu = mus[1]); u_a_1
-  p_b_1  <- sls::p_t(t = bb, lambda = lambdas[1], mu = mus[1]); p_b_1
+  n_r <- row(matrix(NA, nrow = n_max, ncol = n_max))
+  n_l <- col(matrix(NA, nrow = n_max, ncol = n_max))
+  p_a_1 <- sls::p_t(t = aa, lambda = lambdas[1], mu = mus[1]); p_a_1
+  u_a_1 <- sls::ut(t = aa, lambda = lambdas[1], mu = mus[1]); u_a_1
+  p_b_1 <- sls::p_t(t = bb, lambda = lambdas[1], mu = mus[1]); p_b_1
   one_minus_p_b_1  <-
     sls::one_minus_pt(t = bb, lambda = lambdas[1], mu = mus[1])
-  p_b_2  <- sls::p_t(t = bb, lambda = lambdas[2], mu = mus[2]); p_b_2
+  p_b_2 <- sls::p_t(t = bb, lambda = lambdas[2], mu = mus[2]); p_b_2
   p_n_r <- sls::pn(n = n_r, t = aa, lambda = lambdas[1], mu = mus[1])
   rownames(p_n_r) <- paste0("n_r=", nvec)
   colnames(p_n_r) <- paste0("n_l=", nvec)
@@ -57,13 +57,13 @@ pc_1shift <- function(
   colnames(p_n_l) <- paste0("n_l=", nvec)
   p_r_cs_l_cp <-
     p_n_r * p_n_l * (n_r / (n_r + n_l)) * (1 - (one_minus_p_b_1) ^ n_l)
-  p_l   <- sum(p_r_cs_l_cp) # branch 2 survives till the present
+  p_l <- sum(p_r_cs_l_cp) # branch 2 survives till the present
   p_r_cp_l_cp <- p_r_cs_l_cp * (1 - (one_minus_p_b_1) ^ (n_r - 1))
-  p_rl   <- sum(p_r_cp_l_cp) # both branches 1 and 2 survive till the present
+  p_rl  <- sum(p_r_cp_l_cp) # both branches 1 and 2 survive till the present
 
-  pc_1  <- 2 * p_s * p_l + 2 * (1 - p_s) * p_rl
-  pc_2  <- 2 * p_s * p_l
-  pc_3  <- 2 * p_s * p_rl
+  pc_1 <- 2 * p_s * p_l + 2 * (1 - p_s) * p_rl
+  pc_2 <- 2 * p_s * p_l
+  pc_3 <- 2 * p_s * p_rl
 
   pc <- (cond == 0) * 1 +
     (cond == 1) * pc_1 +

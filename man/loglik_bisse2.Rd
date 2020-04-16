@@ -4,8 +4,16 @@
 \alias{loglik_bisse2}
 \title{BISSE loglik}
 \usage{
-loglik_bisse2(pars, brts, n_0 = 2, t_0 = 0, e_0 = 0, d_0 = 1,
-  log_scale = TRUE, lambdaterms = TRUE)
+loglik_bisse2(
+  pars,
+  brts,
+  n_0 = 2,
+  t_0 = 0,
+  e_0 = 0,
+  d_0 = 1,
+  log_scale = TRUE,
+  lambdaterms = TRUE
+)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:

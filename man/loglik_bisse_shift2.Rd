@@ -4,8 +4,15 @@
 \alias{loglik_bisse_shift2}
 \title{BISSE loglik shift}
 \usage{
-loglik_bisse_shift2(pars, brts, n_0 = 2, t_0 = 0, t_d,
-  log_scale = TRUE, lambdaterms = TRUE)
+loglik_bisse_shift2(
+  pars,
+  brts,
+  n_0 = 2,
+  t_0 = 0,
+  t_d,
+  log_scale = TRUE,
+  lambdaterms = TRUE
+)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:

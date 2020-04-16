@@ -76,7 +76,7 @@ sls_ml_dummy <- function(
   verbose = TRUE
 ) {
   # setup and checks
-  par_names <- get_param_names()[1:length(start_pars)] # nolint internal function
+  par_names <- get_param_names()[seq_len(start_pars)] # nolint internal function
   testit::assert(length(optim_ids) == length(start_pars))
   testit::assert(length(true_pars) == length(start_pars))
   start_pars[!optim_ids] <- true_pars[!optim_ids]
@@ -306,17 +306,17 @@ sls_main_dummy <- function(
     model = model_names
   )
   if (length(t_0s) > 1) {
-    t_0s_label <- paste0("t_0_", 1:length(t_0s))
+    t_0s_label <- paste0("t_0_", seq_len(t_0s))
   } else {
     t_0s_label <- "t_0"
   }
   if (length(tips) > 1) {
-    tips_label <- paste0("tips_", 1:length(tips))
+    tips_label <- paste0("tips_", seq_len(tips))
   } else {
     tips_label <- "tips"
   }
   colnames(results) <- c(
-    paste0("sim_", colnames(mle[1:length(sim_pars)])),
+    paste0("sim_", colnames(mle[seq_len(sim_pars)])),
     colnames(mle),
     "seed",
     "cond",

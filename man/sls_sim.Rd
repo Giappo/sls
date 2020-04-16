@@ -4,8 +4,14 @@
 \alias{sls_sim}
 \title{Simulate an sls process}
 \usage{
-sls_sim(lambdas, mus, ks = c(Inf, Inf), cond = 3,
-  l_2 = sls::sim_get_standard_l_2(), l_matrix_size = 10000)
+sls_sim(
+  lambdas,
+  mus,
+  ks = c(Inf, Inf),
+  cond = 3,
+  l_2 = sls::sim_get_standard_l_2(),
+  l_matrix_size = 10000
+)
 }
 \arguments{
 \item{lambdas}{speciation rates, for all the clades}

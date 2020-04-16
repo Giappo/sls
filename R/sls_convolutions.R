@@ -546,7 +546,7 @@ loglik_preshift_unobs <- function(
     convolution2 <- convolution2 / norm_term
     fixed_term <- fixed_term + log(norm_term)
   }
-  convolution4 <- convolution2[1:length(mvec)]
+  convolution4 <- convolution2[seq_len(mvec)]
   norm_term <- sum(convolution4)
   convolution <- convolution4 / norm_term
   fixed_term <- fixed_term + log(norm_term)
@@ -650,7 +650,7 @@ loglik_preshift2 <- function(
     convolution2 <- convolution2 / norm_term
     fixed_term <- fixed_term + log(norm_term)
   }
-  convolution4 <- convolution2[1:length(mvec)]
+  convolution4 <- convolution2[seq_len(mvec)]
   norm_term <- sum(convolution4)
   convolution <- convolution4 / norm_term
   fixed_term <- fixed_term + log(norm_term)

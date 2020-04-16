@@ -4,8 +4,7 @@
 \alias{loglik_bisse}
 \title{BISSE loglik}
 \usage{
-loglik_bisse(pars, brts, n_0 = 2, t_ds = NULL, d_0s = NULL,
-  t_p = 0)
+loglik_bisse(pars, brts, n_0 = 2, t_ds = NULL, d_0s = NULL, t_p = 0)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:

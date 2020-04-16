@@ -12,7 +12,7 @@ test_that("logliks", {
   pars <- c(0.3, 0.2)
   brts <- list(c(10, 9, 6), c(5, 3, 2))
   cond <- 2
-  for (i in 1:length(functions)) {
+  for (i in 1:length(functions)) { #nolint
     fun <- eval(functions[i])[[1]]
     test <- fun(
       pars = pars,
@@ -33,7 +33,7 @@ test_that("ml", {
   pars <- c(0.3, 0.2)
   brts <- list(c(10, 9, 6), c(5, 3, 2))
   cond <- 2
-  for (i in 1:length(functions)) {
+  for (i in 1:length(functions)) { #nolint
     fun <- eval(functions[i])[[1]]
     test <- sls_ml_dummy(
       loglik_function = fun,

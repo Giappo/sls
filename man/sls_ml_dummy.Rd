@@ -4,10 +4,16 @@
 \alias{sls_ml_dummy}
 \title{sls Maximum Likelihood}
 \usage{
-sls_ml_dummy(loglik_function = sls::loglik_sls_p_dummy, brts,
-  start_pars = c(0.5, 0.3), n_0 = 2, cond = 3,
-  optim_ids = rep(TRUE, length(start_pars)), true_pars = start_pars,
-  verbose = TRUE)
+sls_ml_dummy(
+  loglik_function = sls::loglik_sls_p_dummy,
+  brts,
+  start_pars = c(0.5, 0.3),
+  n_0 = 2,
+  cond = 3,
+  optim_ids = rep(TRUE, length(start_pars)),
+  true_pars = start_pars,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{loglik_function}{the loglik function you want to use}

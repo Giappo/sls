@@ -7,14 +7,14 @@
 sls_main <- function(
   sim_pars,
   cond = 3,
-  l_2 = sim_get_standard_l_2(
+  l_2 = sls::sim_get_standard_l_2(
     crown_age = 5,
     shift_time = 2
   ),
   seed,
   start_pars = c(0.2, 0.1, 0.2, 0.1),
   optim_ids = rep(TRUE, length(start_pars)),
-  loglik_functions = sls_logliks_div(),
+  loglik_functions = sls::sls_logliks_div(),
   project_folder = NULL,
   verbose = FALSE
 ) {
@@ -126,24 +126,24 @@ sls_main <- function(
     model = model_names
   )
   if (length(t_0s) > 1) {
-    t_0s_label <- paste0("t_0_", 1:length(t_0s))
+    t_0s_label <- paste0("t_0_", 1:length(t_0s)) #nolint
   } else {
     t_0s_label <- "t_0"
   }
   if (length(tips) > 1) {
-    tips_label <- paste0("tips_", 1:length(tips))
+    tips_label <- paste0("tips_", 1:length(tips)) #nolint
   } else {
     tips_label <- "tips"
   }
   colnames(results) <- c(
-    paste0("sim_", colnames(mle[1:length(sim_pars)])),
+    paste0("sim_", colnames(mle[1:length(sim_pars)])), #nolint
     colnames(mle),
     "seed",
     "cond",
     "n_0",
     t_0s_label,
     tips_label,
-    paste0("optim_", colnames(mle[1:length(start_pars)])),
+    paste0("optim_", colnames(mle[1:length(start_pars)])), #nolint
     "model"
   )
   rownames(results) <- NULL
