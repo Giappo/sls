@@ -12,9 +12,11 @@ test_that("use", {
   loglik_functions <- sls::sls_logliks_div()
   loglik_functions <-
     loglik_functions[-which(loglik_functions == "loglik_sls_p2")] # remove this
+  crown_age <- 5
+  shift_time <- 2
   l_2 <- sls::sim_get_standard_l_2(
-    crown_age = 5,
-    shift_time = 2
+    crown_age = crown_age,
+    shift_time = shift_time
   )
   n_0 <- l_2$n_0[1]
   t_0s <- l_2$birth_time
@@ -26,7 +28,8 @@ test_that("use", {
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,
-      l_2 = l_2,
+      crown_age = crown_age,
+      shift_time = shift_time,
       start_pars = c(0.2, 0.1, 0.2, 0.1),
       loglik_functions = loglik_functions,
       optim_ids = optim_ids,
@@ -193,7 +196,8 @@ test_that("use", {
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,
-      l_2 = l_2,
+      crown_age = crown_age,
+      shift_time = shift_time,
       start_pars = c(0.2, 0.1, 0.2, 0.1),
       loglik_functions = "loglik_sls_p",
       optim_ids = optim_ids,
@@ -270,10 +274,8 @@ test_that("it saves only once", {
       cond = cond,
       start_pars = sim_pars,
       loglik_functions = loglik_sls_p,
-      l_2 = sim_get_standard_l_2(
-        crown_age = crown_age,
-        shift_time = shift_time
-      ),
+      crown_age = crown_age,
+      shift_time = shift_time,
       verbose = FALSE,
       project_folder = project_folder
     )
@@ -287,10 +289,8 @@ test_that("it saves only once", {
       cond = cond,
       start_pars = sim_pars,
       loglik_functions = loglik_sls_p,
-      l_2 = sim_get_standard_l_2(
-        crown_age = crown_age,
-        shift_time = shift_time
-      ),
+      crown_age = crown_age,
+      shift_time = shift_time,
       verbose = FALSE,
       project_folder = project_folder
     )
@@ -309,9 +309,11 @@ test_that("it works also for a subset of parameters", {
   seed <- 10
   sim_pars <- c(0.3, 0.2, 0.6, 0.1)
   cond <- 3
-  l_2 <- sim_get_standard_l_2(
-    crown_age = 5,
-    shift_time = 2
+  crown_age <- 5
+  shift_time <- 2
+  l_2 <- sls::sim_get_standard_l_2(
+    crown_age = crown_age,
+    shift_time = shift_time
   )
   n_0 <- l_2$n_0[1]
   t_0s <- l_2$birth_time
@@ -324,7 +326,8 @@ test_that("it works also for a subset of parameters", {
     seed = seed,
     sim_pars = sim_pars,
     cond = cond,
-    l_2 = l_2,
+    crown_age = crown_age,
+    shift_time = shift_time,
     start_pars = c(0.2, 0.1, 0.2, 0.1),
     loglik_functions = loglik_functions,
     verbose = FALSE,
@@ -401,10 +404,6 @@ test_that("from different likelihoods, different results", {
   cond <- 2
   crown_age  <- 10
   shift_time <- 6
-  l_2 <- sls::sim_get_standard_l_2(
-    crown_age = crown_age,
-    shift_time = shift_time
-  )
 
   # test p-equation
   test <- sls_main(
@@ -418,7 +417,8 @@ test_that("from different likelihoods, different results", {
       loglik_sls_q,
       loglik_sls_q_nodiv
       ),
-    l_2 = l_2,
+    crown_age = crown_age,
+    shift_time = shift_time,
     verbose = TRUE
   )
 
@@ -436,15 +436,15 @@ test_that("abuse", {
   seed <- 1
   sim_pars <- c(0.3, 0.2, 0.6, 0.1)
   cond <- 3
+  crown_age <- 5
+  shift_time <- 2
   testthat::expect_error(
     sls_main(
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,
-      l_2 = sim_get_standard_l_2(
-        crown_age = 5,
-        shift_time = 2
-      ),
+      crown_age = crown_age,
+      shift_time = shift_time,
       start_pars = c(0.2, 0.1, 0.2, 0.1),
       loglik_functions = "nonsense",
       verbose = FALSE

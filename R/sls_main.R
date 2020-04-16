@@ -7,10 +7,8 @@
 sls_main <- function(
   sim_pars,
   cond = 3,
-  l_2 = sls::sim_get_standard_l_2(
-    crown_age = 5,
-    shift_time = 2
-  ),
+  crown_age = 5,
+  shift_time = 2,
   seed,
   start_pars = c(0.2, 0.1, 0.2, 0.1),
   optim_ids = rep(TRUE, length(start_pars)),
@@ -23,8 +21,15 @@ sls_main <- function(
   start_pars <- as.numeric(start_pars)
   cond <- as.numeric(cond)
   seed <- as.numeric(seed)
+  n_0 <- 2
 
   # specific set up
+  l_2 <- sls::sim_get_standard_l_2(
+    crown_age = crown_age,
+    shift_time = shift_time,
+    n_0 = n_0
+  )
+
   lambdas <- sim_pars[c(1, 3)]
   mus <- sim_pars[c(2, 4)]
   ks <- c(Inf, Inf)

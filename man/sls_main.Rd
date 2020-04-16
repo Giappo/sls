@@ -7,7 +7,8 @@
 sls_main(
   sim_pars,
   cond = 3,
-  l_2 = sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2),
+  crown_age = 5,
+  shift_time = 2,
   seed,
   start_pars = c(0.2, 0.1, 0.2, 0.1),
   optim_ids = rep(TRUE, length(start_pars)),
@@ -29,8 +30,9 @@ sls_main(
   both crown descendents in the main clade;
 }}
 
-\item{l_2}{the matrix containing the information about how the subclades are
-nested into the main clade. See \link{sim_get_standard_l_2} for more info.}
+\item{crown_age}{the age of the phylogeny}
+
+\item{shift_time}{the time of the shift}
 
 \item{seed}{the seed}
 
