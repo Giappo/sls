@@ -246,7 +246,12 @@ get_function_names <- function(
   for (m in seq_along(loglik_functions)) {
     if (is.character(loglik_functions[[m]])) {
       if (length(
-        (find_function <- which(fun_list == loglik_functions[[m]]))
+        (
+          find_function <- which(
+            fun_list == loglik_functions[[m]] |
+            paste0(pkg_name, "::", fun_list) == loglik_functions[[m]]
+          )
+          )
       ) == 0) {
         stop(error_message)
       }
