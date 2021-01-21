@@ -56,7 +56,7 @@ Calculates ML.
  cond <- 3
  n_0 <- 2
 
- test <- sls::sls_ml(
+ sls::sls_ml(
    loglik_function = sls::loglik_sls_p,
    brts = brts,
    start_pars = start_pars,
