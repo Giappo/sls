@@ -23,7 +23,8 @@ loglik_bisse_shift2(
   \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
 }}
 
-\item{brts}{branchin times}
+\item{brts}{branching times provided as a list of vectors, one for the
+main clade, one for the subclade}
 
 \item{n_0}{starting number of lineages}
 

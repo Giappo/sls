@@ -7,11 +7,11 @@
 sls_loglik_rhs(t, x, params)
 }
 \arguments{
+\item{t}{time}
+
 \item{x}{vector to integrate}
 
 \item{params}{transition matrix}
-
-\item{time}{time}
 }
 \description{
 Builds the right hand side of the ODE set

@@ -49,6 +49,7 @@ e_t <- function(pars, t_0, t_f, e_0, d_0) {
 #' @description Provides BISSE loglik function
 #' @inheritParams default_params_doc
 #' @param pars parameters of the likelihood functions:
+#' @param brts branching times
 #' \itemize{
 #'   \item pars[1] is lambda, i.e. speciation rate;
 #'   \item pars[2] is mu, i.e. extinction rate;
@@ -130,6 +131,7 @@ loglik_bisse <- function(
 #' @author Giovanni Laudanno
 #' @description Provides BISSE loglik function (alternative version)
 #' @inheritParams default_params_doc
+#' @param brts branching times
 #' @return loglik
 #' @export
 loglik_bisse2 <- function(

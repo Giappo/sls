@@ -18,7 +18,8 @@ sls_ml_dummy(
 \arguments{
 \item{loglik_function}{the loglik function you want to use}
 
-\item{brts}{branchin times}
+\item{brts}{branching times provided as a list of vectors, one for the
+main clade, one for the subclade}
 
 \item{start_pars}{parameters to start from for the search of the likelihood
 maximum}

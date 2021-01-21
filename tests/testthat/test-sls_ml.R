@@ -9,8 +9,8 @@ test_that("use", {
   cond <- 3
   n_0 <- 2
 
-  output <- capture.output(
-    test <- sls_ml(
+  output <- utils::capture.output(
+    test <- sls::sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = brts,
       start_pars = start_pars,
@@ -56,7 +56,7 @@ test_that("abuse", {
   n_0 <- 2
 
   testthat::expect_output(
-    sls_ml(
+    sls::sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = brts,
       start_pars = c(0, 1, 0, 1),
@@ -67,7 +67,7 @@ test_that("abuse", {
     "The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values." # nolint
   )
   testthat::expect_error(
-    test <- sls_ml(
+    test <- sls::sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = list(c(), brts[[2]]),
       start_pars = start_pars,
@@ -78,7 +78,7 @@ test_that("abuse", {
     "main clade branching times cannot be an empty vector"
   )
   testthat::expect_error(
-    test <- sls_ml(
+    test <- sls::sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = list(brts[[1]], c()),
       start_pars = start_pars,
@@ -89,7 +89,7 @@ test_that("abuse", {
     "sub clade branching times cannot be an empty vector"
   )
   testthat::expect_error(
-    test <- sls_ml(
+    test <- sls::sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = brts,
       start_pars = start_pars,
@@ -100,7 +100,7 @@ test_that("abuse", {
     "this conditioning is not implemented"
   )
   testthat::expect_error(
-    test <- sls_ml(
+    test <- sls::sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = brts,
       start_pars = start_pars,
@@ -111,7 +111,7 @@ test_that("abuse", {
     "this n_0 is not implemented"
   )
   testthat::expect_error(
-    test <- sls_ml(
+    test <- sls::sls_ml(
       loglik_function = sls::loglik_sls_p,
       brts = brts,
       start_pars = c(-1, 0.2, 0.3, 0.1),

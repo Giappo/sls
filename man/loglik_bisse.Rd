@@ -7,13 +7,13 @@
 loglik_bisse(pars, brts, n_0 = 2, t_ds = NULL, d_0s = NULL, t_p = 0)
 }
 \arguments{
-\item{pars}{parameters of the likelihood functions:
+\item{pars}{parameters of the likelihood functions:}
+
+\item{brts}{branching times
 \itemize{
   \item pars[1] is lambda, i.e. speciation rate;
   \item pars[2] is mu, i.e. extinction rate;
 }}
-
-\item{brts}{branchin times}
 
 \item{n_0}{starting number of lineages}
 

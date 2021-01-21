@@ -7,7 +7,8 @@
 print_info(brts, n_0, cond, verbose)
 }
 \arguments{
-\item{brts}{branchin times}
+\item{brts}{branching times provided as a list of vectors, one for the
+main clade, one for the subclade}
 
 \item{n_0}{starting number of lineages}
 

@@ -103,7 +103,8 @@ default_params_doc(
 \arguments{
 \item{age}{the age of the phylogeny}
 
-\item{brts}{branchin times}
+\item{brts}{branching times provided as a list of vectors, one for the
+main clade, one for the subclade}
 
 \item{brts_m}{branching times for the Main-clade}
 

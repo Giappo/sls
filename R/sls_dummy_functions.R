@@ -201,7 +201,7 @@ sls_main_dummy <- function(
   start_pars <- as.numeric(start_pars)
   cond <- as.numeric(cond)
   seed <- as.numeric(seed)
-  names(sim_pars) <- sls:::get_param_names()
+  names(sim_pars) <- sls::get_param_names()
 
   # specific set up
   lambdas <- sim_pars[c(1, 3)]
@@ -249,11 +249,7 @@ sls_main_dummy <- function(
   ))
   for (m in seq_along(loglik_functions)) {
     if (verbose == FALSE) {
-      if (rappdirs::app_dir()$os != "win") {
-        sink(tempfile())
-      } else {
-        sink(rappdirs::user_cache_dir())
-      }
+      sink(tempfile())
     }
     mle_out <- sls_ml_dummy(
       loglik_function = get(function_names[m]),

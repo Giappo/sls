@@ -18,7 +18,8 @@ sls_ml(
 \arguments{
 \item{loglik_function}{the loglik function you want to use}
 
-\item{brts}{branchin times}
+\item{brts}{branching times provided as a list of vectors, one for the
+main clade, one for the subclade}
 
 \item{start_pars}{parameters to start from for the search of the likelihood
 maximum}
@@ -46,4 +47,21 @@ best parameters
 }
 \description{
 Calculates ML.
+}
+\examples{
+ brts_m <- c(3, 2, 1)
+ brts_s <- c(2.5, 1.5)
+ brts <- list(brts_m, brts_s)
+ start_pars <- c(0.4, 0.05, 0.3, 0.1)
+ cond <- 3
+ n_0 <- 2
+
+ test <- sls::sls_ml(
+   loglik_function = sls::loglik_sls_p,
+   brts = brts,
+   start_pars = start_pars,
+   cond = cond,
+   n_0 = n_0,
+   verbose = TRUE
+ )
 }

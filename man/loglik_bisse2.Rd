@@ -24,7 +24,7 @@ loglik_bisse2(
   \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
 }}
 
-\item{brts}{branchin times}
+\item{brts}{branching times}
 
 \item{n_0}{starting number of lineages}
 

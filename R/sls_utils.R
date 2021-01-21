@@ -309,7 +309,7 @@ get_model_names <- function(
 
 #' @title Builds the right hand side of the ODE set
 #' @description Builds the right hand side of the ODE set
-#' @param time time
+#' @param t time
 #' @param x vector to integrate
 #' @param params transition matrix
 #' @details This is not to be called by the user.

@@ -15,7 +15,8 @@ loglik_ddd(pars, brts, cond, n_0 = 2, n_max = 100)
   \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
 }}
 
-\item{brts}{branchin times}
+\item{brts}{branching times provided as a list of vectors, one for the
+main clade, one for the subclade}
 
 \item{cond}{type of conditioning:
 \itemize{

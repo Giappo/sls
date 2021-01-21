@@ -1,7 +1,8 @@
 #' This function does nothing. It is intended to inherit is parameters'
 #' documentation.
 #' @param age the age of the phylogeny
-#' @param brts branchin times
+#' @param brts branching times provided as a list of vectors, one for the
+#'  main clade, one for the subclade
 #' @param brts_m branching times for the Main-clade
 #' @param brts_s branching times for the Sub-clade
 #' @param brts_clade branching times for a single clade

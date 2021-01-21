@@ -11,7 +11,8 @@ loglik_preshift_nodiv(lambdas, mus, brts, n_0 = 2, n_max = 100)
 
 \item{mus}{extinction rate, for all the clades}
 
-\item{brts}{branchin times}
+\item{brts}{branching times provided as a list of vectors, one for the
+main clade, one for the subclade}
 
 \item{n_0}{starting number of lineages}
 
