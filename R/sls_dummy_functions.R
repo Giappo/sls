@@ -76,7 +76,7 @@ sls_ml_dummy <- function(
   verbose = TRUE
 ) {
   # setup and checks
-  par_names <- get_param_names()[seq_len(start_pars)] # nolint internal function
+  par_names <- get_param_names()[seq_along(start_pars)] # nolint internal function
   testit::assert(length(optim_ids) == length(start_pars))
   testit::assert(length(true_pars) == length(start_pars))
   start_pars[!optim_ids] <- true_pars[!optim_ids]
