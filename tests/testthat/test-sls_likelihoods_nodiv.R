@@ -92,7 +92,7 @@ test_that("all the likelihoods with no division yield the same result", {
   threshold <- (!is_on_ci()) * 1e-2 +
                (is_on_ci())  * 1e-3
 
-  max_seed <- (2 + 3 * is_on_ci())
+  max_seed <- (2 + 2 * is_on_ci())
   conds <- rep(sls::sls_conds(), max_seed)
   cond <- 0; seed <- 1
   for (seed in 1:max_seed) {
@@ -151,7 +151,7 @@ test_that("faster likelihood gives the same results", {
                (is_on_ci())  * (1 / 2) * 1e-3
 
   cond <- sls_conds()[1]
-  for (seed in 1:(2 + 2 * is_on_ci())) {
+  for (seed in 1:(2 + 1 * is_on_ci())) {
     set.seed(seed)
     t_0s    <- c(6, 3)
     brts_m  <- c(

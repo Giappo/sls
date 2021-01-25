@@ -102,7 +102,7 @@ test_that("all the likelihoods with division yield the same result", {
   t_0s <- c(5, 2)
   n_m <- 15
   n_s <- 7
-  for (seed in 1:(4 + 6 * is_on_ci())) {
+  for (seed in 1:(4 + 3 * is_on_ci())) {
     set.seed(seed)
     brts_m  <- c(
       t_0s[1],
@@ -167,7 +167,7 @@ test_that("faster likelihood gives the same results", {
   t_0s <- c(5, 2)
   n_m <- 15
   n_s <- 7
-  for (seed in 1:(4 + 6 * is_on_ci())) {
+  for (seed in 1:(4 + 3 * is_on_ci())) {
     set.seed(seed)
     brts_m  <- c(
       t_0s[1],
@@ -224,7 +224,7 @@ test_that("div and nodiv yield the same values for mu = 0", {
   cond <- 2
   starting_seed <- 1000
   t_0s <- c(5, 2)
-  for (seed in starting_seed:(starting_seed + 100 + 400 * is_on_ci())) {
+  for (seed in starting_seed:(starting_seed + 100 + 300 * is_on_ci())) {
     set.seed(seed)
     brts_m  <- c(
       t_0s[1],
@@ -278,7 +278,7 @@ test_that("test missnumspec vs ddd", {
   n_m <- 15
   n_s <- 7
   n_max <- (n_m + n_s) * 2
-  for (seed in 1:(4 + 6 * is_on_ci())) {
+  for (seed in 1:(4 + 3 * is_on_ci())) {
     missnumspec <- 1
     set.seed(seed)
     brts_m  <- c(

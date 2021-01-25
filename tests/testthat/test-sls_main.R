@@ -21,7 +21,7 @@ test_that("use", {
   n_0 <- l_2$n_0[1]
   t_0s <- l_2$birth_time
   optim_ids <- c(TRUE, TRUE, TRUE, TRUE)
-  seed_interval <- 6:(6 + 5 * is_on_ci()); seed <- seed_interval[1]
+  seed_interval <- 6:(6 + 3 * is_on_ci()); seed <- seed_interval[1]
   for (seed in seed_interval) {
     # seed = 6 is critical!
     test <- sls::sls_main(
