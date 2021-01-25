@@ -52,7 +52,6 @@ loglik_sls_p_dummy_nodiv <- function(
 #' @title Logliks with dummy shift
 #' @author Giovanni Laudanno
 #' @description Get all the loglik functions with dummy shift
-#' @inheritParams default_params_doc
 #' @return loglik functions with dummy shift
 #' @export
 sls_logliks_dummy <- function() {

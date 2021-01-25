@@ -63,7 +63,6 @@ sls_check_input <- function(
 #' @title Conditionings
 #' @author Giovanni Laudanno
 #' @description Gives the conditionings accepted by sls
-#' @inheritParams default_params_doc
 #' @return the conditionings
 #' @export
 sls_conds <- function() {
@@ -74,7 +73,6 @@ sls_conds <- function() {
 #' @title Starting species
 #' @author Giovanni Laudanno
 #' @description Gives the amount of starting species accepted by sls
-#' @inheritParams default_params_doc
 #' @return the possible n_0s
 #' @export
 sls_n_0s <- function() {
@@ -85,7 +83,6 @@ sls_n_0s <- function() {
 #' @title Logliks with division
 #' @author Giovanni Laudanno
 #' @description Get all the loglik functions with division
-#' @inheritParams default_params_doc
 #' @return loglik functions with division in sls
 #' @export
 sls_logliks_div <- function() {
@@ -101,7 +98,6 @@ sls_logliks_div <- function() {
 #' @title Logliks with no division
 #' @author Giovanni Laudanno
 #' @description Get all the loglik functions with no division
-#' @inheritParams default_params_doc
 #' @return loglik functions with no division in sls
 #' @export
 sls_logliks_nodiv <- function() {
@@ -118,7 +114,6 @@ sls_logliks_nodiv <- function() {
 #' @title Logliks for the experiment
 #' @author Giovanni Laudanno
 #' @description Get the loglik functions to use for the experiment
-#' @inheritParams default_params_doc
 #' @return loglik functions to use for the experiment
 #' @export
 sls_logliks_experiment <- function() {
@@ -135,7 +130,6 @@ sls_logliks_experiment <- function() {
 #' @title Get package name
 #' @author Giovanni Laudanno
 #' @description Get package name
-#' @inheritParams default_params_doc
 #' @return Package name
 #' @export
 get_pkg_name <- function() {
