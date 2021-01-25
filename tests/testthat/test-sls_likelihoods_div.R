@@ -95,7 +95,7 @@ test_that("all the likelihoods with division yield the same result", {
     sls::loglik_sls_q
   )
   threshold <- (!is_on_ci()) * 1e-2 +
-               (is_on_ci())  * (1 / 2) * 1e-3
+    (is_on_ci())  * (1 / 2) * 1e-3
 
   conds <- sls::sls_conds()
   cond <- conds[1]
@@ -262,5 +262,81 @@ test_that("div and nodiv yield the same values for mu = 0", {
         n_max = n_max
       )
     )
+  }
+})
+
+test_that("test missnumspec vs ddd", {
+
+  skip("Not ready yet")
+
+  threshold <- (!is_on_ci()) * 1e-2 +
+    (is_on_ci())  * (1 / 2) * 1e-3
+
+  cond <- 1
+  n_0 <- 2
+  t_0s <- c(5, 2)
+  n_m <- 15
+  n_s <- 7
+  n_max <- (n_m + n_s) * 2
+  for (seed in 1:(4 + 6 * is_on_ci())) {
+    missnumspec <- 1
+    set.seed(seed)
+    brts_m  <- c(
+      t_0s[1],
+      sort(runif(n = n_m, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
+    )
+    pars_m  <- c(
+      x <- runif(n = 1, min = 0.1, max = 1),
+      runif(n = 1, min = 0.05, max = x * 3 / 4)
+    )
+    brts_s <- c(
+      t_0s[2],
+      sort(runif(n = n_s, min = 0.01, max = t_0s[2] - 0.01), decreasing = TRUE)
+    )
+    pars_s <- c(
+      x <- runif(n = 1, min = 0.1, max = 1),
+      runif(n = 1, min = 0.05, max = x * 3 / 4)
+    ) * c(2, 0.5)
+    pars <- c(pars_m, pars_s)
+    brts <- list(brts_m, brts_s)
+
+    pars1 <- c(pars_m, Inf, pars_s, Inf, brts_s[1])
+    pars2 <- c(n_max, 1, cond, 0, 0, n_0, 1)
+    ddd_loglik <- DDD::dd_KI_loglik(
+      pars1 = pars1,
+      pars2 = pars2,
+      brtsM = brts_m,
+      brtsS = brts_s,
+      missnumspec = missnumspec
+    )
+    sls_loglik <- sls::loglik_sls_q(
+      pars = pars,
+      brts = brts,
+      cond = cond,
+      n_0 = n_0,
+      missnumspec = missnumspec,
+      n_max = n_max
+    )
+    parsB <- pars / 2
+    pars1B <- c(parsB[1:2], Inf, parsB[3:4], Inf, brts_s[1])
+    ddd_loglik0 <- DDD::dd_KI_loglik(
+      pars1 = pars1B,
+      pars2 = pars2,
+      brtsM = brts_m,
+      brtsS = brts_s,
+      missnumspec = missnumspec
+    )
+    sls_loglik0 <- sls::loglik_sls_q(
+      pars = parsB,
+      brts = brts,
+      cond = cond,
+      n_0 = n_0,
+      missnumspec = missnumspec,
+      n_max = n_max
+    )
+  ddd_loglik - ddd_loglik0
+  sls_loglik - sls_loglik0
+
+
   }
 })

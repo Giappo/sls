@@ -165,7 +165,7 @@ test_that("sls_sim - pathological cases", {
 test_that("shift is always recorded in main clade l_0_after and
           sub clade ids always have the same sign", {
 
-  seed_interval <- (23 - 5 * is_on_ci()):(25 + 5 * is_on_ci())
+  seed_interval <- (23 - 3 * is_on_ci()):(25 + 3 * is_on_ci())
   for (seed in seed_interval) {
     set.seed(seed)
     lambdas <- c(0.3, 0.6)
