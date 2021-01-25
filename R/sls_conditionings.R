@@ -77,7 +77,7 @@ pc_1shift <- function(
   if (pc > 1 && pc < (1 + 1e13)) {
     pc <- 1
   }
-  testit::assert(pc > 0)
-  testit::assert(pc <= 1)
+  testit::assert(pc > 0, fact = paste0("Pc <= 0 for parameters ", paste(c(pars_m, pars_s), collapse = " ")))
+  testit::assert(pc <= 1, fact = paste0("Pc > 1 for parameters ", paste(c(pars_m, pars_s), collapse = " ")))
   return(pc)
 }

@@ -97,13 +97,16 @@ test_that("all the likelihoods with division yield the same result", {
   threshold <- (!is_on_ci()) * 1e-2 +
                (is_on_ci())  * (1 / 2) * 1e-3
 
-  cond <- sls_conds()[1]
-  for (seed in 1:(4 + 4 * is_on_ci())) {
+  conds <- sls::sls_conds()
+  cond <- conds[1]
+  t_0s <- c(5, 2)
+  n_m <- 15
+  n_s <- 7
+  for (seed in 1:(4 + 6 * is_on_ci())) {
     set.seed(seed)
-    t_0s    <- c(6, 2)
     brts_m  <- c(
       t_0s[1],
-      sort(runif(n = 20, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
+      sort(runif(n = n_m, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
     )
     pars_m  <- c(
       x <- runif(n = 1, min = 0.1, max = 1),
@@ -111,7 +114,7 @@ test_that("all the likelihoods with division yield the same result", {
     )
     brts_s <- c(
       t_0s[2],
-      sort(runif(n = 10, min = 0.01, max = t_0s[2] - 0.01), decreasing = TRUE)
+      sort(runif(n = n_s, min = 0.01, max = t_0s[2] - 0.01), decreasing = TRUE)
     )
     pars_s <- c(
       x <- runif(n = 1, min = 0.1, max = 1),
@@ -119,24 +122,35 @@ test_that("all the likelihoods with division yield the same result", {
     ) * c(2, 0.5)
     pars <- c(pars_m, pars_s)
     brts <- list(brts_m, brts_s)
-    cond <- c(sls_conds(), sls_conds())[which(cond %in% sls_conds()) + 1]
+    cond <- c(conds, conds)[which(cond %in% conds) + 1]
 
     for (i in 1:(length(models) - 1)) {
       for (j in (i + 1):length(models)) {
-        testthat::expect_true(
-          test_diff(
+        fun1 <- models[[i]]
+        fun2 <- models[[j]]
+        diff <- 1; max_rep <- 20; rep <- 0; precision <- 1e2
+        while (diff > threshold && rep <= max_rep) {
+          precision <- precision * 2
+          res_1_1 <- fun1(
             pars = pars,
             brts = brts,
             cond = cond,
-            fun1 = models[[i]],
-            fun2 = models[[j]],
-            threshold = threshold
-          ) <= threshold
-        )
+            n_max = precision
+          ); res_1_1
+          res_2_1 <- fun2(
+            pars = pars,
+            brts = brts,
+            cond = cond,
+            n_max = precision
+          ); res_2_1
+
+          diff <- abs(res_1_1 - res_2_1)
+          rep <- rep + 1
+        }
+        testthat::expect_lt(diff, threshold)
       }
     }
   }
-
 })
 
 test_that("faster likelihood gives the same results", {
@@ -146,15 +160,18 @@ test_that("faster likelihood gives the same results", {
     sls::loglik_sls_p2
   )
   threshold <- (!is_on_ci()) * 1e-2 +
-               (is_on_ci())  * (1 / 2) * 1e-3
+    (is_on_ci())  * (1 / 2) * 1e-3
 
-  cond <- sls_conds()[1]
-  for (seed in 1:(2 + 2 * is_on_ci())) {
+  conds <- sls::sls_conds()
+  cond <- conds[1]
+  t_0s <- c(5, 2)
+  n_m <- 15
+  n_s <- 7
+  for (seed in 1:(4 + 6 * is_on_ci())) {
     set.seed(seed)
-    t_0s    <- c(6, 3)
     brts_m  <- c(
       t_0s[1],
-      sort(runif(n = 30, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
+      sort(runif(n = n_m, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)
     )
     pars_m  <- c(
       x <- runif(n = 1, min = 0.1, max = 1),
@@ -162,7 +179,7 @@ test_that("faster likelihood gives the same results", {
     )
     brts_s <- c(
       t_0s[2],
-      sort(runif(n = 10, min = 0.01, max = t_0s[2] - 0.01), decreasing = TRUE)
+      sort(runif(n = n_s, min = 0.01, max = t_0s[2] - 0.01), decreasing = TRUE)
     )
     pars_s <- c(
       x <- runif(n = 1, min = 0.1, max = 1),
@@ -170,34 +187,45 @@ test_that("faster likelihood gives the same results", {
     ) * c(2, 0.5)
     pars <- c(pars_m, pars_s)
     brts <- list(brts_m, brts_s)
-    cond <- c(sls_conds(), sls_conds())[which(cond %in% sls_conds()) + 1]
+    cond <- c(conds, conds)[which(cond %in% conds) + 1]
 
     for (i in 1:(length(models) - 1)) {
       for (j in (i + 1):length(models)) {
-        testthat::expect_true(
-          test_diff(
+        fun1 <- models[[i]]
+        fun2 <- models[[j]]
+        diff <- 1; max_rep <- 20; rep <- 0; precision <- 1e2
+        while (diff > threshold && rep <= max_rep) {
+          precision <- precision * 2
+          res_1_1 <- fun1(
             pars = pars,
             brts = brts,
             cond = cond,
-            fun1 = models[[i]],
-            fun2 = models[[j]],
-            threshold = threshold
-          ) <= threshold
-        )
+            n_max = precision
+          ); res_1_1
+          res_2_1 <- fun2(
+            pars = pars,
+            brts = brts,
+            cond = cond,
+            n_max = precision
+          ); res_2_1
+
+          diff <- abs(res_1_1 - res_2_1)
+          rep <- rep + 1
+        }
+        testthat::expect_lt(diff, threshold)
       }
     }
   }
-
 })
 
-test_that("div and nodiv are yield the same values for mu = 0", {
+test_that("div and nodiv yield the same values for mu = 0", {
   n_0 <- 2
   n_max <- 1e2
   cond <- 2
   starting_seed <- 1000
+  t_0s <- c(5, 2)
   for (seed in starting_seed:(starting_seed + 100 + 400 * is_on_ci())) {
     set.seed(seed)
-    t_0s    <- c(6, 2)
     brts_m  <- c(
       t_0s[1],
       sort(runif(n = 20, min = 0.01, max = t_0s[1] - 0.01), decreasing = TRUE)

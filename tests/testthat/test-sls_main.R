@@ -7,13 +7,13 @@ is_on_ci <- function() {
 }
 
 test_that("use", {
-  sim_pars <- c(0.3, 0.2, 0.6, 0.1)
+  sim_pars <- c(0.25, 0.1, 0.6, 0.1)
   cond <- 3
   loglik_functions <- sls::sls_logliks_div()
   loglik_functions <-
     loglik_functions[-which(loglik_functions == "loglik_sls_p2")] # remove this
-  crown_age <- 5
-  shift_time <- 2
+  crown_age <- 4
+  shift_time <- 1.5
   l_2 <- sls::sim_get_standard_l_2(
     crown_age = crown_age,
     shift_time = shift_time
@@ -33,7 +33,8 @@ test_that("use", {
       start_pars = c(0.2, 0.1, 0.2, 0.1),
       loglik_functions = loglik_functions,
       optim_ids = optim_ids,
-      verbose = FALSE
+      verbose = FALSE,
+      max_iterations = 500
     )
     testthat::expect_true(
       is.data.frame(test)
@@ -201,7 +202,8 @@ test_that("use", {
       start_pars = c(0.2, 0.1, 0.2, 0.1),
       loglik_functions = "loglik_sls_p",
       optim_ids = optim_ids,
-      verbose = FALSE
+      verbose = FALSE,
+      max_iterations = 50
     )
   )
   testthat::expect_true(
@@ -277,7 +279,8 @@ test_that("it saves only once", {
       crown_age = crown_age,
       shift_time = shift_time,
       verbose = FALSE,
-      project_folder = project_folder
+      project_folder = project_folder,
+      max_iterations = 100
     )
     x <- utils::read.csv(
       file = fn
@@ -292,7 +295,8 @@ test_that("it saves only once", {
       crown_age = crown_age,
       shift_time = shift_time,
       verbose = FALSE,
-      project_folder = project_folder
+      project_folder = project_folder,
+      max_iterations = 100
     )
     y <- utils::read.csv(
       file = fn
@@ -307,9 +311,9 @@ test_that("it saves only once", {
 test_that("it works also for a subset of parameters", {
 
   seed <- 10
-  sim_pars <- c(0.3, 0.2, 0.6, 0.1)
+  sim_pars <- c(0.3, 0.1, 0.6, 0.1)
   cond <- 3
-  crown_age <- 5
+  crown_age <- 4
   shift_time <- 2
   l_2 <- sls::sim_get_standard_l_2(
     crown_age = crown_age,
@@ -322,7 +326,7 @@ test_that("it works also for a subset of parameters", {
     loglik_functions[-which(loglik_functions == "loglik_sls_p2")] # remove this
   optim_ids <- c(TRUE, FALSE, FALSE, FALSE)
 
-  test <- sls_main(
+  test <- sls::sls_main(
     seed = seed,
     sim_pars = sim_pars,
     cond = cond,
@@ -331,7 +335,8 @@ test_that("it works also for a subset of parameters", {
     start_pars = c(0.2, 0.1, 0.2, 0.1),
     loglik_functions = loglik_functions,
     verbose = FALSE,
-    optim_ids = optim_ids
+    optim_ids = optim_ids,
+    max_iterations = 100
   )
   testthat::expect_true(
     is.data.frame(test)
@@ -390,46 +395,6 @@ test_that("it works also for a subset of parameters", {
     file.exists(results_file_name)
   )
   suppressWarnings(file.remove(results_file_name))
-})
-
-test_that("from different likelihoods, different results", {
-
-  skip("This is long")
-  if (!is_on_ci()) {
-    skip("This test should run only on ci")
-  }
-
-  seed <- 5
-  sim_pars <- c(0.4, 0.2, 0.6, 0.15)
-  cond <- 2
-  crown_age  <- 10
-  shift_time <- 6
-
-  # test p-equation
-  test <- sls_main(
-    seed = seed,
-    sim_pars = sim_pars,
-    cond = cond,
-    start_pars = sim_pars,
-    loglik_functions = c(
-      loglik_sls_p,
-      loglik_sls_p_nodiv,
-      loglik_sls_q,
-      loglik_sls_q_nodiv
-      ),
-    crown_age = crown_age,
-    shift_time = shift_time,
-    verbose = TRUE
-  )
-
-  testthat::expect_true(
-    length(unique(unlist(
-      test[, (length(sim_pars) + 1):(length(sim_pars) + 2)]
-    ))) ==
-      length(unlist(
-        test[, (length(sim_pars) + 1):(length(sim_pars) + 2)]
-      ))
-  )
 })
 
 test_that("abuse", {

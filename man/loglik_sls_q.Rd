@@ -4,7 +4,7 @@
 \alias{loglik_sls_q}
 \title{Q-likelihood}
 \usage{
-loglik_sls_q(pars, brts, cond, n_0 = 2, n_max = 100)
+loglik_sls_q(pars, brts, cond, n_0 = 2, n_max = 100, missnumspec = 0)
 }
 \arguments{
 \item{pars}{parameters of the likelihood functions:
@@ -31,6 +31,8 @@ main clade, one for the subclade}
 \item{n_0}{starting number of lineages}
 
 \item{n_max}{maximum number of lineages to consider}
+
+\item{missnumspec}{number of missing (unseen) species in the phylogeny}
 }
 \value{
 The likelihood

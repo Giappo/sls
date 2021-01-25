@@ -301,17 +301,17 @@ sls_main_dummy <- function(
     model = model_names
   )
   if (length(t_0s) > 1) {
-    t_0s_label <- paste0("t_0_", seq_len(t_0s))
+    t_0s_label <- paste0("t_0_", seq_along(t_0s))
   } else {
     t_0s_label <- "t_0"
   }
   if (length(tips) > 1) {
-    tips_label <- paste0("tips_", seq_len(tips))
+    tips_label <- paste0("tips_", seq_along(tips))
   } else {
     tips_label <- "tips"
   }
   colnames(results) <- c(
-    paste0("sim_", colnames(mle[seq_len(sim_pars)])),
+    paste0("sim_", colnames(mle[seq_along(sim_pars)])),
     colnames(mle),
     "seed",
     "cond",

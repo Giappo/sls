@@ -14,7 +14,8 @@ sls_main(
   optim_ids = rep(TRUE, length(start_pars)),
   loglik_functions = sls::sls_logliks_div(),
   project_folder = NULL,
-  verbose = FALSE
+  verbose = FALSE,
+  max_iterations = 10000
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ maximum}
 \item{project_folder}{the folder where you want to save data and results}
 
 \item{verbose}{set it to TRUE if you want to see the outputs on screen}
+
+\item{max_iterations}{maximum number of iterations for the optimizer}
 }
 \description{
 Simulate an sls process and infer parameters maximizing the

@@ -12,7 +12,8 @@ sls_ml(
   cond = 3,
   optim_ids = rep(TRUE, length(start_pars)),
   true_pars = start_pars,
-  verbose = TRUE
+  verbose = TRUE,
+  max_iterations = 10000
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ maximum}
 \item{true_pars}{true parameter values when running the ml process.}
 
 \item{verbose}{set it to TRUE if you want to see the outputs on screen}
+
+\item{max_iterations}{maximum number of iterations for the optimizer}
 }
 \value{
 best parameters

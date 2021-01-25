@@ -14,7 +14,8 @@ sls_main <- function(
   optim_ids = rep(TRUE, length(start_pars)),
   loglik_functions = sls::sls_logliks_div(),
   project_folder = NULL,
-  verbose = FALSE
+  verbose = FALSE,
+  max_iterations = 1e4
 ) {
   # check formats
   sim_pars <- as.numeric(sim_pars)
@@ -77,7 +78,7 @@ sls_main <- function(
     if (verbose == FALSE) {
       sink(tempfile())
     }
-    mle_out <- sls_ml(
+    mle_out <- sls::sls_ml(
       loglik_function = get(function_names[m]),
       brts = brts,
       cond = cond,
@@ -85,7 +86,8 @@ sls_main <- function(
       start_pars = start_pars,
       optim_ids = optim_ids,
       true_pars = sim_pars,
-      verbose = verbose
+      verbose = verbose,
+      max_iterations = max_iterations
     )
     mle[m, ] <- mle_out
     colnames(mle) <- names(mle_out)

@@ -35,6 +35,7 @@ default_params_doc(
   k,
   lambda,
   lambdas,
+  max_iterations,
   mu,
   mus,
   ks,
@@ -174,6 +175,8 @@ of the species considered in the l table}
 \item{lambda}{speciation rate}
 
 \item{lambdas}{speciation rates, for all the clades}
+
+\item{max_iterations}{maximum number of iterations for the optimizer}
 
 \item{mu}{extinction rate}
 

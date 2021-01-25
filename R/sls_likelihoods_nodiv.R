@@ -16,7 +16,7 @@ loglik_sls_p_nodiv <- function(
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
-  if (any(c(pars_m, pars_s) < 0)) {
+  if (any(c(pars_m, pars_s) < 0) | any(c(pars_m, pars_s) > 90)) {
     return(-Inf)
   }
 
@@ -159,7 +159,7 @@ loglik_sls_p2_nodiv <- function(
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
-  if (any(c(pars_m, pars_s) < 0)) {
+  if (any(c(pars_m, pars_s) < 0) | any(c(pars_m, pars_s) > 90)) {
     return(-Inf)
   }
 
@@ -303,7 +303,7 @@ loglik_sls_q_nodiv <- function(
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
-  if (any(c(pars_m, pars_s) < 0)) {
+  if (any(c(pars_m, pars_s) < 0) | any(c(pars_m, pars_s) > 90)) {
     return(-Inf)
   }
 

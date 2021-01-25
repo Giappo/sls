@@ -15,7 +15,7 @@ loglik_sls_p <- function(
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
-  if (any(c(pars_m, pars_s) < 0)) {
+  if (any(c(pars_m, pars_s) < 0) | any(c(pars_m, pars_s) > 90)) {
     return(-Inf)
   }
 
@@ -158,7 +158,7 @@ loglik_sls_p2 <- function(
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
-  if (any(c(pars_m, pars_s) < 0)) {
+  if (any(c(pars_m, pars_s) < 0) | any(c(pars_m, pars_s) > 90)) {
     return(-Inf)
   }
 
@@ -303,13 +303,17 @@ loglik_sls_q <- function(
   brts,
   cond,
   n_0 = 2,
-  n_max = 1e2
+  n_max = 1e2,
+  missnumspec = 0
 ) {
   pars_m <- pars[1:2]
   pars_s <- pars[3:4]
   brts_m <- brts[[1]]
   brts_s <- brts[[2]]
-  if (any(c(pars_m, pars_s) < 0)) {
+  n_shifts <- length(brts) - 1
+  k_m <- n_0 + length(brts_m) - n_shifts
+  k_s <- length(brts_s)
+  if (any(c(pars_m, pars_s) < 0) | any(c(pars_m, pars_s) > 90)) {
     return(-Inf)
   }
 
@@ -344,7 +348,6 @@ loglik_sls_q <- function(
   brts_s1 <- sort(abs(brts_s), decreasing = TRUE)
   t_d <- brts_s1[1]
 
-  missnumspec <- c(0, 0)
   n_0s <- c(n_0, 1)
 
   testit::assert(all(sign(brts_m) == sign(t_d)))
@@ -358,92 +361,100 @@ loglik_sls_q <- function(
   brts_s1 <- sort(c(0, abs(c(brts_s))), decreasing = TRUE)
   brts_list <- list(brts_m = brts_m1, brts_s = brts_s1)
   nvec <- 0:n_max
-  logliks <- rep(NA, n_clades)
 
-  #LIKELIHOOD INTEGRATION
-  clade <- 0 #clade == 1 is the main clade, clade == 2 is the subclade
-  while (
-    (clade <- clade + 1) <= n_clades
-  ) {
-    #SETTING CLADE CONDITIONS
-    lambda <- lambdas[clade]
-    mu     <- mus[clade]
-    kappa  <- ks[clade]
-    soc    <- n_0s[clade]
-    max_t  <- length(brts_list[[clade]])
-    brts   <- brts_list[[clade]]
+  missnumspec_vec <- 0:missnumspec
+  logliks_vec <- rep(0, length(missnumspec_vec))
+  for (m_m in missnumspec_vec) {
+    m_s <- missnumspec - m_m
+    missnumspecs <- c(m_m, m_s)
+    logliks <- rep(NA, n_clades)
 
-    #SETTING INITIAL CONDITIONS (there's always a +1 because of Q0)
-    q_i <- c(1, rep(0, n_max))
-    q_t <- matrix(0, ncol = (n_max + 1), nrow = max_t)
-    q_t[1, ] <- q_i
-    dimnames(q_t)[[2]] <- paste0("Q", 0:n_max)
-    k <- soc
-    t <- 2
-    sumvec2 <- sumvec1 <- rep(1, max_t)
+    #LIKELIHOOD INTEGRATION
+    clade <- 0 #clade == 1 is the main clade, clade == 2 is the subclade
+    while (
+      (clade <- clade + 1) <= n_clades
+    ) {
+      #SETTING CLADE CONDITIONS
+      lambda <- lambdas[clade]
+      mu     <- mus[clade]
+      kappa  <- ks[clade]
+      soc    <- n_0s[clade]
+      max_t  <- length(brts_list[[clade]])
+      brts   <- brts_list[[clade]]
 
-    #EVOLVING THE INITIAL STATE TO THE LAST BRANCHING POINT
-    while (t <= max_t) {
-      #Applying A operator
-      if (lambda == 0 && mu == 0) {
-        q_t[t, ] <- q_t[(t - 1), ]
-      } else {
-        transition_matrix <- DDD:::dd_loglik_M_aux(
-          pars = c(lambda, mu, kappa),
-          lx = n_max + 1,
-          k = k,
-          ddep = 1
-        )
-        # q_t[t, ] <- abs(expoRkit::expv( # nolint
-        #   v = q_t[(t - 1), ], # nolint
-        #   x = transition_matrix, # nolint
-        #   t = abs(brts[t] - brts[t - 1]) # nolint
-        # )) # nolint
-        transition_matrix <- as.matrix(transition_matrix)
-        q_t[t, ] <- abs(deSolve::ode(
-          y = q_t[(t - 1), ],
-          parms = transition_matrix,
-          times = c(0, abs(brts[t] - brts[t - 1])),
-          func = sls::sls_loglik_rhs
-        )[2, -1])
-      }
+      #SETTING INITIAL CONDITIONS (there's always a +1 because of Q0)
+      q_i <- c(1, rep(0, n_max))
+      q_t <- matrix(0, ncol = (n_max + 1), nrow = max_t)
+      q_t[1, ] <- q_i
+      dimnames(q_t)[[2]] <- paste0("Q", 0:n_max)
+      k <- soc
+      t <- 2
+      sumvec2 <- sumvec1 <- rep(1, max_t)
 
-      #Applying sumvec1 operator (this is a trick to avoid precision issues)
-      sumvec1[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * sumvec1[t]
-
-      #Applying B operator
-      if (t < max_t) {
-        if (brts[t] != t_d) {
-          q_t[t, ] <- q_t[t, ] * lambda
-          k <- k + 1
+      #EVOLVING THE INITIAL STATE TO THE LAST BRANCHING POINT
+      while (t <= max_t) {
+        #Applying A operator
+        if (lambda == 0 && mu == 0) {
+          q_t[t, ] <- q_t[(t - 1), ]
         } else {
-          q_t[t, ] <- q_t[t, ] * k * (k + nvec) ^ -1
-          k <- k - 1
+          transition_matrix <- DDD:::dd_loglik_M_aux(
+            pars = c(lambda, mu, kappa),
+            lx = n_max + 1,
+            k = k,
+            ddep = 1
+          )
+          # q_t[t, ] <- abs(expoRkit::expv( # nolint
+          #   v = q_t[(t - 1), ], # nolint
+          #   x = transition_matrix, # nolint
+          #   t = abs(brts[t] - brts[t - 1]) # nolint
+          # )) # nolint
+          transition_matrix <- as.matrix(transition_matrix)
+          q_t[t, ] <- abs(deSolve::ode(
+            y = q_t[(t - 1), ],
+            parms = transition_matrix,
+            times = c(0, abs(brts[t] - brts[t - 1])),
+            func = sls::sls_loglik_rhs
+          )[2, -1])
         }
 
-        #Applying sumvec2 operator (this works exactly like sumvec1)
-        sumvec2[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * sumvec2[t]
+        #Applying sumvec1 operator (this is a trick to avoid precision issues)
+        sumvec1[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * sumvec1[t]
 
-        #Updating running parameters
-        t <- t + 1
-      } else {
-        break
+        #Applying B operator
+        if (t < max_t) {
+          if (brts[t] != t_d) {
+            q_t[t, ] <- q_t[t, ] * lambda
+            k <- k + 1
+          } else {
+            q_t[t, ] <- q_t[t, ] * k * (k + nvec) ^ -1
+            k <- k - 1
+          }
+
+          #Applying sumvec2 operator (this works exactly like sumvec1)
+          sumvec2[t] <- 1 / (sum(q_t[t, ])); q_t[t, ] <- q_t[t, ] * sumvec2[t]
+
+          #Updating running parameters
+          t <- t + 1
+        } else {
+          break
+        }
       }
+
+      #Selecting the state I am interested in
+      vm <- choose(k + missnumspecs[clade], k) ^ -1
+      p_m  <- vm * q_t[t, (missnumspecs[clade] + 1)]
+
+      #Removing sumvec1 and sumvec2 effects from the LL
+      loglik <- log(p_m) - sum(log(sumvec1)) - sum(log(sumvec2))
+
+      #Various checks
+      loglik <- as.numeric(loglik)
+      if (is.nan(loglik) | is.na(loglik)) {
+        loglik <- -Inf
+      }
+      logliks[clade] <- loglik
     }
-
-    #Selecting the state I am interested in
-    vm <- choose(k + missnumspec[clade], k) ^ -1
-    p_m  <- vm * q_t[t, (missnumspec[clade] + 1)]
-
-    #Removing sumvec1 and sumvec2 effects from the LL
-    loglik <- log(p_m) - sum(log(sumvec1)) - sum(log(sumvec2))
-
-    #Various checks
-    loglik <- as.numeric(loglik)
-    if (is.nan(loglik) | is.na(loglik)) {
-      loglik <- -Inf
-    }
-    logliks[clade] <- loglik
+    logliks_vec[m_m + 1] <- sum(logliks) + lchoose(missnumspec, m_m)
   }
 
   pc <- sls::pc_1shift(
@@ -456,7 +467,8 @@ loglik_sls_q <- function(
     n_0 = n_0
   )
 
-  total_loglik <- sum(logliks) - log(pc)
+  # total_loglik <- sum(logliks) - log(pc)
+  total_loglik <- sum(logliks_vec) - log(pc)
   total_loglik <- as.numeric(total_loglik)
   if (is.nan(total_loglik) | is.na(total_loglik)) {
     total_loglik <- -Inf

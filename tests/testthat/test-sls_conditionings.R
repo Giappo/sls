@@ -181,25 +181,23 @@ test_that("If lambda2=mu2=0 (inert subclade), pc1 equal to pc3 (PS = 1)", {
 
 test_that("sls algorithm yields the same pc1 provided by DDD", {
 
-  diff_pc_vs_ddd <- function(
-    pars_m,
-    pars_s,
-    cond = 1,
-    age,
-    n_0,
-    t_d,
-    seed = 2,
-    precision_threshold = 1e-4
-  ) {
+  pars_m <- c(0.2, 0.1)
+  pars_s <- c(0.5, 0.08)
+  n_0 <- 2
+  cond <- 1
+  crown_age <- 5
+  t_d <- crown_age / 2
+  precision_threshold <- 1e-3
+  lambdas <- c(pars_m[1], pars_s[1])
+  mus <- c(pars_m[2], pars_s[2])
 
-    lambdas <- c(pars_m[1], pars_s[1])
-    mus <- c(pars_m[2], pars_s[2])
-
+  for (seed in 1:4) {
     set.seed(seed)
     sim <- sls::sls_sim(
       lambdas = lambdas,
       mus = mus,
-      cond = cond
+      cond = cond,
+      l_2 = sls::sim_get_standard_l_2(crown_age = crown_age, shift_time = t_d)
     )
     brts <- sim$brts; brts_m <- brts[[1]]; brts_s <- brts[[2]]; brts
     tsplit <- min(abs(brts_m[abs(brts_m) > t_d]))
@@ -207,8 +205,8 @@ test_that("sls algorithm yields the same pc1 provided by DDD", {
     missnumspec <- c(0, 0)
     max_res <- 1200
     res <- min(10 * (1 + length(c(brts_m, brts_s)) + sum(missnumspec)), max_res)
-    out <- 1
-    while (out > precision_threshold && res <= max_res) {
+    difference <- 1
+    while (difference > precision_threshold && res <= max_res) {
 
       # pars2[3] is cond
       pars1 <- c(lambdas[1], mus[1], Inf, lambdas[2], mus[2], Inf, t_d)
@@ -240,48 +238,11 @@ test_that("sls algorithm yields the same pc1 provided by DDD", {
       )
 
       ddd_pc <- (ddd_loglik0 - ddd_loglik1)
-      out <- abs(
+      difference <- abs(
         (exp(ddd_pc) - exp(log(pc))) / exp(ddd_pc)
       )
       res <- 2 * res
     }
-    out
-  }
-
-  pars_m <- c(0.3, 0.1)
-  pars_s <- c(0.6, 0.08)
-  age <- 10
-  n_0 <- 2
-  t_d <- 4.8
-  precision_threshold <- 1e-3
-
-  test <- diff_pc_vs_ddd(
-    cond = 1,
-    seed = 2,
-    pars_m = pars_m,
-    pars_s = pars_s,
-    age = age,
-    n_0 = n_0,
-    t_d = t_d,
-    precision_threshold = precision_threshold
-  )
-  testthat::expect_true(
-    test < precision_threshold || is.infinite(test)
-  )
-
-  if (packageVersion(pkg = "DDD") >= 3.8) {
-    test <- diff_pc_vs_ddd(
-      cond = 1,
-      seed = 2,
-      pars_m = pars_m,
-      pars_s = pars_s,
-      age = age,
-      n_0 = n_0,
-      t_d = t_d,
-      precision_threshold = precision_threshold
-    )
-    testthat::expect_true(
-      test < precision_threshold || is.infinite(test)
-    )
+    testthat::expect_lt(difference, precision_threshold)
   }
 })

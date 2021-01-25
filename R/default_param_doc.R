@@ -60,6 +60,7 @@
 #' @param loglik_functions the loglik_functions you want to use
 #' @param lx size of the matrix
 #' @param matrix_size size of the matrix
+#' @param max_iterations maximum number of iterations for the optimizer
 #' @param message the message to print
 #' @param models the models you want to use to define the likelihood
 #' @param mu extinction rate
@@ -150,6 +151,7 @@ default_params_doc <- function(
   k,
   lambda,
   lambdas,
+  max_iterations,
   mu,
   mus,
   ks,

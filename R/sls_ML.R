@@ -27,7 +27,8 @@ sls_ml <- function(
   cond = 3,
   optim_ids = rep(TRUE, length(start_pars)),
   true_pars = start_pars,
-  verbose = TRUE
+  verbose = TRUE,
+  max_iterations = 1e4
 ) {
   # setup and checks
   par_names <- get_param_names() # nolint internal function
@@ -83,7 +84,8 @@ sls_ml <- function(
   # maximum likelihood
   out <- subplex::subplex(
     par = tr_start_pars,
-    fn = function(x) optim_fun(x)
+    fn = function(x) optim_fun(x),
+    control = list(maxit = max_iterations)
   )
 
   # report missed convergence

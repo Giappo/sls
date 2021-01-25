@@ -66,7 +66,8 @@ one_minus_ut  <- function(lambda, mu, t) {
   exp_term <- exp(
     (mu - lambda) * time
   )
-  out    <- (lambda == mu) * (1 / (1 + lambda * time)) +
+  out <- (lambda == mu) *
+    (1 / (1 + lambda * time)) +
     (lambda != mu) * (
       (0 + (lambda == mu) + (lambda - mu) * exp_term) /
         (lambda - mu * exp_term + (lambda == mu))

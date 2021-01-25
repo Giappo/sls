@@ -26,7 +26,7 @@ test_that("logliks", {
 
 test_that("ml", {
   if (!is_on_ci()) {
-    skip("This has to run on ci.")
+    skip("This only runs on CI")
   }
   functions <- sls::sls_logliks_dummy()
   testthat::expect_true(length(functions) > 0)
@@ -51,7 +51,7 @@ test_that("ml", {
 
 test_that("main", {
   if (!is_on_ci()) {
-    skip("This has to run on ci.")
+    skip("This only runs on CI")
   }
   seed <- 14
   sim_pars <- c(0.2, 0.1, 0.6, 0.1)
