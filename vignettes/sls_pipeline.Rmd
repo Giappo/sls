@@ -35,8 +35,8 @@ sim_pars <- c(lambdas[1], mus[1], lambdas[2], mus[2])
 l_2 <- sls::sim_get_standard_l_2(crown_age = 5, shift_time = 2)
 set.seed(seed)
 sim <- sls::sls_sim(
-  lambdas = lambdas, 
-  mus = mus, 
+  lambdas = lambdas,
+  mus = mus,
   cond = cond,
   l_2 = l_2
 )
@@ -142,7 +142,7 @@ if (1 == 2) {
   mle <- sls::sls_main(
     sim_pars = sim_pars,
     l_2 = l_2,
-    seed = seed, 
+    seed = seed,
     loglik_functions = c(loglik_sls_p, loglik_sls_p_nodiv),
     cond = cond,
     verbose = FALSE

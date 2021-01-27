@@ -299,7 +299,7 @@ test_that("test missnumspec vs ddd", {
     brts <- list(brts_m, brts_s)
     pars1 <- c(pars_m, Inf, pars_s, Inf, brts_s[1])
 
-    diff <- 1; max_rep <- 5; rep <- 0; n_max <- (n_m + n_s) * 2
+    diff <- 1; max_rep <- 5; rep <- 0; n_max <- (n_m + n_s)
     while (diff > threshold && rep <= max_rep) {
       n_max <- n_max * 2
       pars2 <- c(n_max, 1, cond, 0, 0, n_0, 1)
