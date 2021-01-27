@@ -89,8 +89,7 @@ test_that("all the likelihoods with no division yield the same result", {
     sls::loglik_sls_p_nodiv,
     sls::loglik_sls_q_nodiv
   )
-  threshold <- (!is_on_ci()) * 1e-2 +
-               (is_on_ci())  * 1e-3
+  threshold <- 1e-2
 
   max_seed <- (2 + 2 * is_on_ci())
   conds <- rep(sls::sls_conds(), max_seed)
@@ -147,8 +146,7 @@ test_that("faster likelihood gives the same results", {
     sls::loglik_sls_p_nodiv,
     sls::loglik_sls_p2_nodiv
   )
-  threshold <- (!is_on_ci()) * 1e-2 +
-               (is_on_ci())  * (1 / 2) * 1e-3
+  threshold <- 1e-2
 
   cond <- sls_conds()[1]
   for (seed in 1:(2 + 1 * is_on_ci())) {

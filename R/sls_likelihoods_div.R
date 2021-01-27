@@ -468,7 +468,7 @@ loglik_sls_q <- function(
   )
 
   # total_loglik <- sum(logliks) - log(pc)
-  total_loglik <- sum(logliks_vec) - log(pc)
+  total_loglik <- log(sum(exp(logliks_vec))) - log(pc)
   total_loglik <- as.numeric(total_loglik)
   if (is.nan(total_loglik) | is.na(total_loglik)) {
     total_loglik <- -Inf
