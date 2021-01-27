@@ -344,23 +344,3 @@ test_that("test missnumspec vs ddd", {
     testthat::expect_lt(diff, threshold)
   }
 })
-
-
-while (diff > threshold && rep <= max_rep) {
-  precision <- precision * 2
-  res_1_1 <- fun1(
-    pars = pars,
-    brts = brts,
-    cond = cond,
-    n_max = precision
-  ); res_1_1
-  res_2_1 <- fun2(
-    pars = pars,
-    brts = brts,
-    cond = cond,
-    n_max = precision
-  ); res_2_1
-
-  diff <- abs(res_1_1 - res_2_1)
-  rep <- rep + 1
-}
